@@ -38,7 +38,7 @@ Payments, contracts, real auth, real social publish APIs.
 | Field | Value |
 | --- | --- |
 | Date | 2026-07-24 |
-| Commit | (fill on ship) |
-| Smoke | |
-| Happy path | |
-| Sign-off | |
+| Commit | `fd9413d` / `cb6e5db` |
+| Smoke | **PASSED** (all brand + creator routes HTTP 200; health `0.2.0`) |
+| Happy path | Seeded Soi 11 path available (inv-2 → brief-1 → sub-1); UI actions wired |
+| Sign-off | **Phase 2 demo READY** |
