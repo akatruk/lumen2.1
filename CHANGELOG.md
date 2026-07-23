@@ -14,10 +14,16 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 - Invitations console can issue briefs after acceptance.
 - Collaboration service layer (`services/collaboration.ts`) with audited activity events.
 - Smoke script covers creator + collaboration routes.
+- Expanded manual QA: `docs/MANUAL_QA_PHASE2.md`.
 
 ### Workflow covered
 
 Invitation → Accept → Brief → Draft submission → Brand review → Approve → Publication URL → Performance snapshot.
+
+### QA
+
+- 2026-07-24 live demo http://167.71.206.43:3000 — health `0.2.0`.
+- Smoke **17/17 PASS**; Phase 2 P0/P1 **ALL PASS**; sign-off **READY TO SHIP** (commit `1f9bd36`).
 
 ## [0.1.0] — 2026-07-24
 
