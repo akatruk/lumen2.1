@@ -25,9 +25,13 @@ export default function CreatorClaimPage() {
   };
 
   useEffect(() => {
-    setName(me?.name ?? "");
-    setEmail(me?.contactEmail ?? `${(me?.name ?? "creator").toLowerCase().replace(/\s+/g, ".")}@example.com`);
-    refresh();
+    const current = marketplace.getInfluencer(influencerId);
+    setName(current?.name ?? "");
+    setEmail(
+      current?.contactEmail ??
+        `${(current?.name ?? "creator").toLowerCase().replace(/\s+/g, ".")}@example.com`,
+    );
+    setClaims(collaboration.listClaims().filter((c) => c.influencerId === influencerId));
   }, [influencerId]);
 
   return (
