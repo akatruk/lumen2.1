@@ -11,6 +11,7 @@ import {
   Mail,
   Menu,
   Package,
+  Presentation,
   Settings,
   Shield,
   Users,
@@ -22,6 +23,7 @@ import { useI18n } from "@/lib/i18n";
 
 const nav = [
   { href: "/", key: "dashboard" as const, icon: LayoutDashboard },
+  { href: "/presentation", key: "presentation" as const, icon: Presentation },
   { href: "/influencers", key: "influencers" as const, icon: Users },
   { href: "/products", key: "products" as const, icon: Package },
   { href: "/campaigns", key: "campaigns" as const, icon: Briefcase },
