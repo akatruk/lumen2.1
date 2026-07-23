@@ -162,7 +162,13 @@ Live demo: http://167.71.206.43:3000 · health: http://167.71.206.43:3000/api/he
 - Settings with locale/weights placeholders + reset demo data
 - Activity feed + toasts
 
-### Not in Phase 1
+### Implemented in Phase 2
 
-Micro-contracts, payments, escrow, creator portal, auto-publishing, real Lumen/API/Postgres wiring.
+- Creator portal (`/creator`) — invitations, briefs, submissions, profile claim
+- Brand Reviews + Claims queues
+- Full demo workflow: invite → brief → draft → approve → publish → performance snapshot
+
+### Not in Phase 1/2
+
+Micro-contracts, payments, escrow, auto-publishing, real Lumen/API/Postgres wiring.
 

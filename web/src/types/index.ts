@@ -5,6 +5,14 @@ export type CampaignStatus = "Draft" | "Active" | "Reviewing" | "Completed";
 export type AnalysisJobStatus = "Queued" | "Processing" | "Completed" | "Failed";
 export type BrandSafetyStatus = "safe" | "review" | "risk";
 export type InvitationStatus = "Pending" | "Accepted" | "Declined" | "Expired";
+export type ClaimStatus = "Unclaimed" | "PendingReview" | "Verified" | "Rejected";
+export type BriefStatus = "Draft" | "Sent" | "Acknowledged";
+export type SubmissionStatus =
+  | "Draft"
+  | "Submitted"
+  | "ChangesRequested"
+  | "Approved"
+  | "Published";
 
 export interface SocialAccount {
   platform: Platform;
@@ -80,6 +88,8 @@ export interface Influencer {
   matchScore: number;
   match?: MatchExplanation;
   verificationStatus: VerificationStatus;
+  claimStatus: ClaimStatus;
+  contactEmail?: string;
   contentStyle: string[];
   postingFrequency: string;
   brandSafety: BrandSafetySignal;
@@ -177,13 +187,93 @@ export interface Invitation {
   status: InvitationStatus;
   message: string;
   createdAt: string;
+  respondedAt?: string;
+}
+
+export interface ProfileClaim {
+  id: string;
+  influencerId: string;
+  claimantName: string;
+  claimantEmail: string;
+  proofNote: string;
+  status: "PendingReview" | "Verified" | "Rejected";
+  createdAt: string;
+  reviewedAt?: string;
+  reviewNote?: string;
+}
+
+export interface CampaignBrief {
+  id: string;
+  campaignId: string;
+  invitationId: string;
+  influencerId: string;
+  title: string;
+  deliverables: string[];
+  messaging: string;
+  restrictions: string[];
+  deadline: string;
+  approvalRules: string;
+  status: BriefStatus;
+  createdAt: string;
+}
+
+export interface SubmissionFeedback {
+  id: string;
+  authorRole: "brand" | "creator";
+  message: string;
+  createdAt: string;
+}
+
+export interface Submission {
+  id: string;
+  campaignId: string;
+  invitationId: string;
+  influencerId: string;
+  briefId: string;
+  status: SubmissionStatus;
+  draftUrl?: string;
+  privateReviewLink?: string;
+  caption?: string;
+  publicationUrl?: string;
+  feedback: SubmissionFeedback[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PerformanceSnapshot {
+  id: string;
+  campaignId: string;
+  influencerId: string;
+  submissionId: string;
+  publicationUrl: string;
+  recordedAt: string;
+  views: number;
+  likes: number;
+  comments: number;
+  clicks?: number;
+  notes?: string;
 }
 
 export interface ActivityEvent {
   id: string;
-  type: "invite" | "shortlist" | "product" | "campaign" | "analysis" | "import";
+  type:
+    | "invite"
+    | "shortlist"
+    | "product"
+    | "campaign"
+    | "analysis"
+    | "import"
+    | "claim"
+    | "brief"
+    | "submission"
+    | "review"
+    | "publish";
   message: string;
   createdAt: string;
+}
+
+export interface CreatorSession {
+  influencerId: string;
 }
 
 export interface AppSettings {

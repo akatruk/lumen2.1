@@ -143,6 +143,15 @@ export const marketplace = {
     Object.values(KEYS).forEach((key) => {
       if (typeof window !== "undefined") window.localStorage.removeItem(key);
     });
+    [
+      "lumen.claims",
+      "lumen.briefs",
+      "lumen.submissions",
+      "lumen.performance",
+      "lumen.creatorSession",
+    ].forEach((key) => {
+      if (typeof window !== "undefined") window.localStorage.removeItem(key);
+    });
   },
 
   listActivity(): ActivityEvent[] {
@@ -368,6 +377,21 @@ export const marketplace = {
       `Invitation sent to ${inf?.name ?? input.influencerId} for ${camp?.name ?? input.campaignId}`,
     );
     return invitation;
+  },
+
+  respondInvitation(id: string, status: "Accepted" | "Declined"): Invitation | undefined {
+    const invites = getInvitations();
+    const idx = invites.findIndex((i) => i.id === id);
+    if (idx < 0) return undefined;
+    invites[idx] = {
+      ...invites[idx],
+      status,
+      respondedAt: new Date().toISOString(),
+    };
+    saveJson(KEYS.invitations, invites);
+    const inf = this.getInfluencer(invites[idx].influencerId);
+    pushActivity("invite", `Invitation ${status.toLowerCase()} by ${inf?.name ?? invites[idx].influencerId}`);
+    return invites[idx];
   },
 
   listJobs(): AnalysisJob[] {

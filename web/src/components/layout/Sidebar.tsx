@@ -5,12 +5,14 @@ import { usePathname } from "next/navigation";
 import {
   BarChart3,
   Briefcase,
+  CheckSquare,
   ClipboardList,
   LayoutDashboard,
   Mail,
   Menu,
   Package,
   Settings,
+  Shield,
   Users,
   X,
 } from "lucide-react";
@@ -25,6 +27,8 @@ const nav = [
   { href: "/campaigns", key: "campaigns" as const, icon: Briefcase },
   { href: "/shortlists", key: "shortlists" as const, icon: ClipboardList },
   { href: "/invitations", key: "invitations" as const, icon: Mail },
+  { href: "/reviews", key: "reviews" as const, icon: CheckSquare },
+  { href: "/claims", key: "claims" as const, icon: Shield },
   { href: "/analysis-jobs", key: "analysisJobs" as const, icon: BarChart3 },
   { href: "/settings", key: "settings" as const, icon: Settings },
 ];
@@ -39,9 +43,9 @@ export function Sidebar() {
       <div className="border-b border-slate-200 px-5 py-5">
         <div className="text-xs font-semibold uppercase tracking-[0.14em] text-teal-700">Lumen</div>
         <div className="mt-1 text-sm font-semibold text-slate-900">Influencer Marketplace</div>
-        <div className="mt-1 text-xs text-slate-500">Thailand Discovery MVP</div>
+        <div className="mt-1 text-xs text-slate-500">Brand console · Phase 2</div>
       </div>
-      <nav className="flex-1 space-y-1 p-3">
+      <nav className="flex-1 space-y-1 overflow-y-auto p-3">
         {nav.map((item) => {
           const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
           const Icon = item.icon;
@@ -63,7 +67,10 @@ export function Sidebar() {
           );
         })}
       </nav>
-      <div className="border-t border-slate-200 p-4 text-xs text-slate-500">
+      <div className="space-y-2 border-t border-slate-200 p-4 text-xs text-slate-500">
+        <Link href="/creator" className="block font-medium text-sky-700 hover:underline">
+          Open creator portal →
+        </Link>
         Demo mode · mock data
       </div>
     </div>
