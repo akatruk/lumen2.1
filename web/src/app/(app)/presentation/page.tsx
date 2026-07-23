@@ -34,9 +34,10 @@ export default function PresentationPage() {
   const [draft, setDraft] = useState(envDefault);
 
   useEffect(() => {
-    const saved = loadJson(VIDEO_KEY, envDefault);
-    setUrl(saved);
-    setDraft(saved);
+    const saved = loadJson<string>(VIDEO_KEY, envDefault);
+    const next = saved?.trim() ? saved.trim() : envDefault;
+    setUrl(next);
+    setDraft(next);
   }, [envDefault]);
 
   const embed = useMemo(() => toEmbed(url), [url]);
