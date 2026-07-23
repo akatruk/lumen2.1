@@ -2,31 +2,38 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.2.0] — 2026-07-24
+
+### Added — Phase 2 Collaboration
+
+- Creator portal (`/creator`) with session switcher across demo influencers.
+- Creator flows: accept/decline invitations, acknowledge briefs, submit draft/private review links, record publication URL after approval.
+- Profile claim submission (creator) and claim review queue (brand `/claims`).
+- Brand Reviews workspace (`/reviews`): approve / request changes, performance snapshot updates.
+- Campaign detail now shows issued briefs and submissions.
+- Invitations console can issue briefs after acceptance.
+- Collaboration service layer (`services/collaboration.ts`) with audited activity events.
+- Smoke script covers creator + collaboration routes.
+
+### Workflow covered
+
+Invitation → Accept → Brief → Draft submission → Brand review → Approve → Publication URL → Performance snapshot.
+
 ## [0.1.0] — 2026-07-24
 
 ### Added
 
 - Phase 1 Discovery MVP brand console (`web/`) on Next.js + TypeScript + Tailwind.
-- Screens: Dashboard, Influencers (filters, card/table, product match ranking), Influencer detail with explainable match score, Products CRUD, Campaigns CRUD, Shortlists + compare, Invitations, Analysis Jobs demo queue, Import preview, Settings.
-- Mock Thailand dataset (12 influencers, 5 products, 4 campaigns, 3 shortlists, 10 analysis jobs, sample videos).
-- Service layer (`marketplace`, `lumen-analysis`) with localStorage persistence for demo state.
-- Docker Compose packaging and droplet deploy path (`167.71.206.43:3000`).
-- GitHub Actions CI (lint/build) and Deploy (rsync + compose) workflows.
+- Screens: Dashboard, Influencers, Products, Campaigns, Shortlists, Invitations, Analysis Jobs, Import, Settings.
+- Mock Thailand dataset and mock Lumen analysis client.
+- Docker Compose + GitHub Actions CI/Deploy.
 - Health endpoint `/api/health`.
-- Manual QA checklist (`docs/MANUAL_QA.md`) and smoke script (`scripts/qa-smoke.sh`).
-
-### Changed
-
-- README updated for local/Docker/Actions usage and Phase 1 scope.
+- Manual QA checklist and smoke script.
 
 ### Fixed
 
 - Deploy workflow waits/retries until container health responds after recreate.
 
-### QA
-
-- Manual QA execution on 2026-07-24 against http://167.71.206.43:3000 — **P0/P1 ALL PASS**, sign-off READY TO SHIP (commit `91e951c`).
-
 ### Out of scope (still)
 
-- NestJS/Postgres, real Lumen API, auth, payments, escrow, creator portal, auto-publishing.
+- NestJS/Postgres, real Lumen API, auth, payments, escrow, auto-publishing.
