@@ -30,5 +30,9 @@ A produced English walkthrough (~3:40) with light ambient bed is hosted at:
 - App page: http://167.71.206.43:3000/presentation
 - Direct file: http://167.71.206.43:3000/presentation/demo.mp4
 
+**Voice:** Microsoft **Ava Multilingual Neural** (`en-US-AvaMultilingualNeural` via Edge TTS) — best free neural EN narrator available without a paid TTS key. Rate −12% / pitch −4 Hz for a calm product tone.
+
+Want ElevenLabs (Charlotte / Serena) instead? Drop an `ELEVENLABS_API_KEY` and we can re-render.
+
 Source assets: `docs/presentation/video-build/` · script: `SCRIPT_4MIN.md`
 
