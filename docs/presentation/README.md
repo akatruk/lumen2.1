@@ -23,6 +23,12 @@
 4. Follow `SCRIPT.md` with teleprompter or notes.
 5. Export 1080p, 30fps, AAC audio.
 
-## One-line pitch
+## Generated walkthrough video
 
-> Lumen Influencer Marketplace helps Thailand brands find creators whose **videos** — not just follower counts — actually fit the product, then run collaboration from invite to published post.
+A produced English walkthrough (~3:40) with light ambient bed is hosted at:
+
+- App page: http://167.71.206.43:3000/presentation
+- Direct file: http://167.71.206.43:3000/presentation/demo.mp4
+
+Source assets: `docs/presentation/video-build/` · script: `SCRIPT_4MIN.md`
+

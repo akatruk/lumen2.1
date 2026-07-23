@@ -19,3 +19,10 @@ npm-debug.log*
 
 # Docker
 **/.docker/
+
+# Presentation build intermediates
+docs/presentation/video-build/audio/
+docs/presentation/video-build/framed/
+docs/presentation/video-build/video_silent.mp4
+docs/presentation/video-build/concat.txt
+docs/presentation/video-build/.DS_Store

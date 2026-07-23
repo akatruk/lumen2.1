@@ -29,7 +29,7 @@ function toEmbed(url: string): { kind: "youtube" | "vimeo" | "file" | "unknown";
 }
 
 export default function PresentationPage() {
-  const envDefault = process.env.NEXT_PUBLIC_PRESENTATION_VIDEO_URL ?? "";
+  const envDefault = process.env.NEXT_PUBLIC_PRESENTATION_VIDEO_URL ?? "/presentation/demo.mp4";
   const [url, setUrl] = useState(envDefault);
   const [draft, setDraft] = useState(envDefault);
 
