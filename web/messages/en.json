@@ -1,0 +1,16 @@
+{
+  "app": {
+    "name": "Lumen Influencer Marketplace",
+    "tagline": "Thailand Discovery MVP"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "influencers": "Influencers",
+    "products": "Products",
+    "campaigns": "Campaigns",
+    "shortlists": "Shortlists",
+    "invitations": "Invitations",
+    "analysisJobs": "Analysis Jobs",
+    "settings": "Settings"
+  }
+}

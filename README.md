@@ -113,5 +113,56 @@ Only the minimum required public or authorized data should be stored. Influencer
 
 ## Project Status
 
-This repository currently contains the initial product and architecture documentation. Implementation will be planned after the MVP scope, data sources, and publishing model are confirmed.
+Phase 1 Discovery MVP UI lives in `web/` (Next.js + TypeScript + Tailwind). It uses mock Thailand data and a mock Lumen Analysis client. Shortlists, products, campaigns, and settings persist in browser `localStorage`.
+
+### Local development
+
+```bash
+cd web
+npm install
+npm run dev
+```
+
+Open http://localhost:3000
+
+### Docker
+
+```bash
+docker compose up --build -d
+```
+
+App: http://localhost:3000
+
+### GitHub Actions
+
+- `CI` — lint + build on PRs and pushes that touch `web/`
+- `Deploy` — on push to `main` (or manual dispatch): rsync to droplet + `docker compose up --build`
+
+Required repository secrets:
+
+| Secret | Example |
+| --- | --- |
+| `DEPLOY_HOST` | `167.71.206.43` |
+| `DEPLOY_USER` | `root` |
+| `DEPLOY_PATH` | `/opt/lumen-marketplace` |
+| `DEPLOY_SSH_KEY` | private key authorized on the host |
+
+Also create GitHub Environment `production` (optional protection rules).
+
+Live demo: http://167.71.206.43:3000 · health: http://167.71.206.43:3000/api/health
+
+### Implemented in Phase 1
+
+- Dashboard, Influencers (filters + product match ranking + card/table), Influencer detail with match explanation
+- Products and Campaigns CRUD
+- Shortlists with compare (2–4)
+- Invitations (demo outreach records)
+- Analysis Jobs demo queue
+- Influencer import preview (URL / CSV, no scraping)
+- Settings with locale/weights placeholders + reset demo data
+- Activity feed + toasts
+
+### Not in Phase 1
+
+Micro-contracts, payments, escrow, creator portal, auto-publishing, real Lumen/API/Postgres wiring.
 

@@ -1,0 +1,21 @@
+# OS / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Node / Next
+web/node_modules/
+web/.next/
+web/out/
+web/coverage/
+web/*.tsbuildinfo
+web/.env*
+!web/.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# Docker
+**/.docker/
