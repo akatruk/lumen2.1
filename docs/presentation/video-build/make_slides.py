@@ -195,8 +195,7 @@ def slide_close():
     img, d = new_slide()
     d.text((120, 260), "Video understanding", font=font(64, True), fill=INK)
     d.text((120, 350), "→ campaign decisions", font=font(64, True), fill=TEAL)
-    d.text((120, 500), "Demo: 167.71.206.43:3000", font=font(34), fill=MUTED)
-    d.text((120, 560), "Creator portal · Presentation · Brand console", font=font(30), fill=MUTED)
+    d.text((120, 520), "Creator portal · Presentation · Brand console", font=font(30), fill=MUTED)
     d.text((120, 700), "Thank you.", font=font(40, True), fill=INK)
     save(img, "08_close")
 

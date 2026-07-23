@@ -23,16 +23,16 @@
 4. Follow `SCRIPT.md` with teleprompter or notes.
 5. Export 1080p, 30fps, AAC audio.
 
-## Generated walkthrough video
+## Generated walkthrough videos
 
-A produced English walkthrough (~3:40) with light ambient bed is hosted at:
+Produced English + Chinese walkthroughs (~3–4 min) with light ambient bed:
 
-- App page: http://167.71.206.43:3000/presentation
-- Direct file: http://167.71.206.43:3000/presentation/demo.mp4
+| Lang | Page | Direct file | Voice |
+| --- | --- | --- | --- |
+| EN | http://167.71.206.43:3000/presentation | `/presentation/demo.mp4` | Microsoft Ava Multilingual Neural |
+| 中文 | same page → **中文** tab | `/presentation/demo-zh.mp4` | Microsoft Xiaoxiao Neural (`zh-CN-XiaoxiaoNeural`) |
 
-**Voice:** Microsoft **Ava Multilingual Neural** (`en-US-AvaMultilingualNeural` via Edge TTS) — best free neural EN narrator available without a paid TTS key. Rate −12% / pitch −4 Hz for a calm product tone.
+Closing slide has **no demo URL** (by request).
 
-Want ElevenLabs (Charlotte / Serena) instead? Drop an `ELEVENLABS_API_KEY` and we can re-render.
-
-Source assets: `docs/presentation/video-build/` · script: `SCRIPT_4MIN.md`
+Source assets: `docs/presentation/video-build/` · scripts: `SCRIPT_4MIN.md` / `SCRIPT_4MIN_ZH.md`
 

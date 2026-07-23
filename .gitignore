@@ -26,3 +26,7 @@ docs/presentation/video-build/framed/
 docs/presentation/video-build/video_silent.mp4
 docs/presentation/video-build/concat.txt
 docs/presentation/video-build/.DS_Store
+docs/presentation/video-build/audio_zh/
+docs/presentation/video-build/framed_zh/
+docs/presentation/video-build/video_silent_zh.mp4
+docs/presentation/video-build/concat_zh.txt
