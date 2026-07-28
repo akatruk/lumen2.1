@@ -146,7 +146,7 @@ export interface ProductResumeCard {
   missing_fields: string[];
   evidence_notes: string[];
   scannedAt?: string;
-  sourceMode?: "demo-scan" | "manual";
+  sourceMode?: "demo-scan" | "live-scan" | "manual";
 }
 
 export interface ProductScanMaterials {

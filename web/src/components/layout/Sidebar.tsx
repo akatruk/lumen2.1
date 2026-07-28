@@ -17,6 +17,7 @@ import {
   Shield,
   Users,
   X,
+  LogIn,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -29,6 +30,7 @@ const nav = [
   { href: "/presentation", key: "presentation" as const, icon: Presentation },
   { href: "/influencers", key: "influencers" as const, icon: Users },
   { href: "/products", key: "products" as const, icon: Package },
+  { href: "/login", key: "login" as const, icon: LogIn },
   { href: "/campaigns", key: "campaigns" as const, icon: Briefcase },
   { href: "/shortlists", key: "shortlists" as const, icon: ClipboardList },
   { href: "/invitations", key: "invitations" as const, icon: Mail },

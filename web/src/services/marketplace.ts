@@ -290,6 +290,17 @@ export const marketplace = {
     const fields = productScan.toProductFields(card);
     const product = this.createProduct(fields);
     pushActivity("product", `Scanned product resume card for ${product.name}`);
+    // Best-effort server persistence when brand is logged in
+    if (typeof window !== "undefined") {
+      void fetch("/api/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(product),
+        credentials: "same-origin",
+      }).catch(() => {
+        /* anonymous / offline demo — localStorage remains source of truth */
+      });
+    }
     return product;
   },
 

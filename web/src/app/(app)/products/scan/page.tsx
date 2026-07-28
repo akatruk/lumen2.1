@@ -92,7 +92,9 @@ export default function ProductScanPage() {
             Drop URL / brief / photo names → AI resume card for Discover match.
           </p>
         </div>
-        <Badge tone="Queued">Demo scan</Badge>
+        <Badge tone="Queued">
+          {(process.env.NEXT_PUBLIC_PRODUCT_SCAN_MODE ?? "demo") === "live" ? "Live LLM scan" : "Demo scan"}
+        </Badge>
       </div>
 
       <Card>

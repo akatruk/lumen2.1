@@ -12,6 +12,10 @@ web/coverage/
 web/*.tsbuildinfo
 web/.env*
 !web/.env.example
+web/data/
+*.db
+*.db-journal
+
 
 # Logs
 *.log

@@ -2,6 +2,16 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.4.0] — 2026-07-28
+
+### Added — Live TikHub, LLM product scan, brand auth + SQLite persistence
+
+- `DISCOVERY_MODE=live` + `TIKHUB_API_KEY` → `/api/discovery/tiktok` + `liveTikTokConnector` (videos→creators).
+- `PRODUCT_SCAN_MODE=live` + `OPENROUTER_API_KEY` → `/api/products/scan` LLM resume cards (`sourceMode: live-scan`).
+- Brand `/login` (JWT httpOnly cookie) + `/api/auth` + Prisma SQLite products API (`/api/products`).
+- Demo modes remain default without keys. Docker volume `lumen-data` for DB.
+- Health `0.4.0` (`live-capable` when a live mode env is set).
+
 ## [0.3.6] — 2026-07-28
 
 ### Fixed — Match/catalog P0 hardening

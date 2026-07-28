@@ -10,3 +10,19 @@ services:
       NODE_ENV: production
       PORT: 3000
       HOSTNAME: 0.0.0.0
+      DISCOVERY_MODE: ${DISCOVERY_MODE:-demo}
+      PRODUCT_SCAN_MODE: ${PRODUCT_SCAN_MODE:-demo}
+      NEXT_PUBLIC_DISCOVERY_MODE: ${NEXT_PUBLIC_DISCOVERY_MODE:-demo}
+      NEXT_PUBLIC_PRODUCT_SCAN_MODE: ${NEXT_PUBLIC_PRODUCT_SCAN_MODE:-demo}
+      TIKHUB_API_KEY: ${TIKHUB_API_KEY:-}
+      TIKHUB_BASE_URL: ${TIKHUB_BASE_URL:-https://api.tikhub.io}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      OPENROUTER_BASE_URL: ${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
+      OPENROUTER_MODEL: ${OPENROUTER_MODEL:-openai/gpt-4o-mini}
+      AUTH_SECRET: ${AUTH_SECRET:-change-me-in-production}
+      DATABASE_URL: file:/app/data/lumen.db
+    volumes:
+      - lumen-data:/app/data
+
+volumes:
+  lumen-data:

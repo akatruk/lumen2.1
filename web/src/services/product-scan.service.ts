@@ -119,10 +119,29 @@ function emptyMissing(card: Partial<ProductResumeCard>): string[] {
 
 /**
  * Demo Product Scan — heuristic extract (no live LLM / no scraping).
- * Swap later for real LLM behind PRODUCT_SCAN_MODE=live.
+ * When NEXT_PUBLIC_PRODUCT_SCAN_MODE=live, calls /api/products/scan (OpenRouter).
  */
 export const productScan = {
   async scan(materials: ProductScanMaterials): Promise<ProductResumeCard> {
+    const mode = (process.env.NEXT_PUBLIC_PRODUCT_SCAN_MODE ?? "demo").toLowerCase();
+    if (mode === "live") {
+      const res = await fetch("/api/products/scan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          url: materials.url,
+          briefText: materials.briefText,
+          photoNames: materials.photoNames,
+          notes: materials.notes,
+        }),
+      });
+      const data = (await res.json()) as { error?: string; card?: ProductResumeCard };
+      if (!res.ok || !data.card) {
+        throw new Error(data.error || `Product scan API ${res.status}`);
+      }
+      return data.card;
+    }
+
     await new Promise((r) => setTimeout(r, 500 + Math.floor(Math.random() * 400)));
 
     const url = materials.url?.trim() ?? "";

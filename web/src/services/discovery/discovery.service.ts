@@ -9,6 +9,7 @@ import type {
 import { loadJson, saveJson } from "@/lib/storage";
 import { marketplace } from "@/services/marketplace";
 import { mockTikTokConnector } from "./mock-tiktok.connector";
+import { liveTikTokConnector } from "./live-tiktok.connector";
 import type { TikTokDiscoveryConnector } from "./types";
 
 const KEYS = {
@@ -17,8 +18,10 @@ const KEYS = {
 } as const;
 
 function getConnector(): TikTokDiscoveryConnector {
-  // Swap point for live TikHub connector later (DISCOVERY_MODE).
-  return mockTikTokConnector;
+  // Client hint: NEXT_PUBLIC_DISCOVERY_MODE=live → call server TikHub route.
+  // Server still requires DISCOVERY_MODE=live + TIKHUB_API_KEY.
+  const mode = (process.env.NEXT_PUBLIC_DISCOVERY_MODE ?? "demo").toLowerCase();
+  return mode === "live" ? liveTikTokConnector : mockTikTokConnector;
 }
 
 function loadDossiers(): Record<string, InfluencerDossier> {
