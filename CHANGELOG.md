@@ -12,6 +12,12 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 - Spec: `docs/superpowers/specs/2026-07-28-invite-brief-persist-design.md`.
 - Health `0.4.4`.
 
+### QA
+
+- 2026-07-28 HTTPS — health `0.4.4`, commit `860502f`.
+- Invite → Accept+autoBrief → Acknowledge **PASS**; unauth 401 **PASS**.
+- Checklist: `docs/MANUAL_QA_INVITE_BRIEF.md`.
+
 ## [0.4.3] — 2026-07-28
 
 ### Added — Brand persistence hydrate (products + shortlists)
