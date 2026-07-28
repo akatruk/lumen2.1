@@ -12,6 +12,12 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 - Prisma `Shortlist` model (`itemsJson`). BA status: `docs/reports/BA_STATUS_2026-07-28_v2.md`.
 - Health `0.4.3`.
 
+### QA
+
+- 2026-07-28 https://influencers.lumen.universalgravity.org — health `0.4.3`, commit `17cbc3e`.
+- Auth → product + shortlist CRUD on SQLite **PASS**; unauth 401 **PASS**.
+- Checklist: `docs/MANUAL_QA_BRAND_PERSIST.md`. BA: `docs/reports/BA_STATUS_2026-07-28_v2.md`.
+
 ## [0.4.2] — 2026-07-28
 
 ### Added — Public HTTPS via nginx + Let's Encrypt
