@@ -2,6 +2,15 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.3.6] — 2026-07-28
+
+### Fixed — Match/catalog P0 hardening
+
+- `rankCandidatesForCard`: honor platform filter (non-TikTok cards no longer rank TikTok demo candidates).
+- Guard NaN/corrupt product fields so match cannot return `NaN` scores or throw on missing `description`.
+- `marketplace.addInfluencer`: merge by handle as well as id (no catalog duplicates).
+- Health `0.3.6`. Audit: `docs/reports/BACKEND_AUDIT_2026-07-28.md`.
+
 ## [0.3.5] — 2026-07-28
 
 ### Changed — Presentation demo videos remaster

@@ -16,23 +16,54 @@ const WEIGHTS = {
   commercial: 5,
 } as const;
 
+function asStringArray(v: unknown): string[] {
+  return Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
+}
+
 function cardOf(product: Product): ProductResumeCard | null {
-  if (product.resumeCard) return product.resumeCard;
+  if (!product || typeof product !== "object") return null;
+  if (product.resumeCard) {
+    const c = product.resumeCard;
+    return {
+      ...c,
+      name: c.name || product.name || "Untitled",
+      brand: c.brand || product.brand || "",
+      category: c.category || product.category || "Product",
+      pitch: (c.pitch || product.description || "").slice(0, 240),
+      geography: asStringArray(c.geography).length ? asStringArray(c.geography) : asStringArray(product.geography),
+      audience: c.audience || product.audience || "",
+      languages: (c.languages?.length ? c.languages : product.languages) ?? ["en"],
+      benefits: asStringArray(c.benefits).length ? asStringArray(c.benefits) : asStringArray(product.benefits),
+      prohibited_claims: asStringArray(c.prohibited_claims).length
+        ? asStringArray(c.prohibited_claims)
+        : asStringArray(product.prohibitedClaims),
+      desired_topics: asStringArray(c.desired_topics).length
+        ? asStringArray(c.desired_topics)
+        : asStringArray(product.desiredTopics),
+      tone: asStringArray(c.tone),
+      platforms: c.platforms?.length ? c.platforms : product.platforms?.length ? product.platforms : ["tiktok"],
+      budget: c.budget ?? { type: "unknown", notes: product.priceLabel ?? "" },
+      success_metrics: asStringArray(c.success_metrics),
+      confidence: Number.isFinite(c.confidence) ? c.confidence : 0.7,
+      missing_fields: asStringArray(c.missing_fields),
+      evidence_notes: asStringArray(c.evidence_notes),
+    };
+  }
   // Fallback synthesize from product fields
   return {
-    name: product.name,
-    brand: product.brand,
-    category: product.category,
-    pitch: product.description.slice(0, 240),
-    geography: product.geography,
-    audience: product.audience,
-    languages: product.languages,
-    benefits: product.benefits,
-    prohibited_claims: product.prohibitedClaims,
-    desired_topics: product.desiredTopics,
+    name: product.name || "Untitled",
+    brand: product.brand || "",
+    category: product.category || "Product",
+    pitch: String(product.description ?? "").slice(0, 240),
+    geography: asStringArray(product.geography),
+    audience: product.audience || "",
+    languages: product.languages?.length ? product.languages : ["en"],
+    benefits: asStringArray(product.benefits),
+    prohibited_claims: asStringArray(product.prohibitedClaims),
+    desired_topics: asStringArray(product.desiredTopics),
     tone: [],
-    platforms: product.platforms ?? ["tiktok"],
-    budget: { type: "unknown", notes: product.priceLabel },
+    platforms: product.platforms?.length ? product.platforms : ["tiktok"],
+    budget: { type: "unknown", notes: product.priceLabel ?? "" },
     success_metrics: [],
     confidence: 0.7,
     missing_fields: [],
@@ -41,11 +72,13 @@ function cardOf(product: Product): ProductResumeCard | null {
 }
 
 function clamp(n: number, lo = 0, hi = 100) {
+  if (!Number.isFinite(n)) return lo;
   return Math.max(lo, Math.min(hi, n));
 }
 
 /**
  * Rank discovery candidates against a Product Resume Card.
+ * Demo connector is TikTok-only — candidates are skipped when card platforms exclude tiktok.
  */
 export function rankCandidatesForCard(
   candidates: DiscoveryCandidate[],
@@ -54,7 +87,12 @@ export function rankCandidatesForCard(
   const card = cardOf(product);
   if (!card) return [];
 
-  const allowed = new Set((card.platforms?.length ? card.platforms : ["tiktok"]).map((p) => p));
+  const allowed = new Set(
+    (card.platforms?.length ? card.platforms : ["tiktok"]).map((p) => String(p).toLowerCase()),
+  );
+  // Demo candidates are TikTok. If card does not allow tiktok, return no matches.
+  if (!allowed.has("tiktok")) return [];
+
   const topicSet = new Set(card.desired_topics.map((t) => t.toLowerCase()));
   const geoSet = new Set(card.geography.map((g) => g.toLowerCase()));
   const langSet = new Set(card.languages);
@@ -62,22 +100,26 @@ export function rankCandidatesForCard(
   const ranked: RankedDiscoveryMatch[] = [];
 
   for (const c of candidates) {
-    // Platform hard filter: demo candidates are TikTok
-    if (!allowed.has("tiktok") && ![...allowed].length) continue;
+    if (!c || typeof c !== "object") continue;
 
-    const cTopics = c.topics.map((t) => t.toLowerCase());
-    const topicHits = cTopics.filter((t) => topicSet.has(t) || [...topicSet].some((x) => t.includes(x) || x.includes(t)));
-    const topicScore = clamp((topicHits.length / Math.max(1, Math.min(3, topicSet.size))) * 100);
+    const cTopics = asStringArray(c.topics).map((t) => t.toLowerCase());
+    const topicHits = cTopics.filter(
+      (t) => topicSet.has(t) || [...topicSet].some((x) => t.includes(x) || x.includes(t)),
+    );
+    const topicScore = clamp((topicHits.length / Math.max(1, Math.min(3, Math.max(topicSet.size, 1)))) * 100);
 
-    const cityHit = geoSet.has(c.city.toLowerCase()) || geoSet.has("thailand");
-    const audienceGeo = clamp((cityHit ? 75 : 35) + (c.followers > 50_000 ? 10 : 0));
+    const city = String(c.city ?? "").toLowerCase();
+    const cityHit = (city && geoSet.has(city)) || geoSet.has("thailand");
+    const followers = Number(c.followers);
+    const engagementRate = Number(c.engagementRate);
+    const avgViews = Number(c.avgViews);
 
-    const engagement = clamp(c.engagementRate * 12);
-
-    const langHits = c.languages.filter((l) => langSet.has(l)).length;
+    const audienceGeo = clamp((cityHit ? 75 : 35) + (followers > 50_000 ? 10 : 0));
+    const engagement = clamp(engagementRate * 12);
+    const langs = Array.isArray(c.languages) ? c.languages : [];
+    const langHits = langs.filter((l) => langSet.has(l)).length;
     const language = clamp((langHits / Math.max(1, langSet.size)) * 100);
 
-    // Style proxy: food/nightlife creators get style credit for F&B cards
     const style =
       card.category === "Restaurant" && (cTopics.includes("food") || cTopics.includes("nightlife"))
         ? 80
@@ -85,11 +127,9 @@ export function rankCandidatesForCard(
           ? 65
           : 40;
 
-    // Safety: if candidate topics clash with prohibited soft signals — risk only (demo has no claim text)
     const risks: string[] = [];
     let safety = 90;
     if (card.prohibited_claims.some((p) => /whitening|medical|roi/i.test(p)) && cTopics.includes("skincare")) {
-      // not automatic fail
       safety = 75;
     }
     if (card.category === "Restaurant" && cTopics.includes("real estate") && !topicHits.length) {
@@ -97,10 +137,9 @@ export function rankCandidatesForCard(
       safety = Math.min(safety, 70);
     }
 
-    const posting = clamp(55 + (c.avgViews > 20_000 ? 20 : 0));
+    const posting = clamp(55 + (avgViews > 20_000 ? 20 : 0));
     const commercial = clamp(50 + topicHits.length * 15 + (cityHit ? 10 : 0));
 
-    // Hard-ish fail: zero topic overlap AND wrong city for tight geo card
     const hardFail =
       topicHits.length === 0 &&
       card.geography.length === 1 &&
@@ -137,10 +176,16 @@ export function rankCandidatesForCard(
       reasons.push(`Topic overlap: ${topicHits.slice(0, 3).join(", ")}`);
     }
     if (cityHit) reasons.push(`Geo fit: ${c.city} matches card geography`);
-    if (langHits) reasons.push(`Language overlap: ${c.languages.filter((l) => langSet.has(l)).join(", ")}`);
-    if (c.engagementRate >= 4) reasons.push(`Solid engagement (${c.engagementRate}% ER)`);
+    if (langHits) reasons.push(`Language overlap: ${langs.filter((l) => langSet.has(l)).join(", ")}`);
+    if (Number.isFinite(engagementRate) && engagementRate >= 4) {
+      reasons.push(`Solid engagement (${engagementRate}% ER)`);
+    }
     if (reasons.length < 2) {
-      reasons.push(`Reach ${Math.round(c.followers / 1000)}k followers on TikTok`);
+      const reachK = Number.isFinite(followers) ? Math.round(followers / 1000) : 0;
+      reasons.push(`Reach ${reachK}k followers on TikTok`);
+    }
+    if (reasons.length < 2) {
+      reasons.push("Limited overlap signals — review dossier before outreach");
     }
     if (hardFail) {
       risks.push("Weak fit — low topic/geo alignment");
@@ -149,7 +194,10 @@ export function rankCandidatesForCard(
     const missingPenalty = (card.missing_fields?.length ?? 0) * 0.03;
     const confidence = Math.max(
       0.35,
-      Math.min(0.95, (card.confidence || 0.7) * 0.5 + score / 200 - missingPenalty + topicHits.length * 0.05),
+      Math.min(
+        0.95,
+        (card.confidence || 0.7) * 0.5 + score / 200 - missingPenalty + topicHits.length * 0.05,
+      ),
     );
 
     ranked.push({
@@ -170,10 +218,11 @@ export function buildSearchQueryFromCard(card: ProductResumeCard): {
   city: string;
   topic: string;
 } {
-  const city =
-    card.geography.find((g) => !/^thailand$/i.test(g)) ?? card.geography[0] ?? "Bangkok";
-  const topic = card.desired_topics[0] ?? "lifestyle";
-  const query = [topic, city, ...card.desired_topics.slice(1, 2), card.category]
+  const geography = asStringArray(card?.geography);
+  const topics = asStringArray(card?.desired_topics);
+  const city = geography.find((g) => !/^thailand$/i.test(g)) ?? geography[0] ?? "Bangkok";
+  const topic = topics[0] ?? "lifestyle";
+  const query = [topic, city, ...topics.slice(1, 2), card?.category]
     .filter(Boolean)
     .join(" ")
     .toLowerCase();

@@ -199,7 +199,15 @@ export const marketplace = {
 
   addInfluencer(influencer: Influencer): Influencer {
     const list = loadJson(KEYS.discoveredInfluencers, [] as Influencer[]);
-    const without = list.filter((i) => i.id !== influencer.id);
+    const handles = new Set(
+      (influencer.platforms ?? []).map((p) => p.handle.toLowerCase()).filter(Boolean),
+    );
+    // Idempotent merge: same id OR same platform handle → replace, do not duplicate
+    const without = list.filter((i) => {
+      if (i.id === influencer.id) return false;
+      if (handles.size === 0) return true;
+      return !i.platforms?.some((p) => handles.has(p.handle.toLowerCase()));
+    });
     without.unshift(influencer);
     saveJson(KEYS.discoveredInfluencers, without);
     pushActivity("import", `Added ${influencer.name} to catalog from discovery`);
