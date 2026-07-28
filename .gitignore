@@ -10,7 +10,9 @@ web/.next/
 web/out/
 web/coverage/
 web/*.tsbuildinfo
-web/.env*
+web/.env
+web/.env.local
+web/.env.*.local
 !web/.env.example
 web/data/
 *.db
