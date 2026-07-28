@@ -54,9 +54,30 @@ export default function CreatorLayout({ children }: { children: React.ReactNode 
   const [open, setOpen] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [influencers, setInfluencers] = useState<Influencer[]>([]);
+  const [authUser, setAuthUser] = useState<{
+    name: string;
+    role: string;
+    influencerId?: string | null;
+  } | null>(null);
+
+  const tiktokSession = authUser?.role === "creator";
+
+  useEffect(() => {
+    void fetch("/api/auth")
+      .then((r) => r.json())
+      .then((d: { user: { name: string; role: string; influencerId?: string | null } | null }) => {
+        setAuthUser(d.user);
+        if (d.user?.role === "creator" && d.user.influencerId) {
+          collaboration.setCreatorSession(d.user.influencerId);
+          setSessionId(d.user.influencerId);
+        }
+      })
+      .catch(() => setAuthUser(null));
+  }, [pathname]);
 
   useEffect(() => {
     setInfluencers(sortActAs(marketplace.listInfluencers()));
+    if (tiktokSession) return;
     const existing = collaboration.getCreatorSession()?.influencerId;
     if (existing && marketplace.getInfluencer(existing)) {
       setSessionId(existing);
@@ -66,12 +87,22 @@ export default function CreatorLayout({ children }: { children: React.ReactNode 
     const fallback = discovered?.id ?? "inf-1";
     collaboration.setCreatorSession(fallback);
     setSessionId(fallback);
-  }, [pathname]);
+  }, [pathname, tiktokSession]);
 
   const me = useMemo(
     () => (sessionId ? marketplace.getInfluencer(sessionId) : undefined),
     [sessionId, influencers],
   );
+
+  async function logoutTikTok() {
+    await fetch("/api/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "logout" }),
+    });
+    setAuthUser(null);
+    router.push("/creator/login");
+  }
 
   const shell = (
     <div className="flex h-full flex-col">
@@ -85,33 +116,55 @@ export default function CreatorLayout({ children }: { children: React.ReactNode 
           </span>
         </div>
         <div className="mt-1 font-mono text-[11px] text-muted-foreground">Phase 2 collaboration</div>
-        <div className="mt-3">
-          <Select
-            value={sessionId ?? ""}
-            onChange={(e) => {
-              collaboration.setCreatorSession(e.target.value);
-              setSessionId(e.target.value);
-            }}
-            aria-label="Act as creator"
-          >
-            {influencers.map((inf) => {
-              const handle = inf.platforms?.[0]?.handle;
-              const tag = isDiscovered(inf) ? "TikHub" : "Seed";
-              return (
-                <option key={inf.id} value={inf.id}>
-                  [{tag}] {inf.name}
-                  {handle ? ` ${handle}` : ""} · {inf.city}
-                </option>
-              );
-            })}
-          </Select>
-        </div>
-        {me ? (
-          <div className="mt-2 font-mono text-xs text-muted-foreground">
-            Signed in as {me.name} · claim {me.claimStatus}
-            {isDiscovered(me) ? " · live catalog" : ""}
+        {tiktokSession ? (
+          <div className="mt-3 space-y-2">
+            <div className="rounded border border-primary/25 bg-primary/10 px-3 py-2 font-mono text-xs text-primary">
+              TikTok · {authUser?.name}
+              {authUser?.influencerId ? (
+                <div className="mt-1 text-[10px] text-muted-foreground">{authUser.influencerId}</div>
+              ) : null}
+            </div>
+            <Button size="sm" variant="ghost" className="w-full justify-start" onClick={() => void logoutTikTok()}>
+              <LogOut className="h-4 w-4" /> Log out TikTok
+            </Button>
           </div>
-        ) : null}
+        ) : (
+          <>
+            <div className="mt-3">
+              <Select
+                value={sessionId ?? ""}
+                onChange={(e) => {
+                  collaboration.setCreatorSession(e.target.value);
+                  setSessionId(e.target.value);
+                }}
+                aria-label="Act as creator"
+              >
+                {influencers.map((inf) => {
+                  const handle = inf.platforms?.[0]?.handle;
+                  const tag = isDiscovered(inf) ? "TikHub" : "Seed";
+                  return (
+                    <option key={inf.id} value={inf.id}>
+                      [{tag}] {inf.name}
+                      {handle ? ` ${handle}` : ""} · {inf.city}
+                    </option>
+                  );
+                })}
+              </Select>
+            </div>
+            {me ? (
+              <div className="mt-2 font-mono text-xs text-muted-foreground">
+                Act-as {me.name} · claim {me.claimStatus}
+                {isDiscovered(me) ? " · live catalog" : ""}
+              </div>
+            ) : null}
+            <Link
+              href="/creator/login"
+              className="mt-2 block font-mono text-[11px] text-primary hover:underline"
+            >
+              Login with TikTok →
+            </Link>
+          </>
+        )}
       </div>
       <nav className="flex-1 space-y-1.5 p-3">
         {nav.map((item, index) => {

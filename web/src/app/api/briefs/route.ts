@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/server/db";
-import { readSession } from "@/server/auth";
+import { influencerIdAliases, readSession } from "@/server/auth";
 import { dbBriefToBrief, serializeBriefFields } from "@/server/brief-mapper";
 import type { BriefStatus } from "@/types";
 
@@ -35,6 +35,17 @@ const PatchBody = z.object({
 export async function GET() {
   const user = await readSession();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  if (user.role === "creator") {
+    if (!user.influencerId) return NextResponse.json({ briefs: [] });
+    const aliases = [...influencerIdAliases(user.influencerId)];
+    const rows = await prisma.campaignBrief.findMany({
+      where: { influencerId: { in: aliases } },
+      orderBy: { createdAt: "desc" },
+    });
+    return NextResponse.json({ briefs: rows.map(dbBriefToBrief) });
+  }
+
   const rows = await prisma.campaignBrief.findMany({
     where: { userId: user.id },
     orderBy: { createdAt: "desc" },
@@ -45,6 +56,9 @@ export async function GET() {
 export async function POST(req: Request) {
   const user = await readSession();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (user.role === "creator") {
+    return NextResponse.json({ error: "Creators cannot issue briefs" }, { status: 403 });
+  }
   try {
     const body = CreateBody.parse(await req.json());
     const invite = await prisma.invitation.findFirst({
@@ -72,9 +86,19 @@ export async function PATCH(req: Request) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const body = PatchBody.parse(await req.json());
-    const existing = await prisma.campaignBrief.findFirst({
-      where: { id: body.id, userId: user.id },
-    });
+
+    const existing =
+      user.role === "creator" && user.influencerId
+        ? await prisma.campaignBrief.findFirst({
+            where: {
+              id: body.id,
+              influencerId: { in: [...influencerIdAliases(user.influencerId)] },
+            },
+          })
+        : await prisma.campaignBrief.findFirst({
+            where: { id: body.id, userId: user.id },
+          });
+
     if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
     const current = dbBriefToBrief(existing);
     const row = await prisma.campaignBrief.update({

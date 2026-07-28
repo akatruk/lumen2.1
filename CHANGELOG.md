@@ -2,6 +2,23 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.4.9] — 2026-07-29
+
+### Added — Creator login via TikTok OAuth
+
+- `/creator/login` → TikTok Login Kit (`user.info.basic`); callback upserts `User(role=creator)` + `TikTokAccount`.
+- Session cookie includes `influencerId`; creator portal prefers JWT over Act-as.
+- `/api/invitations` + `/api/briefs` scoped for creators by influencer id aliases.
+- Deploy wires `TIKTOK_CLIENT_*` + redirect URI (reuse Strom TikTok app).
+- Spec: `docs/superpowers/specs/2026-07-29-tiktok-creator-oauth-design.md`.
+- Health `0.4.9` + `tiktokOAuth` flag.
+
+### Ops prerequisite
+
+- TikTok Developer Portal: add redirect  
+  `https://influencers.lumen.universalgravity.org/api/auth/tiktok/callback`
+- GitHub secrets on lumen2.1: `TIKTOK_CLIENT_KEY`, `TIKTOK_CLIENT_SECRET` (same as Strom).
+
 ## [0.4.8] — 2026-07-28
 
 ### Fixed / improved — UX audit top-5

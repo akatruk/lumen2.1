@@ -55,6 +55,10 @@ jobs:
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
           COOKIE_SECURE: ${{ vars.COOKIE_SECURE }}
           OPENROUTER_MODEL: ${{ vars.OPENROUTER_MODEL }}
+          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          TIKTOK_REDIRECT_URI: ${{ vars.TIKTOK_REDIRECT_URI }}
+          NEXT_PUBLIC_APP_URL: ${{ vars.NEXT_PUBLIC_APP_URL }}
         run: |
           set -euo pipefail
           umask 077
@@ -68,6 +72,12 @@ jobs:
           OPENROUTER_MODEL=${OPENROUTER_MODEL:-openai/gpt-4o-mini}
           AUTH_SECRET=${AUTH_SECRET:-change-me-in-production}
           COOKIE_SECURE=${COOKIE_SECURE:-false}
+          TIKTOK_CLIENT_KEY=${TIKTOK_CLIENT_KEY:-}
+          TIKTOK_CLIENT_SECRET=${TIKTOK_CLIENT_SECRET:-}
+          TIKTOK_REDIRECT_URI=${TIKTOK_REDIRECT_URI:-https://influencers.lumen.universalgravity.org/api/auth/tiktok/callback}
+          TIKTOK_SCOPES=user.info.basic
+          NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-https://influencers.lumen.universalgravity.org}
+          CREATOR_AUTH_REQUIRED=false
           EOF
           # strip leading spaces from heredoc indent
           sed -i 's/^[[:space:]]*//' /tmp/lumen-marketplace.env

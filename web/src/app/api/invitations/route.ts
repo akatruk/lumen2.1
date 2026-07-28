@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/server/db";
-import { readSession } from "@/server/auth";
+import { influencerIdAliases, readSession } from "@/server/auth";
 import { dbInvitationToInvitation } from "@/server/invitation-mapper";
 import { dbBriefToBrief, serializeBriefFields } from "@/server/brief-mapper";
 
@@ -29,9 +29,25 @@ const PatchBody = z.object({
     .optional(),
 });
 
+function creatorInfluencerFilter(influencerId: string) {
+  return { influencerId: { in: [...influencerIdAliases(influencerId)] } };
+}
+
 export async function GET() {
   const user = await readSession();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  if (user.role === "creator") {
+    if (!user.influencerId) {
+      return NextResponse.json({ invitations: [] });
+    }
+    const rows = await prisma.invitation.findMany({
+      where: creatorInfluencerFilter(user.influencerId),
+      orderBy: { createdAt: "desc" },
+    });
+    return NextResponse.json({ invitations: rows.map(dbInvitationToInvitation) });
+  }
+
   const rows = await prisma.invitation.findMany({
     where: { userId: user.id },
     orderBy: { createdAt: "desc" },
@@ -42,6 +58,9 @@ export async function GET() {
 export async function POST(req: Request) {
   const user = await readSession();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (user.role === "creator") {
+    return NextResponse.json({ error: "Creators cannot create invitations" }, { status: 403 });
+  }
   try {
     const body = CreateBody.parse(await req.json());
     const row = await prisma.invitation.create({
@@ -65,9 +84,16 @@ export async function PATCH(req: Request) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const body = PatchBody.parse(await req.json());
-    const existing = await prisma.invitation.findFirst({
-      where: { id: body.id, userId: user.id },
-    });
+
+    let existing =
+      user.role === "creator" && user.influencerId
+        ? await prisma.invitation.findFirst({
+            where: { id: body.id, ...creatorInfluencerFilter(user.influencerId) },
+          })
+        : await prisma.invitation.findFirst({
+            where: { id: body.id, userId: user.id },
+          });
+
     if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
     const row = await prisma.invitation.update({
@@ -80,13 +106,14 @@ export async function PATCH(req: Request) {
 
     let brief = null;
     if (body.status === "Accepted") {
+      const brandUserId = existing.userId;
       const existingBrief = await prisma.campaignBrief.findFirst({
-        where: { invitationId: body.id, userId: user.id },
+        where: { invitationId: body.id, userId: brandUserId },
       });
       if (!existingBrief && body.autoBrief) {
         const created = await prisma.campaignBrief.create({
           data: {
-            userId: user.id,
+            userId: brandUserId,
             ...serializeBriefFields({
               campaignId: row.campaignId,
               invitationId: row.id,

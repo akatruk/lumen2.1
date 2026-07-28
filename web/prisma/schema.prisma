@@ -14,11 +14,30 @@ model User {
   passwordHash String
   name         String
   role         String          @default("brand")
+  influencerId String?
   createdAt    DateTime        @default(now())
   products     Product[]
   shortlists   Shortlist[]
   invitations  Invitation[]
   briefs       CampaignBrief[]
+  tiktokAccounts TikTokAccount[]
+}
+
+model TikTokAccount {
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  openId       String    @unique
+  unionId      String?
+  displayName  String
+  avatarUrl    String    @default("")
+  username     String?
+  accessToken  String
+  refreshToken String    @default("")
+  scope        String    @default("")
+  expiresAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model Product {

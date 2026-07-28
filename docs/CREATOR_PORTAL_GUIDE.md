@@ -14,7 +14,8 @@ This guide tells you exactly what to do in the **Creator portal**. You publish c
 | Item | Detail |
 | --- | --- |
 | Browser | Chrome or Safari; prefer **HTTPS** (link above) |
-| Access today | There is **no personal creator login yet**. The brand/operator will tell you which profile to select in **Act as creator** (your name / TikTok handle). |
+| Access | **Preferred:** [Creator login](https://influencers.lumen.universalgravity.org/creator/login) → **Continue with TikTok** |
+| Fallback | If OAuth is not configured yet, the brand/operator may ask you to use **Act as creator** and select your profile |
 | What you need ready | Draft video link (Drive / Frame.io / unlisted TikTok), optional private review link, caption draft |
 | What you do **not** need | Brand console password, SSH, API keys |
 
@@ -38,12 +39,12 @@ Left sidebar **Act as creator** must show **your** name / `@handle`. If it shows
 
 ## Step-by-step workflow
 
-### 1. Open the portal and select yourself
+### 1. Sign in
 
-1. Go to https://influencers.lumen.universalgravity.org/creator  
-2. In **Act as creator**, choose your profile (look for your TikTok handle; live-discovered profiles may be tagged `[TikHub]`).  
-3. Confirm the home subtitle shows **your** name (e.g. `Your Name · manage invitations…`).  
-4. If the name is wrong, switch Act-as again — do not continue on another creator’s session.
+1. Go to https://influencers.lumen.universalgravity.org/creator/login  
+2. Click **Continue with TikTok** and approve access.  
+3. You land on Creator home signed in as your TikTok display name.  
+4. **Fallback (ops only):** open `/creator`, pick yourself in **Act as creator**, then continue.
 
 ### 2. Review invitations
 
@@ -127,7 +128,7 @@ If this is your first time and the catalog row is not yet “yours”:
 | Accept did nothing | Hard refresh; stay on HTTPS; ask brand if they are logged in (server invites) |
 | Brief missing after Accept | Open **Briefs** and refresh; ask brand to click **Issue brief** |
 | Draft submit disabled | Select a brief first; acknowledge brief if required |
-| Cookie / login confusion | Creators do not use the brand **Login** page today — only Act-as |
+| Cookie / login confusion | Creators use **/creator/login** (TikTok). Brand **Login** is for brands only. Act-as is ops fallback. |
 
 ---
 
@@ -154,4 +155,4 @@ For portal access, wrong profile, or invite issues, contact your **brand / agenc
 | [`MANUAL_QA_PHASE2.md`](./MANUAL_QA_PHASE2.md) | Operator QA for collaboration |
 | [`ROADMAP.md`](./ROADMAP.md) | Phase 2 / future creator login |
 
-**Note for operators:** Dedicated creator email/password login is planned (P0). Until then, walk the creator through Act-as selection on a shared call or send them this guide with their exact Act-as label (name + `@handle`).
+**Note for operators:** TikTok OAuth is live when health `tiktokOAuth: true`. Add redirect URI `https://influencers.lumen.universalgravity.org/api/auth/tiktok/callback` on the Strom TikTok app and set `TIKTOK_CLIENT_KEY` / `SECRET` on lumen2.1 deploy. Act-as remains available when `CREATOR_AUTH_REQUIRED=false`.
