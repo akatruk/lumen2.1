@@ -13,3 +13,9 @@ Product validation package for Lumen Influencer Marketplace (Thailand F&B pilot)
 | [../DISCOVERY_AND_DOSSIER.md](../DISCOVERY_AND_DOSSIER.md) | **Core:** in-app TikTok discovery + dossier |
 
 **Phase 0 status:** deliverables complete · external legal sign-off still open for production PII.
+
+## Creator-facing
+
+| Doc | Purpose |
+| --- | --- |
+| [../CREATOR_PORTAL_GUIDE.md](../CREATOR_PORTAL_GUIDE.md) | **What a real creator does** in the Creator portal (EN) |
