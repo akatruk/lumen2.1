@@ -6,7 +6,7 @@ export function GET() {
   return NextResponse.json({
     status: "ok",
     service: "lumen-marketplace-web",
-    version: "0.3.3",
+    version: "0.3.4",
     mode: "demo",
     timestamp: new Date().toISOString(),
   });

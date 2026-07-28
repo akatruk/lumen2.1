@@ -44,6 +44,7 @@ export default function DashboardPage() {
         </div>
         <div className="flex flex-wrap gap-2">
           <Link href="/discover"><Button size="sm">Discover TikTok</Button></Link>
+          <Link href="/products/scan"><Button size="sm" variant="secondary">Scan product</Button></Link>
           <Link href="/products?new=1"><Button size="sm" variant="secondary">Add Product</Button></Link>
           <Link href="/campaigns?new=1"><Button size="sm" variant="secondary">Create Campaign</Button></Link>
           <Link href="/import"><Button size="sm" variant="secondary">Import Influencers</Button></Link>

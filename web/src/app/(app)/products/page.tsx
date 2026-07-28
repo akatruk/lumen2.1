@@ -90,16 +90,23 @@ export default function ProductsPage() {
           <h1 className="text-2xl font-semibold text-foreground">Products</h1>
           <p className="mt-1 text-sm text-muted-foreground">Brand offers used for matching and campaigns.</p>
         </div>
-        <Button
-          size="sm"
-          onClick={() => {
-            setEditingId(null);
-            setForm(emptyForm);
-            setOpen(true);
-          }}
-        >
-          Add Product
-        </Button>
+        <div className="flex gap-2">
+          <Link href="/products/scan">
+            <Button size="sm" variant="secondary">
+              Scan product
+            </Button>
+          </Link>
+          <Button
+            size="sm"
+            onClick={() => {
+              setEditingId(null);
+              setForm(emptyForm);
+              setOpen(true);
+            }}
+          >
+            Add Product
+          </Button>
+        </div>
       </div>
 
       {open ? (

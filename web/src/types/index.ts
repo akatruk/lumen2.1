@@ -113,7 +113,68 @@ export interface Product {
   prohibitedClaims: string[];
   desiredTopics: string[];
   createdAt: string;
+  /** Preferred discovery platforms (default tiktok) */
+  platforms?: Platform[];
+  /** AI/manual Product Resume Card used for Discover match */
+  resumeCard?: ProductResumeCard;
 }
+
+export type BudgetType = "unknown" | "barter" | "fixed" | "range";
+
+export interface ProductBudget {
+  type: BudgetType;
+  notes: string;
+}
+
+/** Canonical Product Resume Card (docs/prompts/BUSINESS_FLOW_PROMPT.md step 2) */
+export interface ProductResumeCard {
+  name: string;
+  brand: string;
+  category: string;
+  pitch: string;
+  geography: string[];
+  audience: string;
+  languages: LanguageCode[];
+  benefits: string[];
+  prohibited_claims: string[];
+  desired_topics: string[];
+  tone: string[];
+  platforms: Platform[];
+  budget: ProductBudget;
+  success_metrics: string[];
+  confidence: number;
+  missing_fields: string[];
+  evidence_notes: string[];
+  scannedAt?: string;
+  sourceMode?: "demo-scan" | "manual";
+}
+
+export interface ProductScanMaterials {
+  url?: string;
+  briefText?: string;
+  photoNames?: string[];
+  /** optional freeform notes */
+  notes?: string;
+}
+
+export interface RankedDiscoveryMatch {
+  candidate: DiscoveryCandidate;
+  score: number;
+  confidence: number;
+  reasons: string[];
+  risks: string[];
+  breakdown: {
+    topic: number;
+    audienceGeo: number;
+    engagement: number;
+    language: number;
+    style: number;
+    safety: number;
+    posting: number;
+    commercial: number;
+  };
+}
+
 
 export interface Campaign {
   id: string;

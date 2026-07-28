@@ -22,6 +22,8 @@ import {
 } from "@/data/mock";
 import { loadJson, saveJson } from "@/lib/storage";
 import { lumenAnalysis } from "@/services/lumen-analysis";
+import { productScan } from "@/services/product-scan.service";
+import type { ProductResumeCard } from "@/types";
 
 const KEYS = {
   products: "lumen.products",
@@ -266,6 +268,21 @@ export const marketplace = {
     products[idx] = { ...products[idx], ...patch, id };
     saveJson(KEYS.products, products);
     return products[idx];
+  },
+
+  /** Persist resume card onto product and sync core fields */
+  saveResumeCard(productId: string, card: ProductResumeCard): Product | undefined {
+    const fields = productScan.toProductFields(card);
+    const updated = this.updateProduct(productId, fields);
+    if (updated) pushActivity("product", `Updated resume card for ${updated.name}`);
+    return updated;
+  },
+
+  createProductFromCard(card: ProductResumeCard): Product {
+    const fields = productScan.toProductFields(card);
+    const product = this.createProduct(fields);
+    pushActivity("product", `Scanned product resume card for ${product.name}`);
+    return product;
   },
 
   listCampaigns(): Campaign[] {

@@ -2,6 +2,16 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.3.4] — 2026-07-28
+
+### Added — Product scan → resume card → card-ranked Discover
+
+- `/products/scan`: URL/brief/photos → Product Resume Card (demo extract, editable).
+- Card persists on Product; product detail shows resume + **Find matches**.
+- Discover requires product context; ranks TikTok candidates with score + reasons vs card.
+- `product-scan.service` + `match.service`; health `0.3.4`.
+- QA: `docs/MANUAL_QA_PRODUCT_SCAN.md`.
+
 ## [0.3.3] — 2026-07-28
 
 ### Added — TikTok Discover (demo connector)
