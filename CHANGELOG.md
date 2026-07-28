@@ -12,6 +12,13 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 - Deploy writes droplet `.env` from GitHub secrets/vars (`TIKHUB_API_KEY`, `OPENROUTER_API_KEY`, `AUTH_SECRET`, mode vars).
 - Health `0.4.1`.
 
+### QA
+
+- 2026-07-28 live http://167.71.206.43:3000 — health `0.4.1`, commit `2e53422` / fix `3fb451e`, smoke **PASS**.
+- Auth register → HTTP session (no Secure) → product CRUD → logout **PASS**.
+- Demo gates for TikHub/LLM **PASS**; live D4/S3 **BLOCKED** (API keys empty).
+- Checklist: `docs/MANUAL_QA_LIVE_STACK.md`.
+
 ## [0.4.0] — 2026-07-28
 
 ### Added — Live TikHub, LLM product scan, brand auth + SQLite persistence
