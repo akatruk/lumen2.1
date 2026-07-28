@@ -18,6 +18,7 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 - Auth → product + shortlist CRUD on SQLite **PASS**; unauth 401 **PASS**.
 - Checklist: `docs/MANUAL_QA_BRAND_PERSIST.md`. BA: `docs/reports/BA_STATUS_2026-07-28_v2.md`.
 - 2026-07-28 **Live TikHub enabled** (`DISCOVERY_MODE=live`, key in GH secret): `POST /api/discovery/tiktok` query `bangkok food` → `source=tikhub`, 8 real creators **PASS**. Product scan still demo (no OpenRouter key yet).
+- 2026-07-28 **Live OpenRouter product scan**: `PRODUCT_SCAN_MODE=live`, `POST /api/products/scan` → `source=openrouter` resume card **PASS**.
 
 ## [0.4.2] — 2026-07-28
 
