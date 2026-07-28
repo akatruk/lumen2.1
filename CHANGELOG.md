@@ -11,6 +11,12 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 - Discover requires product context; ranks TikTok candidates with score + reasons vs card.
 - `product-scan.service` + `match.service`; health `0.3.4`.
 - QA: `docs/MANUAL_QA_PRODUCT_SCAN.md`.
+- Build prompts: `docs/prompts/BUSINESS_FLOW_PROMPT.md`, `docs/prompts/NEXT_BUILD_PROMPT.md`.
+
+### QA
+
+- 2026-07-28 live http://167.71.206.43:3000 — health `0.3.4`, Deploy run success (`3b6d342`).
+- Smoke **PASS** (incl. `/products/scan`, `/discover`); P0/P1 **ALL PASS**; Soi 11 rank Narin 89 > beauty 54 > RE 37; sign-off **READY TO SHIP**.
 
 ## [0.3.3] — 2026-07-28
 
