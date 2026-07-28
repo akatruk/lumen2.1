@@ -38,7 +38,7 @@ export default function CreatorClaimPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">Claim profile</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-muted-foreground">
           Request ownership of {me?.name}. Brand operators review claims in the console.
         </p>
       </div>
@@ -54,7 +54,7 @@ export default function CreatorClaimPage() {
             </Field>
           </div>
         </div>
-        <div className="border-t border-slate-100 px-5 py-4">
+        <div className="border-t border-border/40 px-5 py-4">
           <Button
             onClick={() => {
               collaboration.submitClaim({
@@ -74,19 +74,19 @@ export default function CreatorClaimPage() {
 
       <Card>
         <CardHeader title="Your claim history" />
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-border/40">
           {claims.map((c) => (
             <div key={c.id} className="flex items-start justify-between gap-3 px-5 py-3 text-sm">
               <div>
                 <div className="font-medium">{c.claimantEmail}</div>
-                <div className="text-slate-600">{c.proofNote}</div>
+                <div className="text-muted-foreground">{c.proofNote}</div>
               </div>
               <Badge tone={c.status === "Verified" ? "Active" : c.status === "Rejected" ? "Failed" : "Reviewing"}>
                 {c.status}
               </Badge>
             </div>
           ))}
-          {!claims.length ? <div className="px-5 py-4 text-sm text-slate-500">No claims yet.</div> : null}
+          {!claims.length ? <div className="px-5 py-4 text-sm text-muted-foreground">No claims yet.</div> : null}
         </div>
       </Card>
     </div>

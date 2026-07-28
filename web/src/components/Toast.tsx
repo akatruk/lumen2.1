@@ -28,10 +28,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           <div
             key={t.id}
             className={cn(
-              "rounded-lg border px-4 py-3 text-sm shadow-lg",
+              "rounded-lg border px-4 py-3 text-sm shadow-lg glass-container animate-slide-up-fade",
               t.tone === "err"
-                ? "border-red-200 bg-red-50 text-red-800"
-                : "border-emerald-200 bg-emerald-50 text-emerald-900",
+                ? "border-destructive/30 text-destructive"
+                : "border-primary/30 text-foreground",
             )}
           >
             {t.message}

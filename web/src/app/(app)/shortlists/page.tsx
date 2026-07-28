@@ -45,8 +45,8 @@ export default function ShortlistsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Shortlists</h1>
-          <p className="mt-1 text-sm text-slate-500">Save, compare, and annotate campaign candidates.</p>
+          <h1 className="text-2xl font-semibold text-foreground">Shortlists</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Save, compare, and annotate campaign candidates.</p>
         </div>
       </div>
 
@@ -71,7 +71,7 @@ export default function ShortlistsPage() {
       <div className="grid gap-6 xl:grid-cols-3">
         <Card>
           <CardHeader title="Your shortlists" />
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-border/40">
             {lists.map((l) => (
               <button
                 key={l.id}
@@ -80,10 +80,10 @@ export default function ShortlistsPage() {
                   setSelectedId(l.id);
                   setCompareIds([]);
                 }}
-                className={`block w-full px-5 py-3 text-left hover:bg-slate-50 ${selectedId === l.id ? "bg-teal-50" : ""}`}
+                className={`block w-full px-5 py-3 text-left hover:bg-muted ${selectedId === l.id ? "bg-primary/10" : ""}`}
               >
-                <div className="text-sm font-medium text-slate-900">{l.name}</div>
-                <div className="text-xs text-slate-500">{l.items.length} creators</div>
+                <div className="text-sm font-medium text-foreground">{l.name}</div>
+                <div className="text-xs text-muted-foreground">{l.items.length} creators</div>
               </button>
             ))}
           </div>
@@ -95,7 +95,7 @@ export default function ShortlistsPage() {
             subtitle={selected ? `Linked product: ${selected.productId ?? "—"} · campaign: ${selected.campaignId ?? "—"}` : undefined}
           />
           {!selected ? (
-            <div className="px-5 py-4 text-sm text-slate-500">No shortlist selected.</div>
+            <div className="px-5 py-4 text-sm text-muted-foreground">No shortlist selected.</div>
           ) : (
             <div className="space-y-4 px-5 py-4">
               <div className="space-y-2">
@@ -104,7 +104,7 @@ export default function ShortlistsPage() {
                   if (!inf) return null;
                   const checked = compareIds.includes(inf.id);
                   return (
-                    <div key={item.influencerId} className="rounded-lg border border-slate-200 p-3">
+                    <div key={item.influencerId} className="rounded-lg border border-border p-3">
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <div className="flex items-center gap-3">
                           <input
@@ -118,7 +118,7 @@ export default function ShortlistsPage() {
                             }}
                             aria-label={`Compare ${inf.name}`}
                           />
-                          <Link href={`/influencers/${inf.id}`} className="text-sm font-medium text-teal-800 hover:underline">
+                          <Link href={`/influencers/${inf.id}`} className="text-sm font-medium text-primary hover:underline">
                             {inf.name}
                           </Link>
                           <MatchScore score={inf.matchScore} size="sm" />
@@ -168,7 +168,7 @@ export default function ShortlistsPage() {
           <CardHeader title="Compare candidates" subtitle={`${compareSet.length} selected (max 4)`} />
           <div className="overflow-x-auto">
             <table className="min-w-full text-left text-sm">
-              <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+              <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
                 <tr>
                   <th className="px-4 py-3">Signal</th>
                   {compareSet.map((inf) => (
@@ -176,7 +176,7 @@ export default function ShortlistsPage() {
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-border/40">
                 {[
                   ["Match score", (i: Influencer) => String(i.matchScore)],
                   ["City", (i: Influencer) => i.city],
@@ -188,9 +188,9 @@ export default function ShortlistsPage() {
                   ["Style", (i: Influencer) => i.contentStyle.join(", ")],
                 ].map(([label, fn]) => (
                   <tr key={label as string}>
-                    <td className="px-4 py-3 font-medium text-slate-700">{label as string}</td>
+                    <td className="px-4 py-3 font-medium text-foreground">{label as string}</td>
                     {compareSet.map((inf) => (
-                      <td key={inf.id} className="px-4 py-3 text-slate-600">
+                      <td key={inf.id} className="px-4 py-3 text-muted-foreground">
                         {(fn as (i: Influencer) => string)(inf)}
                       </td>
                     ))}
@@ -201,7 +201,7 @@ export default function ShortlistsPage() {
           </div>
         </Card>
       ) : (
-        <p className="text-sm text-slate-500">Select 2–4 creators in a shortlist to compare.</p>
+        <p className="text-sm text-muted-foreground">Select 2–4 creators in a shortlist to compare.</p>
       )}
     </div>
   );

@@ -87,8 +87,8 @@ export default function ProductsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Products</h1>
-          <p className="mt-1 text-sm text-slate-500">Brand offers used for matching and campaigns.</p>
+          <h1 className="text-2xl font-semibold text-foreground">Products</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Brand offers used for matching and campaigns.</p>
         </div>
         <Button
           size="sm"
@@ -119,7 +119,7 @@ export default function ProductsPage() {
             <Field label="Benefits"><Textarea value={form.benefits} onChange={(e) => setForm({ ...form, benefits: e.target.value })} /></Field>
             <Field label="Prohibited claims"><Textarea value={form.prohibitedClaims} onChange={(e) => setForm({ ...form, prohibitedClaims: e.target.value })} /></Field>
           </div>
-          <div className="flex gap-2 border-t border-slate-100 px-5 py-4">
+          <div className="flex gap-2 border-t border-border/40 px-5 py-4">
             <Button onClick={submit}>Save</Button>
             <Button variant="secondary" onClick={() => setOpen(false)}>Cancel</Button>
           </div>
@@ -130,16 +130,16 @@ export default function ProductsPage() {
         {products.map((p) => (
           <Card key={p.id} className="flex flex-col p-5">
             <div className="flex items-start gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-2xl">{p.imageEmoji}</div>
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted text-2xl">{p.imageEmoji}</div>
               <div className="min-w-0">
-                <Link href={`/products/${p.id}`} className="text-sm font-semibold text-slate-900 hover:text-teal-800">
+                <Link href={`/products/${p.id}`} className="text-sm font-semibold text-foreground hover:text-primary">
                   {p.name}
                 </Link>
-                <div className="text-xs text-slate-500">{p.brand} · {p.category}</div>
+                <div className="text-xs text-muted-foreground">{p.brand} · {p.category}</div>
               </div>
             </div>
-            <p className="mt-3 line-clamp-3 text-sm text-slate-600">{p.description}</p>
-            <div className="mt-3 text-xs text-slate-500">{p.priceLabel} · {p.geography.join(", ")}</div>
+            <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">{p.description}</p>
+            <div className="mt-3 text-xs text-muted-foreground">{p.priceLabel} · {p.geography.join(", ")}</div>
             <div className="mt-4 flex gap-2">
               <Link href={`/products/${p.id}`}><Button size="sm" variant="secondary">Open</Button></Link>
               <Button size="sm" variant="ghost" onClick={() => startEdit(p)}>Edit</Button>

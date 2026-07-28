@@ -23,8 +23,8 @@ export default function ClaimsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Profile claims</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-2xl font-semibold text-foreground">Profile claims</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           Verify creator ownership requests before collaboration expands.
         </p>
       </div>
@@ -35,12 +35,12 @@ export default function ClaimsPage() {
             <Card key={c.id} className="p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <div className="font-medium text-slate-900">
+                  <div className="font-medium text-foreground">
                     {inf?.name ?? c.influencerId} · {c.claimantName}
                   </div>
-                  <div className="mt-1 text-sm text-slate-600">{c.claimantEmail}</div>
-                  <div className="mt-2 text-sm text-slate-700">{c.proofNote}</div>
-                  <div className="mt-2 text-xs text-slate-500">{formatDateTime(c.createdAt)}</div>
+                  <div className="mt-1 text-sm text-muted-foreground">{c.claimantEmail}</div>
+                  <div className="mt-2 text-sm text-foreground">{c.proofNote}</div>
+                  <div className="mt-2 text-xs text-muted-foreground">{formatDateTime(c.createdAt)}</div>
                 </div>
                 <Badge tone={c.status === "Verified" ? "Active" : c.status === "Rejected" ? "Failed" : "Reviewing"}>
                   {c.status}

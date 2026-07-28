@@ -15,13 +15,13 @@ export default function SettingsPage() {
     setSettings(marketplace.getSettings());
   }, []);
 
-  if (!settings) return <div className="text-sm text-slate-500">Loading…</div>;
+  if (!settings) return <div className="text-sm text-muted-foreground">Loading…</div>;
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Settings</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-2xl font-semibold text-foreground">Settings</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           UI is English for MVP. Locale switch is prepared for Thai, Russian, and Chinese later.
         </p>
       </div>
@@ -86,7 +86,7 @@ export default function SettingsPage() {
             </Field>
           ))}
         </div>
-        <div className="flex items-center gap-3 border-t border-slate-100 px-5 py-4">
+        <div className="flex items-center gap-3 border-t border-border/40 px-5 py-4">
           <Button
             onClick={() => {
               marketplace.saveSettings(settings);
@@ -96,7 +96,7 @@ export default function SettingsPage() {
           >
             Save settings
           </Button>
-          {saved ? <span className="text-sm text-emerald-700">Saved to localStorage</span> : null}
+          {saved ? <span className="text-sm text-emerald-500">Saved to localStorage</span> : null}
         </div>
       </Card>
 

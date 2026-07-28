@@ -42,6 +42,23 @@ echo "$body" | grep -q '"status":"ok"' || {
   echo "FAIL  health payload missing status=ok"
   FAIL=1
 }
+if [ -n "${EXPECT_VERSION:-}" ]; then
+  echo "$body" | grep -q "\"version\":\"${EXPECT_VERSION}\"" || {
+    echo "FAIL  health version != ${EXPECT_VERSION}"
+    FAIL=1
+  }
+fi
+# Theme markers in HTML (Strom glass port)
+html=$(curl -sS "${BASE}/")
+echo "$html" | grep -q 'font-sans' || true
+for marker in 'LUMEN' 'Marketplace' '--font-sans' ; do
+  if echo "$html" | grep -q "$marker"; then
+    echo "PASS  marker  ${marker}"
+  else
+    echo "FAIL  marker  ${marker}"
+    FAIL=1
+  fi
+done
 
 if [ "$FAIL" -ne 0 ]; then
   echo "SMOKE FAILED"

@@ -62,12 +62,12 @@ export default function PresentationPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <div className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-teal-700">
+          <div className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-primary">
             <Presentation className="h-3.5 w-3.5" />
             Stakeholder demo
           </div>
-          <h1 className="text-2xl font-semibold text-slate-900">Presentation</h1>
-          <p className="mt-1 max-w-2xl text-sm text-slate-500">
+          <h1 className="text-2xl font-semibold text-foreground">Presentation</h1>
+          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
             English and Chinese walkthroughs on this page. Open the interactive slide deck, or paste a
             YouTube / Vimeo / MP4 URL below.
           </p>
@@ -82,12 +82,12 @@ export default function PresentationPage() {
           title="Video"
           subtitle={lang === "zh" ? "中文版 · 约 3–5 分钟" : "English · ~3–5 minutes"}
           action={
-            <div className="flex gap-1 rounded-lg border border-slate-200 bg-slate-50 p-0.5">
+            <div className="flex gap-1 rounded-lg border border-border bg-muted p-0.5">
               <button
                 type="button"
                 onClick={() => setLang("en")}
                 className={`rounded-md px-3 py-1 text-xs font-medium ${
-                  lang === "en" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"
+                  lang === "en" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
                 }`}
               >
                 EN
@@ -96,7 +96,7 @@ export default function PresentationPage() {
                 type="button"
                 onClick={() => setLang("zh")}
                 className={`rounded-md px-3 py-1 text-xs font-medium ${
-                  lang === "zh" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"
+                  lang === "zh" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
                 }`}
               >
                 中文
@@ -108,7 +108,7 @@ export default function PresentationPage() {
           {embed?.kind === "file" ? (
             <video
               key={embed.src}
-              className="aspect-video w-full rounded-xl border border-slate-200 bg-slate-950"
+              className="aspect-video w-full rounded-lg border border-border bg-black"
               controls
               playsInline
               src={embed.src}
@@ -117,18 +117,18 @@ export default function PresentationPage() {
             <iframe
               key={embed.src}
               title="Lumen presentation video"
-              className="aspect-video w-full rounded-xl border border-slate-200 bg-slate-950"
+              className="aspect-video w-full rounded-lg border border-border bg-black"
               src={embed.src}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             />
           ) : (
-            <div className="flex aspect-video w-full flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 px-6 text-center">
-              <p className="text-sm font-medium text-slate-800">No video URL configured yet</p>
-              <p className="mt-2 max-w-md text-sm text-slate-500">
+            <div className="flex aspect-video w-full flex-col items-center justify-center rounded-lg border border-dashed border-border bg-muted px-6 text-center">
+              <p className="text-sm font-medium text-foreground">No video URL configured yet</p>
+              <p className="mt-2 max-w-md text-sm text-muted-foreground">
                 Default files:{" "}
-                <code className="rounded bg-white px-1">/presentation/demo.mp4</code> ·{" "}
-                <code className="rounded bg-white px-1">/presentation/demo-zh.mp4</code>
+                <code className="rounded bg-card px-1">/presentation/demo.mp4</code> ·{" "}
+                <code className="rounded bg-card px-1">/presentation/demo-zh.mp4</code>
               </p>
             </div>
           )}
@@ -171,7 +171,7 @@ export default function PresentationPage() {
                 href="/presentation/slides.html"
                 target="_blank"
                 rel="noreferrer"
-                className="text-xs font-medium text-teal-700 hover:underline"
+                className="text-xs font-medium text-primary hover:underline"
               >
                 Open alone
               </a>
@@ -180,7 +180,7 @@ export default function PresentationPage() {
           <iframe
             title="Lumen slides"
             src="/presentation/slides.html"
-            className="h-[28rem] w-full border-0 bg-white xl:h-[32rem]"
+            className="h-[28rem] w-full border-0 bg-card xl:h-[32rem]"
           />
         </Card>
 
@@ -189,7 +189,7 @@ export default function PresentationPage() {
             title="Talk track"
             subtitle={lang === "zh" ? "中文旁白要点" : "~4 min English narration"}
           />
-          <div className="space-y-3 px-5 py-4 text-sm text-slate-700">
+          <div className="space-y-3 px-5 py-4 text-sm text-foreground">
             {lang === "zh" ? (
               <>
                 <p>1. 切入 — 内容契合度高于粉丝数</p>
@@ -202,7 +202,7 @@ export default function PresentationPage() {
                   href="/presentation/SCRIPT_4MIN_ZH.md"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-block pt-2 font-medium text-teal-700 hover:underline"
+                  className="inline-block pt-2 font-medium text-primary hover:underline"
                 >
                   完整中文脚本 →
                 </a>
@@ -219,7 +219,7 @@ export default function PresentationPage() {
                   href="/presentation/SCRIPT.md"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-block pt-2 font-medium text-teal-700 hover:underline"
+                  className="inline-block pt-2 font-medium text-primary hover:underline"
                 >
                   Full script (SCRIPT.md) →
                 </a>

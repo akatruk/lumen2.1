@@ -1,24 +1,425 @@
 @import "tailwindcss";
 
-:root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --border: #e2e8f0;
-  --accent: #0f766e;
+@custom-variant dark (&:is(.dark *));
+
+/* === PREMIUM ANIMATIONS === */
+@keyframes slide-down {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    /* Must resolve to `none` (not scale(1)) so the animated element does not
+       keep a transform after `forwards` fill — a lingering transform makes it a
+       containing block for position:fixed descendants, which traps modal
+       backdrops/cards (e.g. the Generate Batch confirm dialog) off-screen. */
+    transform: none;
+  }
+}
+
+@keyframes slide-up-fade {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glow-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 15px var(--primary-glow);
+  }
+
+  50% {
+    box-shadow: 0 0 30px var(--primary-glow), 0 0 45px var(--primary-glow);
+  }
+}
+
+@keyframes button-press {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.96);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes success-bounce {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  30% {
+    transform: scale(1.15);
+  }
+
+  60% {
+    transform: scale(0.95);
+  }
+}
+
+@keyframes skeleton-pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.animate-fade-scale-in {
+  animation: fade-scale-in 450ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-up-fade {
+  animation: slide-up-fade 450ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2.5s ease-in-out infinite;
+}
+
+.animate-button-press {
+  animation: button-press 150ms ease-out;
+}
+
+.animate-success-bounce {
+  animation: success-bounce 600ms cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.animate-skeleton-pulse {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  a,
+  button,
+  [role="button"],
+  input[type="checkbox"],
+  input[type="radio"],
+  select {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  input:disabled,
+  select:disabled {
+    cursor: not-allowed;
+  }
+}
+
+/* === THEME TOKENS (WHITE & BLUE) === */
+@layer base {
+  :root {
+    /* Safe Light Mode (Clean, High Contrast Blue) */
+    --background: hsl(210 40% 98%);
+    --foreground: hsl(222.2 84% 4.9%);
+    --card: hsl(0 0% 100%);
+    --card-foreground: hsl(222.2 84% 4.9%);
+    --popover: hsl(0 0% 100%);
+    --popover-foreground: hsl(222.2 84% 4.9%);
+
+    /* Branding - Royal Blue */
+    --primary: hsl(221.2 83.2% 53.3%);
+    --primary-foreground: hsl(210 40% 98%);
+    --primary-glow: hsla(221.2, 83.2%, 53.3%, 0.15);
+
+    --secondary: hsl(210 40% 96.1%);
+    --secondary-foreground: hsl(222.2 47.4% 11.2%);
+    --muted: hsl(210 40% 96.1%);
+    --muted-foreground: hsl(215.4 16.3% 46.9%);
+    --accent: hsl(210 40% 96.1%);
+    --accent-foreground: hsl(222.2 47.4% 11.2%);
+
+    --destructive: hsl(0 84.2% 60.2%);
+    --destructive-foreground: hsl(210 40% 98%);
+    --border: hsl(214.3 31.8% 91.4%);
+    --input: hsl(214.3 31.8% 91.4%);
+    --ring: hsl(221.2 83.2% 53.3%);
+    --radius: 0.5rem;
+
+    /* Glassmorphism Variables (Light Mode) */
+    --glass-background: rgba(255, 255, 255, 0.45);
+    --glass-border: rgba(0, 0, 0, 0.05);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.02);
+    --glass-blur: 16px;
+
+    /* Theme override mappings for hardcoded Zinc colors (Light Mode) */
+    --color-zinc-50: hsl(240 5.9% 10%);
+    --color-zinc-100: hsl(240 5.9% 10%);
+    --color-zinc-200: hsl(240 5.9% 15%);
+    --color-zinc-300: hsl(240 5.9% 25%);
+    --color-zinc-400: hsl(240 3.8% 36.1%);
+    --color-zinc-500: hsl(240 3.8% 46.1%);
+    --color-zinc-650: hsl(240 5% 55%);
+    --color-zinc-600: hsl(240 5% 55%);
+    --color-zinc-700: var(--glass-border);
+    --color-zinc-800: var(--glass-border);
+    --color-zinc-900: var(--glass-background);
+    --color-zinc-950: rgba(0, 0, 0, 0.02);
+
+    /* Mappings to resolve muddy brown/yellow-900 borders in Light Mode */
+    --color-yellow-950: hsl(48 100% 96%);
+    --color-yellow-900: hsl(45 93% 47%);
+    --color-yellow-800: hsl(45 93% 47%);
+
+    /* Dynamic overrides for emerald/green tabs to Blue */
+    --color-emerald-500: var(--primary);
+    --color-emerald-600: var(--primary);
+    --color-emerald-300: var(--primary);
+    --color-emerald-800: var(--primary);
+    --color-emerald-900: var(--primary);
+  }
+
+  .dark {
+    /* Cyber-Terminal Dark Mode (Pure Black + Neon Blue) */
+    --background: hsl(0 0% 0%);
+    --foreground: hsl(210 40% 98%);
+    --card: hsl(0 0% 2%);
+    --card-foreground: hsl(210 40% 98%);
+    --popover: hsl(0 0% 2%);
+    --popover-foreground: hsl(210 40% 98%);
+
+    /* Branding - Cyber Neon Blue */
+    --primary: hsl(217.2 91.2% 59.8%);
+    --primary-foreground: hsl(222.2 47.4% 11.2%);
+    --primary-glow: hsla(217.2, 91.2%, 59.8%, 0.2);
+
+    --secondary: hsl(0 0% 7%);
+    --secondary-foreground: hsl(210 40% 98%);
+    --muted: hsl(0 0% 7%);
+    --muted-foreground: hsl(215.4 16.3% 60%);
+    --accent: hsl(0 0% 8%);
+    --accent-foreground: hsl(210 40% 98%);
+
+    --destructive: hsl(0 62.8% 30.6%);
+    --destructive-foreground: hsl(210 40% 98%);
+    --border: hsl(0 0% 15%);
+    --input: hsl(0 0% 10%);
+    --ring: hsl(217.2 91.2% 59.8%);
+
+    /* Glassmorphism Variables (Dark Mode) */
+    --glass-background: rgba(0, 0, 0, 0.45);
+    --glass-border: rgba(255, 255, 255, 0.07);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
+    --glass-blur: 16px;
+
+    /* Theme override mappings for hardcoded Zinc colors (Dark Mode) */
+    --color-zinc-50: hsl(240 5.9% 90%);
+    --color-zinc-100: hsl(240 4.8% 95.9%);
+    --color-zinc-200: hsl(240 5.9% 90%);
+    --color-zinc-300: hsl(240 5% 84.1%);
+    --color-zinc-400: hsl(240 5% 64.9%);
+    --color-zinc-500: hsl(240 5% 64.9%);
+    --color-zinc-600: hsl(240 5% 44.9%);
+    --color-zinc-700: var(--glass-border);
+    --color-zinc-800: var(--glass-border);
+    --color-zinc-900: var(--glass-background);
+    --color-zinc-950: rgba(255, 255, 255, 0.02);
+
+    /* Mappings to resolve muddy brown/yellow-900 borders in Dark Mode to premium glowing amber gold */
+    --color-yellow-950: hsl(38 92% 4%);
+    --color-yellow-900: hsl(38 92% 50%);
+    --color-yellow-800: hsl(38 92% 50%);
+
+    /* Dynamic overrides for emerald/green tabs to Blue */
+    --color-emerald-500: var(--primary);
+    --color-emerald-600: var(--primary);
+    --color-emerald-300: var(--primary);
+    --color-emerald-800: var(--primary);
+    --color-emerald-900: var(--primary);
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-white/5 backdrop-blur-xl border border-black/10 dark:border-white/10 shadow-xl;
+  }
+
+  .glass-card {
+    @apply bg-card/50 backdrop-blur-md border border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20 transition-all duration-300;
+  }
+
+  .text-gradient-primary {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-cyan-400;
+  }
+
+  /* Cyber Grid Pattern */
+  .grid-pattern {
+    background-size: 32px 32px;
+    background-image:
+      linear-gradient(to right, color-mix(in srgb, var(--border) 20%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--border) 20%, transparent) 1px, transparent 1px);
+    mask-image: radial-gradient(circle at 50% 50%, black 60%, transparent 100%);
+  }
+
+  /* Floating Ambient Glow Spotlights */
+  .ambient-glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 9999px;
+    filter: blur(140px);
+    pointer-events: none;
+    z-index: 0;
+    transition: all 1s ease-in-out;
+  }
+
+  /* Reusable Glassmorphism Utility Container */
+  .glass-container {
+    background-color: var(--glass-background);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+  }
+}
+
+/* Elevate hardcoded dark gray page elements into matching glassmorphic layers */
+.bg-zinc-900,
+.bg-zinc-900\/40,
+.bg-zinc-900\/70,
+.bg-zinc-800\/50,
+.bg-zinc-800\/40 {
+  backdrop-filter: blur(var(--glass-blur)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
   --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+
+  /* Mapping all hardcoded colors dynamically */
+  --color-zinc-50: var(--color-zinc-50);
+  --color-zinc-100: var(--color-zinc-100);
+  --color-zinc-200: var(--color-zinc-200);
+  --color-zinc-300: var(--color-zinc-300);
+  --color-zinc-400: var(--color-zinc-400);
+  --color-zinc-500: var(--color-zinc-500);
+  --color-zinc-650: var(--color-zinc-650);
+  --color-zinc-600: var(--color-zinc-600);
+  --color-zinc-700: var(--color-zinc-700);
+  --color-zinc-800: var(--color-zinc-800);
+  --color-zinc-900: var(--color-zinc-900);
+  --color-zinc-950: var(--color-zinc-950);
+
+  /* Warning elements mappings (yellow/amber gold) */
+  --color-yellow-900: var(--color-yellow-900);
+  --color-yellow-800: var(--color-yellow-800);
+  --color-yellow-950: var(--color-yellow-950);
+
+  --color-emerald-500: var(--color-emerald-500);
+  --color-emerald-600: var(--color-emerald-600);
+  --color-emerald-300: var(--color-emerald-300);
+  --color-emerald-800: var(--color-emerald-800);
+  --color-emerald-900: var(--color-emerald-900);
 }
 
-body {
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
   background: var(--background);
-  color: var(--foreground);
 }
 
-* {
-  box-sizing: border-box;
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+/* Organic noise overlay (referenced by DashboardLayout) */
+.bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 180px 180px;
 }

@@ -27,7 +27,7 @@ export default function CreatorInvitationsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">Invitations</h1>
-        <p className="mt-1 text-sm text-slate-500">Accept or decline campaign outreach.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Accept or decline campaign outreach.</p>
       </div>
       <div className="space-y-3">
         {invites.map((inv) => {
@@ -36,9 +36,9 @@ export default function CreatorInvitationsPage() {
             <Card key={inv.id} className="p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <div className="font-medium text-slate-900">{camp?.name ?? inv.campaignId}</div>
-                  <div className="mt-1 text-sm text-slate-600">{inv.message}</div>
-                  <div className="mt-2 text-xs text-slate-500">{formatDateTime(inv.createdAt)}</div>
+                  <div className="font-medium text-foreground">{camp?.name ?? inv.campaignId}</div>
+                  <div className="mt-1 text-sm text-muted-foreground">{inv.message}</div>
+                  <div className="mt-2 text-xs text-muted-foreground">{formatDateTime(inv.createdAt)}</div>
                 </div>
                 <Badge tone={inv.status === "Accepted" ? "Active" : inv.status === "Declined" ? "Failed" : "Reviewing"}>
                   {inv.status}
@@ -88,7 +88,7 @@ export default function CreatorInvitationsPage() {
             </Card>
           );
         })}
-        {!invites.length ? <p className="text-sm text-slate-500">No invitations for this creator.</p> : null}
+        {!invites.length ? <p className="text-sm text-muted-foreground">No invitations for this creator.</p> : null}
       </div>
     </div>
   );

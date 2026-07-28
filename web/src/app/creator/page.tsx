@@ -28,23 +28,23 @@ export default function CreatorHomePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Creator home</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-2xl font-semibold text-foreground">Creator home</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           {me?.name} · manage invitations, briefs, drafts, and publication.
         </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
         <Card className="px-5 py-4">
-          <div className="text-xs uppercase text-slate-500">Invitations</div>
+          <div className="text-xs uppercase text-muted-foreground">Invitations</div>
           <div className="mt-2 text-3xl font-semibold">{invites.length}</div>
         </Card>
         <Card className="px-5 py-4">
-          <div className="text-xs uppercase text-slate-500">Briefs</div>
+          <div className="text-xs uppercase text-muted-foreground">Briefs</div>
           <div className="mt-2 text-3xl font-semibold">{briefs.length}</div>
         </Card>
         <Card className="px-5 py-4">
-          <div className="text-xs uppercase text-slate-500">Submissions</div>
+          <div className="text-xs uppercase text-muted-foreground">Submissions</div>
           <div className="mt-2 text-3xl font-semibold">{subs.length}</div>
         </Card>
       </div>
@@ -61,7 +61,7 @@ export default function CreatorHomePage() {
 
       <Card>
         <CardHeader title="Your open work" />
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-border/40">
           {invites.filter((i) => i.status === "Pending").map((i) => (
             <div key={i.id} className="flex items-center justify-between px-5 py-3 text-sm">
               <span>Pending invite · {marketplace.getCampaign(i.campaignId)?.name}</span>
@@ -77,7 +77,7 @@ export default function CreatorHomePage() {
             </div>
           ))}
           {!invites.some((i) => i.status === "Pending") && !subs.length ? (
-            <div className="px-5 py-4 text-sm text-slate-500">No open items.</div>
+            <div className="px-5 py-4 text-sm text-muted-foreground">No open items.</div>
           ) : null}
         </div>
       </Card>

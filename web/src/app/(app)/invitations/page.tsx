@@ -25,8 +25,8 @@ export default function InvitationsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Invitations</h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <h1 className="text-2xl font-semibold text-foreground">Invitations</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             Brand outreach records. Creators respond in the creator portal.
           </p>
         </div>
@@ -37,7 +37,7 @@ export default function InvitationsPage() {
 
       <Card className="overflow-x-auto">
         <table className="min-w-full text-left text-sm">
-          <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+          <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
             <tr>
               <th className="px-5 py-3">Influencer</th>
               <th className="px-5 py-3">Campaign</th>
@@ -47,7 +47,7 @@ export default function InvitationsPage() {
               <th className="px-5 py-3">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-border/40">
             {invites.map((inv) => {
               const inf = marketplace.getInfluencer(inv.influencerId);
               const camp = marketplace.getCampaign(inv.campaignId);
@@ -57,12 +57,12 @@ export default function InvitationsPage() {
               return (
                 <tr key={inv.id}>
                   <td className="px-5 py-3">
-                    <Link href={`/influencers/${inv.influencerId}`} className="font-medium text-teal-800 hover:underline">
+                    <Link href={`/influencers/${inv.influencerId}`} className="font-medium text-primary hover:underline">
                       {inf?.name ?? inv.influencerId}
                     </Link>
                   </td>
                   <td className="px-5 py-3">
-                    <Link href={`/campaigns/${inv.campaignId}`} className="text-slate-700 hover:underline">
+                    <Link href={`/campaigns/${inv.campaignId}`} className="text-foreground hover:underline">
                       {camp?.name ?? inv.campaignId}
                     </Link>
                   </td>
@@ -81,8 +81,8 @@ export default function InvitationsPage() {
                       {inv.status}
                     </Badge>
                   </td>
-                  <td className="max-w-sm px-5 py-3 text-slate-600">{inv.message}</td>
-                  <td className="px-5 py-3 text-slate-500">{formatDateTime(inv.createdAt)}</td>
+                  <td className="max-w-sm px-5 py-3 text-muted-foreground">{inv.message}</td>
+                  <td className="px-5 py-3 text-muted-foreground">{formatDateTime(inv.createdAt)}</td>
                   <td className="px-5 py-3">
                     {inv.status === "Accepted" && !hasBrief ? (
                       <Button
@@ -108,9 +108,9 @@ export default function InvitationsPage() {
                         Issue brief
                       </Button>
                     ) : hasBrief ? (
-                      <span className="text-xs text-emerald-700">Brief issued</span>
+                      <span className="text-xs text-emerald-500">Brief issued</span>
                     ) : (
-                      <span className="text-xs text-slate-400">—</span>
+                      <span className="text-xs text-muted-foreground">—</span>
                     )}
                   </td>
                 </tr>

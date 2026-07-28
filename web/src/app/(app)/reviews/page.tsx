@@ -30,8 +30,8 @@ export default function ReviewsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Reviews</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-2xl font-semibold text-foreground">Reviews</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           Approve drafts, request changes, and track publication performance.
         </p>
       </div>
@@ -44,10 +44,10 @@ export default function ReviewsPage() {
             <Card key={s.id} className="p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <div className="font-medium text-slate-900">
+                  <div className="font-medium text-foreground">
                     {inf?.name} · {camp?.name}
                   </div>
-                  <div className="mt-1 text-xs text-slate-500">
+                  <div className="mt-1 text-xs text-muted-foreground">
                     Draft: {s.draftUrl || "—"} · Review link: {s.privateReviewLink || "—"}
                   </div>
                 </div>
@@ -63,10 +63,10 @@ export default function ReviewsPage() {
                   {s.status}
                 </Badge>
               </div>
-              {s.caption ? <p className="mt-2 text-sm text-slate-700">{s.caption}</p> : null}
+              {s.caption ? <p className="mt-2 text-sm text-foreground">{s.caption}</p> : null}
               <div className="mt-3 space-y-2">
                 {s.feedback.map((f) => (
-                  <div key={f.id} className="rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-600">
+                  <div key={f.id} className="rounded-lg bg-muted px-3 py-2 text-xs text-muted-foreground">
                     <span className="font-medium capitalize">{f.authorRole}</span>: {f.message}
                   </div>
                 ))}
@@ -114,17 +114,17 @@ export default function ReviewsPage() {
                 </div>
               )}
               {s.publicationUrl ? (
-                <div className="mt-3 text-sm text-emerald-700">Published: {s.publicationUrl}</div>
+                <div className="mt-3 text-sm text-emerald-500">Published: {s.publicationUrl}</div>
               ) : null}
             </Card>
           );
         })}
-        {!subs.length ? <p className="text-sm text-slate-500">No submissions yet.</p> : null}
+        {!subs.length ? <p className="text-sm text-muted-foreground">No submissions yet.</p> : null}
       </div>
 
       <Card>
         <CardHeader title="Performance snapshots" />
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-border/40">
           {perf.map((p) => (
             <div key={p.id} className="space-y-3 px-5 py-4">
               <div className="flex flex-wrap items-start justify-between gap-3 text-sm">
@@ -133,11 +133,11 @@ export default function ReviewsPage() {
                     {marketplace.getInfluencer(p.influencerId)?.name} ·{" "}
                     {marketplace.getCampaign(p.campaignId)?.name}
                   </div>
-                  <a href={p.publicationUrl} className="text-xs text-teal-700 hover:underline" target="_blank" rel="noreferrer">
+                  <a href={p.publicationUrl} className="text-xs text-primary hover:underline" target="_blank" rel="noreferrer">
                     {p.publicationUrl}
                   </a>
                 </div>
-                <div className="text-xs text-slate-500">
+                <div className="text-xs text-muted-foreground">
                   {formatNumber(p.views)} views · {formatNumber(p.likes)} likes · {formatNumber(p.comments)} comments
                 </div>
               </div>
@@ -165,7 +165,7 @@ export default function ReviewsPage() {
               </div>
             </div>
           ))}
-          {!perf.length ? <div className="px-5 py-4 text-sm text-slate-500">No publications recorded.</div> : null}
+          {!perf.length ? <div className="px-5 py-4 text-sm text-muted-foreground">No publications recorded.</div> : null}
         </div>
       </Card>
     </div>

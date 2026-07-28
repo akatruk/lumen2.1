@@ -1,44 +1,40 @@
+import { ButtonHTMLAttributes, forwardRef } from "react";
 import { cn } from "@/lib/utils";
-import type { ButtonHTMLAttributes, PropsWithChildren } from "react";
 
-const variants = {
-  primary: "bg-teal-700 text-white hover:bg-teal-800 focus-visible:ring-teal-600",
-  secondary: "bg-white text-slate-800 border border-slate-300 hover:bg-slate-50 focus-visible:ring-slate-400",
-  ghost: "bg-transparent text-slate-700 hover:bg-slate-100 focus-visible:ring-slate-400",
-  danger: "bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-500",
-} as const;
-
-const sizes = {
-  sm: "h-8 px-3 text-xs",
-  md: "h-10 px-4 text-sm",
-  lg: "h-11 px-5 text-sm",
-} as const;
-
-type Props = PropsWithChildren<
-  ButtonHTMLAttributes<HTMLButtonElement> & {
-    variant?: keyof typeof variants;
-    size?: keyof typeof sizes;
-  }
->;
-
-export function Button({
-  className,
-  variant = "primary",
-  size = "md",
-  children,
-  ...props
-}: Props) {
-  return (
-    <button
-      className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none",
-        variants[variant],
-        sizes[size],
-        className,
-      )}
-      {...props}
-    >
-      {children}
-    </button>
-  );
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: "primary" | "secondary" | "success" | "danger" | "ghost";
+  size?: "sm" | "md" | "lg";
 }
+
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className = "", variant = "primary", size = "md", children, ...props }, ref) => {
+    const baseStyles =
+      "inline-flex items-center justify-center gap-2 font-medium rounded border border-transparent transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-primary focus:ring-offset-1 focus:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.01] active:scale-[0.99]";
+
+    const variantStyles = {
+      primary: "bg-primary text-primary-foreground hover:opacity-90",
+      secondary: "bg-secondary text-secondary-foreground border-border hover:bg-accent",
+      success: "bg-emerald-600 text-white hover:bg-emerald-700",
+      danger: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+      ghost: "bg-transparent text-muted-foreground hover:text-foreground hover:bg-accent/50",
+    };
+
+    const sizeStyles = {
+      sm: "px-3 py-1.5 text-xs font-mono",
+      md: "px-4 py-2 text-sm",
+      lg: "px-6 py-3 text-base",
+    };
+
+    return (
+      <button
+        ref={ref}
+        className={cn(baseStyles, variantStyles[variant], sizeStyles[size], className)}
+        {...props}
+      >
+        {children}
+      </button>
+    );
+  },
+);
+
+Button.displayName = "Button";

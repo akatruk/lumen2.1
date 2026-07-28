@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
-import { Source_Sans_3 } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 import "./globals.css";
 
-const sourceSans = Source_Sans_3({
+const geistSans = Geist({
   variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
@@ -16,11 +21,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${sourceSans.variable} h-full`}>
-      <body className="min-h-full bg-slate-50 font-sans text-slate-900 antialiased">
-        <Suspense fallback={<div className="p-6 text-sm text-slate-500">Loading…</div>}>
-          {children}
-        </Suspense>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} h-full`}
+      suppressHydrationWarning
+    >
+      <body className="h-full bg-background font-sans text-foreground antialiased">
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
+          <Suspense fallback={<div className="p-6 text-sm text-muted-foreground font-mono">Loading…</div>}>
+            {children}
+          </Suspense>
+        </ThemeProvider>
       </body>
     </html>
   );

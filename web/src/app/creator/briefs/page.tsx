@@ -27,7 +27,7 @@ export default function CreatorBriefsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">Briefs</h1>
-        <p className="mt-1 text-sm text-slate-500">Campaign deliverables, messaging, and deadlines.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Campaign deliverables, messaging, and deadlines.</p>
       </div>
       <div className="space-y-3">
         {briefs.map((b) => (
@@ -35,24 +35,24 @@ export default function CreatorBriefsPage() {
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <div className="font-medium">{b.title}</div>
-                <div className="mt-1 text-xs text-slate-500">
+                <div className="mt-1 text-xs text-muted-foreground">
                   {marketplace.getCampaign(b.campaignId)?.name} · deadline {formatDate(b.deadline)}
                 </div>
               </div>
               <Badge tone={b.status === "Acknowledged" ? "Active" : "Reviewing"}>{b.status}</Badge>
             </div>
-            <p className="text-sm text-slate-700">{b.messaging}</p>
+            <p className="text-sm text-foreground">{b.messaging}</p>
             <div className="text-sm">
-              <div className="font-medium text-slate-800">Deliverables</div>
-              <ul className="mt-1 list-disc pl-5 text-slate-600">
+              <div className="font-medium text-foreground">Deliverables</div>
+              <ul className="mt-1 list-disc pl-5 text-muted-foreground">
                 {b.deliverables.map((d) => <li key={d}>{d}</li>)}
               </ul>
             </div>
-            <div className="text-sm text-slate-600">
-              <span className="font-medium text-slate-800">Restrictions:</span> {b.restrictions.join(" · ")}
+            <div className="text-sm text-muted-foreground">
+              <span className="font-medium text-foreground">Restrictions:</span> {b.restrictions.join(" · ")}
             </div>
-            <div className="text-sm text-slate-600">
-              <span className="font-medium text-slate-800">Approval:</span> {b.approvalRules}
+            <div className="text-sm text-muted-foreground">
+              <span className="font-medium text-foreground">Approval:</span> {b.approvalRules}
             </div>
             {b.status !== "Acknowledged" ? (
               <Button
@@ -68,7 +68,7 @@ export default function CreatorBriefsPage() {
             ) : null}
           </Card>
         ))}
-        {!briefs.length ? <p className="text-sm text-slate-500">No briefs yet. Accept an invitation first.</p> : null}
+        {!briefs.length ? <p className="text-sm text-muted-foreground">No briefs yet. Accept an invitation first.</p> : null}
       </div>
     </div>
   );

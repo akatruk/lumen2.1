@@ -19,8 +19,8 @@ export default function ImportPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Import Influencers</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-2xl font-semibold text-foreground">Import Influencers</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           Demo import only. No scraping — prepared for official APIs / approved providers.
         </p>
       </div>
@@ -85,7 +85,7 @@ export default function ImportPage() {
                     setImported(false);
                   }}
                 />
-                <span className="inline-flex h-10 cursor-pointer items-center rounded-lg border border-slate-300 px-4 text-sm font-medium text-slate-800 hover:bg-slate-50">
+                <span className="inline-flex h-10 cursor-pointer items-center rounded-lg border border-border px-4 text-sm font-medium text-foreground hover:bg-muted">
                   Choose CSV file
                 </span>
               </label>
@@ -117,13 +117,13 @@ export default function ImportPage() {
           }
         />
         {imported ? (
-          <div className="border-b border-emerald-100 bg-emerald-50 px-5 py-3 text-sm text-emerald-800">
+          <div className="border-b border-emerald-100 bg-emerald-500/10 px-5 py-3 text-sm text-emerald-800">
             Demo import accepted. Analysis jobs queued for up to 3 rows.
           </div>
         ) : null}
         <div className="overflow-x-auto">
           <table className="min-w-full text-left text-sm">
-            <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+            <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
               <tr>
                 <th className="px-5 py-3">Platform</th>
                 <th className="px-5 py-3">Handle</th>
@@ -133,7 +133,7 @@ export default function ImportPage() {
                 <th className="px-5 py-3">URL</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-border/40">
               {preview.map((row) => (
                 <tr key={row.url}>
                   <td className="px-5 py-3">{PLATFORM_LABELS[row.platform]}</td>
@@ -141,12 +141,12 @@ export default function ImportPage() {
                   <td className="px-5 py-3 capitalize">{row.name}</td>
                   <td className="px-5 py-3">{row.city}</td>
                   <td className="px-5 py-3">{row.videosToAnalyze}</td>
-                  <td className="max-w-xs truncate px-5 py-3 text-xs text-slate-500">{row.url}</td>
+                  <td className="max-w-xs truncate px-5 py-3 text-xs text-muted-foreground">{row.url}</td>
                 </tr>
               ))}
               {!preview.length ? (
                 <tr>
-                  <td colSpan={6} className="px-5 py-6 text-center text-slate-500">No preview rows yet.</td>
+                  <td colSpan={6} className="px-5 py-6 text-center text-muted-foreground">No preview rows yet.</td>
                 </tr>
               ) : null}
             </tbody>

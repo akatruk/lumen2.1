@@ -92,8 +92,8 @@ export default function CampaignsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Campaigns</h1>
-          <p className="mt-1 text-sm text-slate-500">Advertising campaigns linked to products.</p>
+          <h1 className="text-2xl font-semibold text-foreground">Campaigns</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Advertising campaigns linked to products.</p>
         </div>
         <Button size="sm" onClick={() => { setEditingId(null); setOpen(true); }}>Create Campaign</Button>
       </div>
@@ -125,7 +125,7 @@ export default function CampaignsPage() {
             <div className="md:col-span-2"><Field label="Objective"><Textarea value={form.objective} onChange={(e) => setForm({ ...form, objective: e.target.value })} /></Field></div>
             <div className="md:col-span-2"><Field label="Audience"><Textarea value={form.audience} onChange={(e) => setForm({ ...form, audience: e.target.value })} /></Field></div>
           </div>
-          <div className="flex gap-2 border-t border-slate-100 px-5 py-4">
+          <div className="flex gap-2 border-t border-border/40 px-5 py-4">
             <Button onClick={submit}>Save</Button>
             <Button variant="secondary" onClick={() => setOpen(false)}>Cancel</Button>
           </div>
@@ -139,17 +139,17 @@ export default function CampaignsPage() {
             <Card key={c.id} className="p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <Link href={`/campaigns/${c.id}`} className="text-base font-semibold text-slate-900 hover:text-teal-800">
+                  <Link href={`/campaigns/${c.id}`} className="text-base font-semibold text-foreground hover:text-primary">
                     {c.name}
                   </Link>
-                  <div className="mt-1 text-sm text-slate-500">
+                  <div className="mt-1 text-sm text-muted-foreground">
                     {product?.name ?? "Unknown product"} · {formatDate(c.startDate)} – {formatDate(c.endDate)}
                   </div>
                 </div>
                 <Badge tone={c.status}>{c.status}</Badge>
               </div>
-              <p className="mt-3 text-sm text-slate-700">{c.objective}</p>
-              <div className="mt-4 flex flex-wrap gap-4 text-xs text-slate-600">
+              <p className="mt-3 text-sm text-foreground">{c.objective}</p>
+              <div className="mt-4 flex flex-wrap gap-4 text-xs text-muted-foreground">
                 <span>Platforms: {c.platforms.map((p) => PLATFORM_LABELS[p]).join(", ")}</span>
                 <span>Geo: {c.geography.join(", ")}</span>
                 <span>Budget: {c.budgetRange}</span>

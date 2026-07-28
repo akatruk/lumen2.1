@@ -35,8 +35,8 @@ export default function AnalysisJobsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Analysis Jobs</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-2xl font-semibold text-foreground">Analysis Jobs</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           Demo queue for Lumen video analysis. No real social scraping.
         </p>
       </div>
@@ -70,7 +70,7 @@ export default function AnalysisJobsPage() {
 
       <Card className="overflow-x-auto">
         <table className="min-w-full text-left text-sm">
-          <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+          <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
             <tr>
               <th className="px-5 py-3">Influencer</th>
               <th className="px-5 py-3">Videos</th>
@@ -81,25 +81,25 @@ export default function AnalysisJobsPage() {
               <th className="px-5 py-3">Result</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-border/40">
             {jobs.map((job) => {
               const inf = marketplace.getInfluencer(job.influencerId);
               return (
                 <tr key={job.id}>
-                  <td className="px-5 py-3 font-medium text-slate-900">{inf?.name ?? job.influencerId}</td>
+                  <td className="px-5 py-3 font-medium text-foreground">{inf?.name ?? job.influencerId}</td>
                   <td className="px-5 py-3">{job.videoCount}</td>
-                  <td className="px-5 py-3 text-slate-600">{job.source}</td>
+                  <td className="px-5 py-3 text-muted-foreground">{job.source}</td>
                   <td className="px-5 py-3"><Badge tone={job.status}>{job.status}</Badge></td>
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-2">
-                      <div className="h-2 w-24 overflow-hidden rounded-full bg-slate-100">
-                        <div className="h-full bg-teal-600" style={{ width: `${job.progress}%` }} />
+                      <div className="h-2 w-24 overflow-hidden rounded-full bg-muted">
+                        <div className="h-full bg-primary" style={{ width: `${job.progress}%` }} />
                       </div>
-                      <span className="tabular-nums text-xs text-slate-500">{job.progress}%</span>
+                      <span className="tabular-nums text-xs text-muted-foreground">{job.progress}%</span>
                     </div>
                   </td>
-                  <td className="px-5 py-3 text-slate-500">{formatDateTime(job.startedAt)}</td>
-                  <td className="max-w-xs px-5 py-3 text-xs text-slate-600">
+                  <td className="px-5 py-3 text-muted-foreground">{formatDateTime(job.startedAt)}</td>
+                  <td className="max-w-xs px-5 py-3 text-xs text-muted-foreground">
                     {job.error ? <span className="text-red-600">{job.error}</span> : job.resultSummary ?? "—"}
                   </td>
                 </tr>

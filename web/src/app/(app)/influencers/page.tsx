@@ -86,18 +86,18 @@ export default function InfluencersPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Influencers</h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <h1 className="text-2xl font-semibold text-foreground">Influencers</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             {filtered.length} creators · Bangkok, Phuket, Chiang Mai, Pattaya, Samui
           </p>
         </div>
         <div className="flex gap-2">
           <Link href="/import"><Button variant="secondary" size="sm">Import</Button></Link>
-          <div className="flex rounded-lg border border-slate-300 p-0.5">
+          <div className="flex rounded-lg border border-border p-0.5">
             <button
               type="button"
               aria-label="Cards view"
-              className={cn("rounded-md p-2", view === "cards" ? "bg-slate-100" : "")}
+              className={cn("rounded-md p-2", view === "cards" ? "bg-muted" : "")}
               onClick={() => setView("cards")}
             >
               <LayoutGrid className="h-4 w-4" />
@@ -105,7 +105,7 @@ export default function InfluencersPage() {
             <button
               type="button"
               aria-label="Table view"
-              className={cn("rounded-md p-2", view === "table" ? "bg-slate-100" : "")}
+              className={cn("rounded-md p-2", view === "table" ? "bg-muted" : "")}
               onClick={() => setView("table")}
             >
               <List className="h-4 w-4" />
@@ -169,7 +169,7 @@ export default function InfluencersPage() {
       ) : (
         <Card className="overflow-x-auto">
           <table className="min-w-full text-left text-sm">
-            <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+            <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
               <tr>
                 <th className="px-4 py-3">Creator</th>
                 <th className="px-4 py-3">Platform</th>
@@ -180,14 +180,14 @@ export default function InfluencersPage() {
                 <th className="px-4 py-3">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-border/40">
               {filtered.map((inf) => (
-                <tr key={inf.id} className="hover:bg-slate-50">
+                <tr key={inf.id} className="hover:bg-muted">
                   <td className="px-4 py-3">
-                    <Link href={`/influencers/${inf.id}`} className="font-medium text-teal-800 hover:underline">
+                    <Link href={`/influencers/${inf.id}`} className="font-medium text-primary hover:underline">
                       {inf.name}
                     </Link>
-                    <div className="text-xs text-slate-500">{inf.platforms[0]?.handle}</div>
+                    <div className="text-xs text-muted-foreground">{inf.platforms[0]?.handle}</div>
                   </td>
                   <td className="px-4 py-3">{PLATFORM_LABELS[inf.platforms[0]?.platform]}</td>
                   <td className="px-4 py-3">{inf.city}</td>
@@ -217,13 +217,13 @@ function InfluencerCard({ influencer }: { influencer: Influencer }) {
           {influencer.avatarInitials}
         </div>
         <div className="min-w-0 flex-1">
-          <Link href={`/influencers/${influencer.id}`} className="text-sm font-semibold text-slate-900 hover:text-teal-800">
+          <Link href={`/influencers/${influencer.id}`} className="text-sm font-semibold text-foreground hover:text-primary">
             {influencer.name}
           </Link>
-          <div className="mt-0.5 text-xs text-slate-500">
+          <div className="mt-0.5 text-xs text-muted-foreground">
             {PLATFORM_LABELS[primary.platform]} · {primary.handle}
           </div>
-          <div className="mt-1 text-xs text-slate-500">
+          <div className="mt-1 text-xs text-muted-foreground">
             {influencer.city}, {influencer.country}
           </div>
         </div>
@@ -236,7 +236,7 @@ function InfluencerCard({ influencer }: { influencer: Influencer }) {
         ))}
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-3 text-xs text-slate-600">
+      <div className="mt-4 grid grid-cols-2 gap-3 text-xs text-muted-foreground">
         <div>Languages: {influencer.languages.map((l) => LANGUAGE_LABELS[l]).join(", ")}</div>
         <div>Followers: {formatNumber(influencer.followers)}</div>
         <div>Avg views: {formatNumber(influencer.avgViews)}</div>
@@ -245,7 +245,7 @@ function InfluencerCard({ influencer }: { influencer: Influencer }) {
         <div><Badge tone={influencer.verificationStatus}>{influencer.verificationStatus}</Badge></div>
       </div>
 
-      <div className="mt-5 border-t border-slate-100 pt-4">
+      <div className="mt-5 border-t border-border/40 pt-4">
         <AddToShortlistButton influencer={influencer} />
       </div>
     </Card>

@@ -38,7 +38,7 @@ export default function CreatorSubmissionsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">Submissions</h1>
-        <p className="mt-1 text-sm text-slate-500">Upload draft / private review link, then publish after approval.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Upload draft / private review link, then publish after approval.</p>
       </div>
 
       <Card>
@@ -55,7 +55,7 @@ export default function CreatorSubmissionsPage() {
           <Field label="Draft URL"><Input value={draftUrl} onChange={(e) => setDraftUrl(e.target.value)} /></Field>
           <Field label="Private review link"><Input value={reviewLink} onChange={(e) => setReviewLink(e.target.value)} /></Field>
         </div>
-        <div className="border-t border-slate-100 px-5 py-4">
+        <div className="border-t border-border/40 px-5 py-4">
           <Button
             disabled={!selected}
             onClick={() => {
@@ -84,7 +84,7 @@ export default function CreatorSubmissionsPage() {
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <div className="font-medium">{marketplace.getCampaign(s.campaignId)?.name}</div>
-                <div className="mt-1 text-xs text-slate-500">
+                <div className="mt-1 text-xs text-muted-foreground">
                   Draft: {s.draftUrl || "—"} · Review: {s.privateReviewLink || "—"}
                 </div>
               </div>
@@ -100,10 +100,10 @@ export default function CreatorSubmissionsPage() {
                 {s.status}
               </Badge>
             </div>
-            {s.caption ? <p className="mt-2 text-sm text-slate-700">{s.caption}</p> : null}
+            {s.caption ? <p className="mt-2 text-sm text-foreground">{s.caption}</p> : null}
             <div className="mt-3 space-y-2">
               {s.feedback.map((f) => (
-                <div key={f.id} className="rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-600">
+                <div key={f.id} className="rounded-lg bg-muted px-3 py-2 text-xs text-muted-foreground">
                   <span className="font-medium capitalize">{f.authorRole}</span>: {f.message}
                 </div>
               ))}
@@ -137,7 +137,7 @@ export default function CreatorSubmissionsPage() {
               </div>
             ) : null}
             {s.publicationUrl ? (
-              <div className="mt-3 text-sm text-emerald-700">Published: {s.publicationUrl}</div>
+              <div className="mt-3 text-sm text-emerald-500">Published: {s.publicationUrl}</div>
             ) : null}
           </Card>
         ))}
