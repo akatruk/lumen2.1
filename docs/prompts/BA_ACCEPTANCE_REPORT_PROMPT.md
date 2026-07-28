@@ -2,7 +2,9 @@
 
 Скопируй блок ниже целиком в агента / BA. Цель: **не «пощупать UI»**, а **верифицировать end-to-end бизнес-ценность** live-демо и сдать структурированный отчёт.
 
-Связанные файлы: `BUSINESS_FLOW_PROMPT.md`, `NEXT_BUILD_PROMPT.md`, `docs/MANUAL_QA_PRODUCT_SCAN.md`, `docs/MANUAL_QA_DISCOVERY.md`, `CHANGELOG.md`.
+Связанные файлы: `BUSINESS_FLOW_PROMPT.md`, `NEXT_BUILD_PROMPT.md`, `CHANGELOG.md`, отчёты в `docs/reports/BA_ACCEPTANCE_*.md`.
+
+Последний прогон: `docs/reports/BA_ACCEPTANCE_2026-07-28_v045.md` (health **0.4.5**, `mode=live-capable`).
 
 ---
 
@@ -15,8 +17,9 @@
 Провести независимую приёмку LIVE-демо и собрать жёсткий отчёт «что реально работает / что имитация / что блокер для пилота». Не продавай продукт. Не пересказывай roadmap. Проверяй фактами.
 
 LIVE
-- URL: http://167.71.206.43:3000
-- Health: http://167.71.206.43:3000/api/health  (ожидай version ≥ 0.3.5, mode=demo)
+- Public HTTPS: https://influencers.lumen.universalgravity.org  (auth cookies Secure — основной клиентский URL)
+- Ops HTTP: http://167.71.206.43:3000
+- Health: /api/health  (ожидай version ≥ 0.4.5; mode может быть live-capable, не demo)
 - Presentation (EN/ZH видео): /presentation
 - Creator portal: /creator
 
@@ -61,7 +64,7 @@ NORTH STAR (эталон бизнес-флоу — сверяй с ним каж
 2. CARD-RANKED DISCOVER  (ядро P2)
 - [ ] Без выбранного продукта Search & rank недоступен / ошибка
 - [ ] С карточкой Soi 11: Search & rank → список со score + ≥2 reasons
-- [ ] Food/bangkok креаторы выше beauty / real-estate (зафиксируй top-3 scores)
+- [ ] Food/bangkok креаторы выше beauty / real-estate (зафиксируй top-3 scores) — при live TikHub: зафиксируй top-3 и тематику выдачи
 - [ ] Открыть dossier: identity / reach / topics / style / audience / safety / evidence
 - [ ] Add to catalog → появляется в Influencers после reload (localStorage ok, но отметь)
 - [ ] Product detail → Find matches открывает Discover с тем же productId
@@ -69,6 +72,7 @@ NORTH STAR (эталон бизнес-флоу — сверяй с ним каж
 3. COLLABORATION (фаза 2 demo)
 - [ ] Invite / Reviews / Creator portal: accept → brief → draft → approve → publish URL path
 - [ ] Понятно ли бизнесу, что это ещё НЕ мини-контракт и НЕ payments?
+- [ ] Если заявлен server persist: проверить HTTPS login + /api/invitations + /api/briefs
 
 4. PRESENTATION / ДЕМО-МАТЕРИАЛЫ
 - [ ] /presentation: EN видео играет, вкладка 中文 играет
@@ -83,7 +87,7 @@ NORTH STAR (эталон бизнес-флоу — сверяй с ним каж
 Явно классифицируй:
 - Demo scan (heuristic / не live LLM+OCR) — да/нет
 - Demo TikTok connector (не live TikHub) — да/нет
-- Persistence = localStorage — да/нет
+- Persistence = localStorage — да/нет / partial
 - Auth / multi-tenant — есть/нет
 - Payments / escrow / юр. контракт — есть/нет
 - Live Lumen Analysis API — подключен/mock
@@ -126,6 +130,9 @@ ID | Severity (P0/P1/P2) | Где | Repro | Бизнес-импакт | Реко
 ## 9. Приложения
 Ссылки/скриншоты, scores top-3, текст health JSON, commit/version если видно.
 
+## 10. Сверка было → стало (если есть предыдущий BA)
+Таблица: критерий | было | стало
+
 ТОН
 - Русский, деловой, жёсткий, без воды.
 - Эксперту: конкретные URL, поля, числа.
@@ -136,15 +143,5 @@ ID | Severity (P0/P1/P2) | Где | Repro | Бизнес-импакт | Реко
 1) health JSON
 2) полный проход Soi 11: scan → save → Discover → rank → dossier
 3) сразу черновик вердикта, потом таблицы.
-```
-
----
-
-## Короткий follow-up (если нужен только отчёт по уже пройденному QA)
-
-```text
-На основе live http://167.71.206.43:3000 (health 0.3.5), docs/MANUAL_QA_PRODUCT_SCAN.md,
-docs/MANUAL_QA_DISCOVERY.md и CHANGELOG собери финальный BA-отчёт в формате выше.
-Явно отдели: (1) подтверждено ручным/smoke QA, (2) подтверждено только кодом/доками, (3) не проверено.
-Вердикт: можно ли показывать инвестору core-flow scan → card → ranked Discover, с какими caveats.
+Сохрани отчёт в docs/reports/ и обнови этот промпт при смене ожиданий health/mode.
 ```

@@ -7,9 +7,21 @@ type RawAuthor = {
   unique_id?: string;
   nickname?: string;
   uid?: string;
+  id?: string;
   signature?: string;
   followerCount?: number;
   follower_count?: number;
+};
+
+/** TikTok web search puts reach on the item, not on `author`. */
+type RawAuthorStats = {
+  followerCount?: number | string;
+  follower_count?: number | string;
+  followingCount?: number | string;
+  heartCount?: number | string;
+  videoCount?: number | string;
+  diggCount?: number | string;
+  heart?: number | string;
 };
 
 type RawItem = {
@@ -18,6 +30,9 @@ type RawItem = {
   desc?: string;
   share_url?: string;
   author?: RawAuthor;
+  authorStats?: RawAuthorStats;
+  authorStatsV2?: RawAuthorStats;
+  author_stats?: RawAuthorStats;
   stats?: { playCount?: number; diggCount?: number; commentCount?: number; shareCount?: number };
   statistics?: {
     play_count?: number;
@@ -91,7 +106,21 @@ function coverOf(v: RawItem): string {
   return c?.url_list?.[0] ?? "";
 }
 
-function normalizeItem(v: RawItem): TikHubVideoHit | null {
+function followersOf(v: RawItem, author: RawAuthor): number {
+  // Live TikHub `fetch_general_search` / web search: authorStats.followerCount
+  // (author itself has no follower fields — that was why Discover showed 0).
+  return num(
+    v.authorStats?.followerCount,
+    v.authorStatsV2?.followerCount,
+    v.author_stats?.followerCount,
+    v.author_stats?.follower_count,
+    author.followerCount,
+    author.follower_count,
+  );
+}
+
+/** Exported for fixture checks — maps one TikHub video item → hit or null. */
+export function normalizeTikHubItem(v: RawItem): TikHubVideoHit | null {
   const author = v.author ?? {};
   const uniqueId = String(author.uniqueId ?? author.unique_id ?? "").replace(/^@/, "");
   const id = String(v.id ?? v.aweme_id ?? "");
@@ -109,10 +138,14 @@ function normalizeItem(v: RawItem): TikHubVideoHit | null {
     shares: num(v.stats?.shareCount, v.statistics?.share_count),
     authorUniqueId: uniqueId,
     authorNickname: String(author.nickname ?? uniqueId),
-    authorUid: String(author.uid ?? uniqueId),
-    followers: num(author.followerCount, author.follower_count),
+    authorUid: String(author.uid ?? author.id ?? uniqueId),
+    followers: followersOf(v, author),
     bio: String(author.signature ?? ""),
   };
+}
+
+function normalizeItem(v: RawItem): TikHubVideoHit | null {
+  return normalizeTikHubItem(v);
 }
 
 export async function fetchTikTokSearchVideos(keyword: string, count = 20): Promise<TikHubVideoHit[]> {
@@ -224,7 +257,8 @@ export function videosToCandidates(
       (((agg.likes + agg.comments + agg.shares) / totalViews) * 100).toFixed(2),
     );
     const followers = agg.hit.followers;
-    if (minFollowers > 0 && followers > 0 && followers < minFollowers) continue;
+    // Prefer real counts: skip when known-below threshold; keep unknown (0) only if min=0.
+    if (minFollowers > 0 && (followers <= 0 || followers < minFollowers)) continue;
 
     const color = COLORS[Math.abs(hash(uniqueId)) % COLORS.length]!;
     candidates.push({

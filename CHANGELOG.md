@@ -2,6 +2,14 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.4.6] — 2026-07-28
+
+### Fixed — TikHub followers/reach mapping (BA P1)
+
+- Root cause: TikHub web search returns reach on `item.authorStats.followerCount` / `authorStatsV2`, not on `author.followerCount` (always absent → Discover showed **0**).
+- `normalizeTikHubItem` now reads authorStats (+ V2 / snake_case fallbacks); minFollowers filter treats unknown `0` as fail when threshold > 0.
+- Fixture: `web/src/server/tikhub.followers.fixture.ts`. Health `0.4.6`.
+
 ## [0.4.5] — 2026-07-28
 
 ### Changed — Presentation demo videos remaster (live stack)
