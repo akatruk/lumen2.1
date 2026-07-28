@@ -4,16 +4,10 @@ import type {
   ProductResumeCard,
   ProductScanMaterials,
 } from "@/types";
-
-const OVERCLAIM_PATTERNS: { re: RegExp; claim: string }[] = [
-  { re: /guaranteed\s+roi|risk[-\s]?free\s+invest/i, claim: "Guaranteed ROI / risk-free investment" },
-  { re: /michelin\s+guaranteed|guaranteed\s+michelin/i, claim: "Michelin guaranteed" },
-  { re: /healthiest|cures?|medical\s+treatment|whitening/i, claim: "Medical / whitening / healthiest claims" },
-  { re: /visa\s+guarantee/i, claim: "Visa guarantee" },
-];
+import { calibrateResumeConfidence, extractProhibitionsFromBrief, uniqStrings } from "@/lib/product-claims";
 
 function uniq(arr: string[]): string[] {
-  return [...new Set(arr.map((s) => s.trim()).filter(Boolean))];
+  return uniqStrings(arr);
 }
 
 function clipPitch(s: string, max = 240): string {
@@ -74,7 +68,7 @@ function detectTopics(text: string, photos: string[]): string[] {
 }
 
 function detectOverclaims(text: string): string[] {
-  return OVERCLAIM_PATTERNS.filter((p) => p.re.test(text)).map((p) => p.claim);
+  return extractProhibitionsFromBrief(text);
 }
 
 function looksLikeSoi11(text: string): boolean {
@@ -240,8 +234,26 @@ export const productScan = {
     };
 
     card.missing_fields = emptyMissing(card);
-    const filled = 12 - card.missing_fields.length;
-    card.confidence = Math.max(0.35, Math.min(0.88, filled / 12 + (brief.length > 80 ? 0.1 : 0)));
+    const filledCore = [
+      Boolean(card.name),
+      Boolean(card.brand),
+      Boolean(card.category),
+      Boolean(card.pitch),
+      card.geography.length > 0,
+      Boolean(card.audience),
+      card.desired_topics.length > 0,
+      card.languages.length > 0,
+      card.benefits.length > 0,
+      card.prohibited_claims.length > 0,
+    ].filter(Boolean).length;
+    card.confidence = calibrateResumeConfidence({
+      filledCoreFields: filledCore,
+      coreFieldCount: 10,
+      briefLength: brief.length,
+      prohibitedCount: card.prohibited_claims.length,
+      photoCount: photos.length,
+      missingCount: card.missing_fields.length,
+    });
 
     return card;
   },

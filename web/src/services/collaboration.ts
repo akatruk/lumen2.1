@@ -9,7 +9,7 @@ import type {
   SubmissionStatus,
 } from "@/types";
 import { loadJson, saveJson } from "@/lib/storage";
-import { marketplace } from "@/services/marketplace";
+import { marketplace, influencerIdsMatch } from "@/services/marketplace";
 
 const KEYS = {
   claims: "lumen.claims",
@@ -178,7 +178,9 @@ export const collaboration = {
 
   listBriefs(filter?: { influencerId?: string; campaignId?: string }) {
     return getBriefs()
-      .filter((b) => !filter?.influencerId || b.influencerId === filter.influencerId)
+      .filter(
+        (b) => !filter?.influencerId || influencerIdsMatch(b.influencerId, filter.influencerId),
+      )
       .filter((b) => !filter?.campaignId || b.campaignId === filter.campaignId)
       .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   },
@@ -257,7 +259,9 @@ export const collaboration = {
 
   listSubmissions(filter?: { influencerId?: string; campaignId?: string; status?: SubmissionStatus }) {
     return getSubmissions()
-      .filter((s) => !filter?.influencerId || s.influencerId === filter.influencerId)
+      .filter(
+        (s) => !filter?.influencerId || influencerIdsMatch(s.influencerId, filter.influencerId),
+      )
       .filter((s) => !filter?.campaignId || s.campaignId === filter.campaignId)
       .filter((s) => !filter?.status || s.status === filter.status)
       .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));

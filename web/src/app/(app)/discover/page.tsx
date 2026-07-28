@@ -288,7 +288,7 @@ export default function DiscoverPage() {
                         {Math.round(m.confidence * 100)}%
                       </div>
                       <ul className="mt-2 space-y-0.5 text-[11px] text-muted-foreground">
-                        {m.reasons.slice(0, 2).map((r) => (
+                        {m.reasons.slice(0, 4).map((r) => (
                           <li key={r}>· {r}</li>
                         ))}
                       </ul>

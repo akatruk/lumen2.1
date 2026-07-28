@@ -37,6 +37,31 @@ const KEYS = {
   discoveredInfluencers: "lumen.discoveredInfluencers",
 } as const;
 
+/** Resolve disc-tt-* ↔ inf-disc-tt-* so invites/Act-as share one identity. */
+export function influencerIdAliases(id: string): Set<string> {
+  const out = new Set<string>([id]);
+  if (id.startsWith("disc-")) {
+    out.add(`inf-disc-${id.slice("disc-".length)}`);
+    out.add(`inf-${id}`);
+  }
+  if (id.startsWith("inf-disc-")) {
+    out.add(`disc-${id.slice("inf-disc-".length)}`);
+  }
+  if (id.startsWith("inf-disc-tt-")) {
+    out.add(id.replace(/^inf-disc-tt-/, "disc-tt-"));
+  }
+  if (id.startsWith("disc-tt-")) {
+    out.add(id.replace(/^disc-tt-/, "inf-disc-tt-"));
+  }
+  return out;
+}
+
+export function influencerIdsMatch(a: string, b: string): boolean {
+  if (a === b) return true;
+  const aliases = influencerIdAliases(a);
+  return aliases.has(b) || [...influencerIdAliases(b)].some((x) => aliases.has(x));
+}
+
 const defaultSettings: AppSettings = {
   locale: "en",
   defaultVideosToAnalyze: 5,
@@ -261,7 +286,13 @@ export const marketplace = {
   },
 
   getInfluencer(id: string): Influencer | undefined {
-    return this.listInfluencers().find((i) => i.id === id);
+    const list = this.listInfluencers();
+    const direct = list.find((i) => i.id === id);
+    if (direct) return direct;
+
+    // Live Discover candidate ids (disc-tt-*) ↔ catalog ids (inf-disc-tt-*).
+    const aliases = influencerIdAliases(id);
+    return list.find((i) => aliases.has(i.id));
   },
 
   rankForProduct(productId: string): Influencer[] {

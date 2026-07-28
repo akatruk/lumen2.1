@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { collaboration } from "@/services/collaboration";
-import { marketplace } from "@/services/marketplace";
+import { influencerIdsMatch, marketplace } from "@/services/marketplace";
 import type { CampaignBrief, Invitation, Submission } from "@/types";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -18,7 +18,7 @@ export default function CreatorHomePage() {
   useEffect(() => {
     const id = collaboration.getCreatorSession()?.influencerId ?? "inf-1";
     setInfluencerId(id);
-    setInvites(marketplace.listInvitations().filter((i) => i.influencerId === id));
+    setInvites(marketplace.listInvitations().filter((i) => influencerIdsMatch(i.influencerId, id)));
     setBriefs(collaboration.listBriefs({ influencerId: id }));
     setSubs(collaboration.listSubmissions({ influencerId: id }));
   }, []);

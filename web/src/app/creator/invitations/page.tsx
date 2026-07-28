@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { collaboration } from "@/services/collaboration";
-import { marketplace } from "@/services/marketplace";
+import { influencerIdsMatch, marketplace } from "@/services/marketplace";
 import type { Invitation } from "@/types";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -16,7 +16,7 @@ export default function CreatorInvitationsPage() {
 
   const refresh = () => {
     const id = collaboration.getCreatorSession()?.influencerId ?? "inf-1";
-    setInvites(marketplace.listInvitations().filter((i) => i.influencerId === id));
+    setInvites(marketplace.listInvitations().filter((i) => influencerIdsMatch(i.influencerId, id)));
   };
 
   useEffect(() => {

@@ -171,22 +171,19 @@ export function rankCandidatesForCard(
       ),
     );
 
-    const reasons: string[] = [];
-    if (topicHits.length) {
-      reasons.push(`Topic overlap: ${topicHits.slice(0, 3).join(", ")}`);
-    }
-    if (cityHit) reasons.push(`Geo fit: ${c.city} matches card geography`);
-    if (langHits) reasons.push(`Language overlap: ${langs.filter((l) => langSet.has(l)).join(", ")}`);
-    if (Number.isFinite(engagementRate) && engagementRate >= 4) {
-      reasons.push(`Solid engagement (${engagementRate}% ER)`);
-    }
-    if (reasons.length < 2) {
-      const reachK = Number.isFinite(followers) ? Math.round(followers / 1000) : 0;
-      reasons.push(`Reach ${reachK}k followers on TikTok`);
-    }
-    if (reasons.length < 2) {
-      reasons.push("Limited overlap signals — review dossier before outreach");
-    }
+    const reasons = buildMatchReasons({
+      topicHits,
+      city: String(c.city ?? ""),
+      cityHit,
+      langs,
+      langHits,
+      langSet,
+      followers,
+      avgViews,
+      engagementRate,
+      bio: String(c.bio ?? ""),
+      nicheTopics: cTopics.filter((t) => !topicHits.includes(t)),
+    });
     if (hardFail) {
       risks.push("Weak fit — low topic/geo alignment");
     }
@@ -204,13 +201,99 @@ export function rankCandidatesForCard(
       candidate: c,
       score: hardFail ? Math.min(score, 48) : score,
       confidence: Number(confidence.toFixed(2)),
-      reasons: reasons.slice(0, 4),
+      reasons,
       risks,
       breakdown,
     });
   }
 
   return ranked.sort((a, b) => b.score - a.score);
+}
+
+function formatCompact(n: number): string {
+  if (!Number.isFinite(n) || n <= 0) return "0";
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(n >= 10_000_000 ? 0 : 1).replace(/\.0$/, "")}M`;
+  if (n >= 1_000) return `${Math.round(n / 1000)}k`;
+  return String(Math.round(n));
+}
+
+/** Prefer differentiating signals (reach/ER/views/lang/niche), not only topic+geo. */
+function buildMatchReasons(input: {
+  topicHits: string[];
+  city: string;
+  cityHit: boolean;
+  langs: string[];
+  langHits: number;
+  langSet: Set<string>;
+  followers: number;
+  avgViews: number;
+  engagementRate: number;
+  bio: string;
+  nicheTopics: string[];
+}): string[] {
+  const pool: { priority: number; text: string }[] = [];
+
+  if (input.topicHits.length) {
+    pool.push({
+      priority: 100,
+      text: `Topic overlap: ${input.topicHits.slice(0, 3).join(", ")}`,
+    });
+  }
+  // Differentiating metrics before shared geo — otherwise every card looks identical.
+  if (Number.isFinite(input.followers) && input.followers > 0) {
+    pool.push({
+      priority: 92,
+      text: `Reach ${formatCompact(input.followers)} followers on TikTok`,
+    });
+  }
+  if (Number.isFinite(input.engagementRate) && input.engagementRate > 0) {
+    const tone =
+      input.engagementRate >= 6 ? "Strong" : input.engagementRate >= 3 ? "Solid" : "Modest";
+    pool.push({
+      priority: 90,
+      text: `${tone} engagement (${input.engagementRate}% ER)`,
+    });
+  }
+  if (Number.isFinite(input.avgViews) && input.avgViews > 0) {
+    pool.push({
+      priority: 88,
+      text: `Avg views ${formatCompact(input.avgViews)} on recent posts`,
+    });
+  }
+  if (input.cityHit && input.city) {
+    pool.push({ priority: 86, text: `Geo fit: ${input.city} matches card geography` });
+  }
+  if (input.langHits > 0) {
+    const hit = input.langs.filter((l) => input.langSet.has(l));
+    pool.push({ priority: 70, text: `Language overlap: ${hit.join(", ")}` });
+  }
+  if (input.nicheTopics.length) {
+    pool.push({
+      priority: 60,
+      text: `Niche signals: ${input.nicheTopics.slice(0, 2).join(", ")}`,
+    });
+  } else {
+    const bio = input.bio.toLowerCase();
+    const niches: string[] = [];
+    if (/food|eat|restaurant|cafe|กิน/.test(bio)) niches.push("food content");
+    if (/travel|เที่ยว|bkk|bangkok/.test(bio)) niches.push("travel/local");
+    if (/nightlife|bar|cocktail/.test(bio)) niches.push("nightlife");
+    if (niches.length) {
+      pool.push({ priority: 55, text: `Bio niche: ${niches.slice(0, 2).join(", ")}` });
+    }
+  }
+
+  pool.sort((a, b) => b.priority - a.priority);
+  const out: string[] = [];
+  for (const p of pool) {
+    if (out.includes(p.text)) continue;
+    out.push(p.text);
+    if (out.length >= 4) break;
+  }
+  if (out.length < 2) {
+    out.push("Limited overlap signals — review dossier before outreach");
+  }
+  return out;
 }
 
 export function buildSearchQueryFromCard(card: ProductResumeCard): {

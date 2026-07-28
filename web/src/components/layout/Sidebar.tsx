@@ -23,6 +23,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { ModeBadge } from "@/components/layout/ModeBadge";
 
 const nav = [
   { href: "/", key: "dashboard" as const, icon: LayoutDashboard },
@@ -113,8 +114,8 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
         >
           Open creator portal →
         </Link>
-        <div className="flex items-center justify-between">
-          <span className="font-mono text-[10px] text-muted-foreground">Demo · mock data</span>
+        <div className="flex items-center justify-between gap-2">
+          <ModeBadge />
           <ThemeToggle />
         </div>
       </div>

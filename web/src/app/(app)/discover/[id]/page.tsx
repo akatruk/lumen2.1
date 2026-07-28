@@ -302,7 +302,15 @@ export default function DiscoverDossierPage() {
       </div>
 
       <Card>
-        <CardHeader title="Evidence" monoLabel="07" subtitle="Recent TikTok stubs (demo connector)" />
+        <CardHeader
+          title="Evidence"
+          monoLabel="07"
+          subtitle={
+            d.source === "tikhub"
+              ? "Recent TikTok evidence (TikHub live)"
+              : "Recent TikTok stubs (demo connector)"
+          }
+        />
         <div className="divide-y divide-border/40">
           {d.evidence.length ? (
             d.evidence.map((e) => (

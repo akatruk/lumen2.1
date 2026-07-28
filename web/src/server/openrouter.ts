@@ -1,6 +1,11 @@
 import "server-only";
 import type { ProductResumeCard, ProductScanMaterials, LanguageCode, Platform } from "@/types";
 import { openrouterConfig } from "./env";
+import {
+  calibrateResumeConfidence,
+  extractProhibitionsFromBrief,
+  uniqStrings,
+} from "@/lib/product-claims";
 
 const SYSTEM = `You extract a Product Resume Card for an influencer marketplace (Thailand pilot).
 Return ONLY valid JSON matching this schema:
@@ -23,7 +28,9 @@ Return ONLY valid JSON matching this schema:
   "missing_fields": string[],
   "evidence_notes": string[]
 }
-Rules: extract, do not invent prices/ROI/medical/Michelin guarantees. Prefer th+en languages. Default platform tiktok. Unknown → missing_fields + lower confidence.`;
+Rules: extract, do not invent prices/ROI/medical/Michelin guarantees. Prefer th+en languages. Default platform tiktok.
+Always copy explicit prohibitions from the brief (e.g. "Prohibitions:", "no medical claims", "no competitor…") into prohibited_claims — never drop them.
+Unknown → missing_fields + lower confidence. Confidence must reflect completeness (rich brief with name/brand/geo/topics/prohibitions → typically 0.75–0.9).`;
 
 function clipPitch(s: string, max = 240): string {
   const t = s.replace(/\s+/g, " ").trim();
@@ -46,6 +53,12 @@ function normalizeCard(raw: Record<string, unknown>, materials: ProductScanMater
   );
   const budgetRaw = (raw.budget ?? {}) as Record<string, unknown>;
   const budgetType = String(budgetRaw.type ?? "unknown");
+  const briefBlob = [materials.briefText, materials.notes, materials.url].filter(Boolean).join("\n");
+  const prohibited = uniqStrings([
+    ...asStringArray(raw.prohibited_claims),
+    ...extractProhibitionsFromBrief(briefBlob),
+  ]);
+
   const card: ProductResumeCard = {
     name: String(raw.name ?? "").trim() || "Untitled product",
     brand: String(raw.brand ?? "").trim() || "Unknown brand",
@@ -55,7 +68,7 @@ function normalizeCard(raw: Record<string, unknown>, materials: ProductScanMater
     audience: String(raw.audience ?? "").trim(),
     languages: langs.length ? langs : ["en", "th"],
     benefits: asStringArray(raw.benefits).slice(0, 5),
-    prohibited_claims: asStringArray(raw.prohibited_claims),
+    prohibited_claims: prohibited,
     desired_topics: asStringArray(raw.desired_topics).length
       ? asStringArray(raw.desired_topics)
       : ["lifestyle"],
@@ -70,7 +83,7 @@ function normalizeCard(raw: Record<string, unknown>, materials: ProductScanMater
     success_metrics: asStringArray(raw.success_metrics).length
       ? asStringArray(raw.success_metrics)
       : ["views", "likes", "comments"],
-    confidence: Math.max(0.2, Math.min(0.95, Number(raw.confidence) || 0.55)),
+    confidence: 0.55,
     missing_fields: asStringArray(raw.missing_fields),
     evidence_notes: asStringArray(raw.evidence_notes),
     scannedAt: new Date().toISOString(),
@@ -80,6 +93,33 @@ function normalizeCard(raw: Record<string, unknown>, materials: ProductScanMater
   if (card.budget.type === "unknown") {
     card.missing_fields = [...new Set([...card.missing_fields, "budget"])];
   }
+  // Drop LLM "missing" noise for fields we already filled from materials.
+  card.missing_fields = card.missing_fields.filter((f) => {
+    if (f === "briefText" || f === "photoNames" || f === "notes") return false;
+    return true;
+  });
+
+  const core = [
+    card.name && card.name !== "Untitled product",
+    card.brand && card.brand !== "Unknown brand",
+    card.category && card.category !== "Product",
+    Boolean(card.pitch),
+    card.geography.length > 0,
+    Boolean(card.audience),
+    card.desired_topics.length > 0,
+    card.languages.length > 0,
+    card.benefits.length > 0,
+    card.prohibited_claims.length > 0,
+  ];
+  card.confidence = calibrateResumeConfidence({
+    llmConfidence: Number(raw.confidence),
+    filledCoreFields: core.filter(Boolean).length,
+    coreFieldCount: core.length,
+    briefLength: (materials.briefText ?? "").length,
+    prohibitedCount: card.prohibited_claims.length,
+    photoCount: materials.photoNames?.length ?? 0,
+    missingCount: card.missing_fields.length,
+  });
   return card;
 }
 

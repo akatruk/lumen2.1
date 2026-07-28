@@ -2,6 +2,16 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.4.7] — 2026-07-28
+
+### Fixed / improved — BA P1 honesty + match reasons + creator Act-as + card quality
+
+- **Mode badge:** sidebar/creator show `Live · TikHub + LLM` when live-capable (no more false `Demo · mock data`).
+- **Match reasons:** ranker prefers reach / ER / avg views / lang / niche; Discover UI shows up to **4** reasons (was 2 → identical topic+geo).
+- **Creator Act-as:** discovered `inf-disc-tt-*` listed first as `[TikHub]`; `disc-tt-*` ↔ catalog id aliases for invites/briefs.
+- **Resume card:** merge brief prohibitions into `prohibited_claims`; calibrate confidence from filled fields (not LLM self-score alone).
+- Dossier Evidence subtitle reflects TikHub vs demo source.
+
 ## [0.4.6] — 2026-07-28
 
 ### Fixed — TikHub followers/reach mapping (BA P1)

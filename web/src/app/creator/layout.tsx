@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   FileText,
   Inbox,
@@ -16,10 +16,12 @@ import {
 import { cn } from "@/lib/utils";
 import { collaboration } from "@/services/collaboration";
 import { marketplace } from "@/services/marketplace";
+import type { Influencer } from "@/types";
 import { ToastProvider } from "@/components/Toast";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Field";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { ModeBadge } from "@/components/layout/ModeBadge";
 
 const nav = [
   { href: "/creator", label: "Home", icon: LayoutDashboard },
@@ -29,21 +31,47 @@ const nav = [
   { href: "/creator/claim", label: "Claim profile", icon: Shield },
 ];
 
+function isDiscovered(inf: Influencer): boolean {
+  return (
+    inf.id.includes("disc") ||
+    /discovered/i.test(inf.notes ?? "") ||
+    /tikhub/i.test(inf.notes ?? "")
+  );
+}
+
+function sortActAs(list: Influencer[]): Influencer[] {
+  return [...list].sort((a, b) => {
+    const ad = isDiscovered(a) ? 0 : 1;
+    const bd = isDiscovered(b) ? 0 : 1;
+    if (ad !== bd) return ad - bd;
+    return b.matchScore - a.matchScore;
+  });
+}
+
 export default function CreatorLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const influencers = marketplace.listInfluencers();
+  const [influencers, setInfluencers] = useState<Influencer[]>([]);
 
   useEffect(() => {
-    setSessionId(collaboration.getCreatorSession()?.influencerId ?? "inf-1");
-    if (!collaboration.getCreatorSession()) {
-      collaboration.setCreatorSession("inf-1");
+    setInfluencers(sortActAs(marketplace.listInfluencers()));
+    const existing = collaboration.getCreatorSession()?.influencerId;
+    if (existing && marketplace.getInfluencer(existing)) {
+      setSessionId(existing);
+      return;
     }
-  }, []);
+    const discovered = sortActAs(marketplace.listInfluencers()).find(isDiscovered);
+    const fallback = discovered?.id ?? "inf-1";
+    collaboration.setCreatorSession(fallback);
+    setSessionId(fallback);
+  }, [pathname]);
 
-  const me = sessionId ? marketplace.getInfluencer(sessionId) : undefined;
+  const me = useMemo(
+    () => (sessionId ? marketplace.getInfluencer(sessionId) : undefined),
+    [sessionId, influencers],
+  );
 
   const shell = (
     <div className="flex h-full flex-col">
@@ -67,16 +95,22 @@ export default function CreatorLayout({ children }: { children: React.ReactNode 
             }}
             aria-label="Act as creator"
           >
-            {influencers.map((inf) => (
-              <option key={inf.id} value={inf.id}>
-                {inf.name} · {inf.city}
-              </option>
-            ))}
+            {influencers.map((inf) => {
+              const handle = inf.platforms?.[0]?.handle;
+              const tag = isDiscovered(inf) ? "TikHub" : "Seed";
+              return (
+                <option key={inf.id} value={inf.id}>
+                  [{tag}] {inf.name}
+                  {handle ? ` ${handle}` : ""} · {inf.city}
+                </option>
+              );
+            })}
           </Select>
         </div>
         {me ? (
           <div className="mt-2 font-mono text-xs text-muted-foreground">
             Signed in as {me.name} · claim {me.claimStatus}
+            {isDiscovered(me) ? " · live catalog" : ""}
           </div>
         ) : null}
       </div>
@@ -125,7 +159,10 @@ export default function CreatorLayout({ children }: { children: React.ReactNode 
           >
             <LogOut className="h-4 w-4" /> Clear
           </Button>
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            <ModeBadge />
+            <ThemeToggle />
+          </div>
         </div>
       </div>
     </div>
