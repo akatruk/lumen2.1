@@ -41,6 +41,40 @@ jobs:
             --exclude '.DS_Store' \
             ./ "${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/"
 
+      - name: Write runtime env on droplet
+        env:
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          DISCOVERY_MODE: ${{ vars.DISCOVERY_MODE }}
+          PRODUCT_SCAN_MODE: ${{ vars.PRODUCT_SCAN_MODE }}
+          NEXT_PUBLIC_DISCOVERY_MODE: ${{ vars.NEXT_PUBLIC_DISCOVERY_MODE }}
+          NEXT_PUBLIC_PRODUCT_SCAN_MODE: ${{ vars.NEXT_PUBLIC_PRODUCT_SCAN_MODE }}
+          TIKHUB_API_KEY: ${{ secrets.TIKHUB_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+          COOKIE_SECURE: ${{ vars.COOKIE_SECURE }}
+          OPENROUTER_MODEL: ${{ vars.OPENROUTER_MODEL }}
+        run: |
+          set -euo pipefail
+          umask 077
+          cat > /tmp/lumen-marketplace.env <<EOF
+          DISCOVERY_MODE=${DISCOVERY_MODE:-demo}
+          PRODUCT_SCAN_MODE=${PRODUCT_SCAN_MODE:-demo}
+          NEXT_PUBLIC_DISCOVERY_MODE=${NEXT_PUBLIC_DISCOVERY_MODE:-demo}
+          NEXT_PUBLIC_PRODUCT_SCAN_MODE=${NEXT_PUBLIC_PRODUCT_SCAN_MODE:-demo}
+          TIKHUB_API_KEY=${TIKHUB_API_KEY:-}
+          OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+          OPENROUTER_MODEL=${OPENROUTER_MODEL:-openai/gpt-4o-mini}
+          AUTH_SECRET=${AUTH_SECRET:-change-me-in-production}
+          COOKIE_SECURE=${COOKIE_SECURE:-false}
+          EOF
+          # strip leading spaces from heredoc indent
+          sed -i 's/^[[:space:]]*//' /tmp/lumen-marketplace.env
+          scp /tmp/lumen-marketplace.env "${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/.env"
+          ssh "${DEPLOY_USER}@${DEPLOY_HOST}" "chmod 600 '${DEPLOY_PATH}/.env'"
+          rm -f /tmp/lumen-marketplace.env
+
       - name: Build and restart containers
         env:
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}

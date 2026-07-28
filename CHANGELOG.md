@@ -2,6 +2,16 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.4.1] — 2026-07-28
+
+### Fixed — Prisma schema apply on Alpine (auth/persistence)
+
+- Entrypoint calls `node …/prisma/build/index.js db push` (no broken `npx prisma`).
+- Fail hard if schema push fails; `prisma` moved to runtime deps.
+- Session cookie `Secure` only when `COOKIE_SECURE=true` (HTTP demo droplet otherwise drops auth).
+- Deploy writes droplet `.env` from GitHub secrets/vars (`TIKHUB_API_KEY`, `OPENROUTER_API_KEY`, `AUTH_SECRET`, mode vars).
+- Health `0.4.1`.
+
 ## [0.4.0] — 2026-07-28
 
 ### Added — Live TikHub, LLM product scan, brand auth + SQLite persistence

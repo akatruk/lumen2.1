@@ -4,17 +4,19 @@
 
 ## Enable live on droplet
 
-```bash
-# /opt/lumen-marketplace/.env (or export before compose)
-DISCOVERY_MODE=live
-PRODUCT_SCAN_MODE=live
-NEXT_PUBLIC_DISCOVERY_MODE=live
-NEXT_PUBLIC_PRODUCT_SCAN_MODE=live
-TIKHUB_API_KEY=...
-OPENROUTER_API_KEY=...
-AUTH_SECRET=long-random
-DATABASE_URL=file:/app/data/lumen.db
-```
+Prefer GitHub → repo **Secrets** / **Variables** (Deploy workflow writes `/opt/lumen-marketplace/.env`):
+
+| Kind | Name | Example |
+| --- | --- | --- |
+| secret | `TIKHUB_API_KEY` | TikHub token |
+| secret | `OPENROUTER_API_KEY` | OpenRouter key |
+| secret | `AUTH_SECRET` | long random |
+| var | `DISCOVERY_MODE` | `live` |
+| var | `PRODUCT_SCAN_MODE` | `live` |
+| var | `NEXT_PUBLIC_DISCOVERY_MODE` | `live` (needs rebuild) |
+| var | `NEXT_PUBLIC_PRODUCT_SCAN_MODE` | `live` (needs rebuild) |
+
+Or hand-write `/opt/lumen-marketplace/.env` then `docker compose up --build -d`.
 
 Rebuild required for `NEXT_PUBLIC_*` (baked at build). Server keys can change at runtime without rebuild.
 
@@ -31,3 +33,4 @@ Rebuild required for `NEXT_PUBLIC_*` (baked at build). Server keys can change at
 | A1 | /login register | cookie session |
 | A2 | scan save while logged in | row in /api/products |
 | A3 | logout | 401 on /api/products |
+| A4 | HTTP demo: no `COOKIE_SECURE` | Set-Cookie without Secure; session sticks |

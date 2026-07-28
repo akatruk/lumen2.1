@@ -61,10 +61,13 @@ export async function readSession(): Promise<SessionUser | null> {
 
 export async function setSessionCookie(token: string) {
   const jar = await cookies();
+  // Demo droplet is HTTP :3000 — Secure cookies would be dropped by browsers/curl.
+  // Set COOKIE_SECURE=true when serving over HTTPS.
+  const secure = process.env.COOKIE_SECURE === "true";
   jar.set(COOKIE, token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure,
     path: "/",
     maxAge: 60 * 60 * 24 * 14,
   });
