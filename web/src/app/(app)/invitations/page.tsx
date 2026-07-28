@@ -18,7 +18,7 @@ export default function InvitationsPage() {
   const refresh = () => setInvites(marketplace.listInvitations());
 
   useEffect(() => {
-    refresh();
+    void marketplace.hydrateBrandPersistence().then(() => refresh());
   }, []);
 
   return (
@@ -88,21 +88,24 @@ export default function InvitationsPage() {
                       <Button
                         size="sm"
                         onClick={() => {
-                          collaboration.createBrief({
-                            campaignId: inv.campaignId,
-                            invitationId: inv.id,
-                            influencerId: inv.influencerId,
-                            title: `${camp?.name ?? "Campaign"} brief`,
-                            deliverables: camp?.materials?.length
-                              ? camp.materials
-                              : ["1 short video", "Caption with CTA"],
-                            messaging: camp?.objective ?? "Follow campaign objective",
-                            restrictions: ["Follow brand claim guidelines"],
-                            deadline: camp?.endDate ?? "2026-08-31",
-                            approvalRules: "Draft must be approved before publishing.",
-                          });
-                          push("Brief issued to creator");
-                          refresh();
+                          void collaboration
+                            .createBriefAsync({
+                              campaignId: inv.campaignId,
+                              invitationId: inv.id,
+                              influencerId: inv.influencerId,
+                              title: `${camp?.name ?? "Campaign"} brief`,
+                              deliverables: camp?.materials?.length
+                                ? camp.materials
+                                : ["1 short video", "Caption with CTA"],
+                              messaging: camp?.objective ?? "Follow campaign objective",
+                              restrictions: ["Follow brand claim guidelines"],
+                              deadline: camp?.endDate ?? "2026-08-31",
+                              approvalRules: "Draft must be approved before publishing.",
+                            })
+                            .then(() => {
+                              push("Brief issued to creator");
+                              refresh();
+                            });
                         }}
                       >
                         Issue brief

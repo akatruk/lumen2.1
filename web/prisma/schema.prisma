@@ -9,14 +9,16 @@ generator client {
 }
 
 model User {
-  id           String     @id @default(cuid())
-  email        String     @unique
+  id           String          @id @default(cuid())
+  email        String          @unique
   passwordHash String
   name         String
-  role         String     @default("brand")
-  createdAt    DateTime   @default(now())
+  role         String          @default("brand")
+  createdAt    DateTime        @default(now())
   products     Product[]
   shortlists   Shortlist[]
+  invitations  Invitation[]
+  briefs       CampaignBrief[]
 }
 
 model Product {
@@ -52,6 +54,39 @@ model Shortlist {
   itemsJson  String   @default("[]")
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+model Invitation {
+  id           String          @id @default(cuid())
+  userId       String
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  influencerId String
+  campaignId   String
+  status       String          @default("Pending")
+  message      String
+  respondedAt  DateTime?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  briefs       CampaignBrief[]
+}
+
+model CampaignBrief {
+  id               String     @id @default(cuid())
+  userId           String
+  user             User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invitationId     String
+  invitation       Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  campaignId       String
+  influencerId     String
+  title            String
+  deliverablesJson String     @default("[]")
+  messaging        String
+  restrictionsJson String     @default("[]")
+  deadline         String
+  approvalRules    String
+  status           String     @default("Sent")
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
 }
 
 model DiscoveryCache {

@@ -196,6 +196,32 @@ export const collaboration = {
     return brief;
   },
 
+  async createBriefAsync(
+    input: Omit<CampaignBrief, "id" | "createdAt" | "status"> & { status?: CampaignBrief["status"] },
+  ): Promise<CampaignBrief> {
+    if (typeof window === "undefined") return this.createBrief(input);
+    try {
+      const auth = await fetch("/api/auth", { credentials: "same-origin" });
+      const session = (await auth.json()) as { user: unknown };
+      if (!session.user) return this.createBrief(input);
+      const res = await fetch("/api/briefs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify(input),
+      });
+      const data = (await res.json()) as { brief?: CampaignBrief; error?: string };
+      if (!res.ok || !data.brief) throw new Error(data.error || "Failed to create brief");
+      const rest = getBriefs().filter((b) => b.id !== data.brief!.id);
+      saveJson(KEYS.briefs, [data.brief, ...rest]);
+      const inf = marketplace.getInfluencer(data.brief.influencerId);
+      pushActivity("brief", `Brief issued to ${inf?.name ?? data.brief.influencerId}: ${data.brief.title}`);
+      return data.brief;
+    } catch {
+      return this.createBrief(input);
+    }
+  },
+
   acknowledgeBrief(id: string) {
     const briefs = getBriefs();
     const idx = briefs.findIndex((b) => b.id === id);
@@ -204,6 +230,29 @@ export const collaboration = {
     saveJson(KEYS.briefs, briefs);
     pushActivity("brief", `Brief acknowledged: ${briefs[idx].title}`);
     return briefs[idx];
+  },
+
+  async acknowledgeBriefAsync(id: string) {
+    if (typeof window === "undefined") return this.acknowledgeBrief(id);
+    try {
+      const auth = await fetch("/api/auth", { credentials: "same-origin" });
+      const session = (await auth.json()) as { user: unknown };
+      if (!session.user) return this.acknowledgeBrief(id);
+      const res = await fetch("/api/briefs", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({ id, status: "Acknowledged" }),
+      });
+      const data = (await res.json()) as { brief?: CampaignBrief; error?: string };
+      if (!res.ok || !data.brief) throw new Error(data.error || "Failed to acknowledge brief");
+      const rest = getBriefs().filter((b) => b.id !== data.brief!.id);
+      saveJson(KEYS.briefs, [data.brief, ...rest]);
+      pushActivity("brief", `Brief acknowledged: ${data.brief.title}`);
+      return data.brief;
+    } catch {
+      return this.acknowledgeBrief(id);
+    }
   },
 
   listSubmissions(filter?: { influencerId?: string; campaignId?: string; status?: SubmissionStatus }) {

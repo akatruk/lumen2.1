@@ -91,12 +91,14 @@ export default function InfluencerDetailPage() {
               variant="secondary"
               onClick={() => {
                 if (!campaignId) return;
-                marketplace.createInvitation({
-                  influencerId: inf.id,
-                  campaignId,
-                  message: `Collaboration invite for ${marketplace.getCampaign(campaignId)?.name ?? "campaign"}`,
-                });
-                push(`Invitation sent to ${inf.name}`);
+                void marketplace
+                  .createInvitationAsync({
+                    influencerId: inf.id,
+                    campaignId,
+                    message: `Collaboration invite for ${marketplace.getCampaign(campaignId)?.name ?? "campaign"}`,
+                  })
+                  .then(() => push(`Invitation sent to ${inf.name}`))
+                  .catch((e) => push(e instanceof Error ? e.message : "Invite failed", "err"));
               }}
             >
               Invite to campaign

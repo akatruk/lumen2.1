@@ -20,8 +20,43 @@ export default function CreatorInvitationsPage() {
   };
 
   useEffect(() => {
-    refresh();
+    void marketplace.hydrateBrandPersistence().then(() => refresh());
   }, []);
+
+  function briefPayload(inv: Invitation) {
+    const camp = marketplace.getCampaign(inv.campaignId);
+    return {
+      title: `${camp?.name ?? "Campaign"} brief`,
+      deliverables: camp?.materials?.length ? camp.materials : ["1 short video", "Caption with CTA"],
+      messaging: camp?.objective ?? "Follow campaign objective",
+      restrictions: ["Follow brand claim guidelines"],
+      deadline: camp?.endDate ?? "2026-08-31",
+      approvalRules: "Draft must be approved before publishing.",
+    };
+  }
+
+  async function accept(inv: Invitation) {
+    const existing = collaboration
+      .listBriefs({ influencerId: inv.influencerId })
+      .find((b) => b.invitationId === inv.id);
+    const payload = existing ? undefined : briefPayload(inv);
+    try {
+      await marketplace.respondInvitationAsync(inv.id, "Accepted", payload);
+      // If no brand session, async fell back to local respond only — ensure brief exists
+      if (!existing && !collaboration.listBriefs({ influencerId: inv.influencerId }).some((b) => b.invitationId === inv.id)) {
+        collaboration.createBrief({
+          campaignId: inv.campaignId,
+          invitationId: inv.id,
+          influencerId: inv.influencerId,
+          ...briefPayload(inv),
+        });
+      }
+      push("Invitation accepted — brief available");
+      refresh();
+    } catch (e) {
+      push(e instanceof Error ? e.message : "Accept failed", "err");
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -46,39 +81,20 @@ export default function CreatorInvitationsPage() {
               </div>
               {inv.status === "Pending" ? (
                 <div className="mt-4 flex gap-2">
-                  <Button
-                    size="sm"
-                    onClick={() => {
-                      marketplace.respondInvitation(inv.id, "Accepted");
-                      const existing = collaboration
-                        .listBriefs({ influencerId: inv.influencerId })
-                        .find((b) => b.invitationId === inv.id);
-                      if (!existing) {
-                        collaboration.createBrief({
-                          campaignId: inv.campaignId,
-                          invitationId: inv.id,
-                          influencerId: inv.influencerId,
-                          title: `${camp?.name ?? "Campaign"} brief`,
-                          deliverables: camp?.materials?.length ? camp.materials : ["1 short video", "Caption with CTA"],
-                          messaging: camp?.objective ?? "Follow campaign objective",
-                          restrictions: ["Follow brand claim guidelines"],
-                          deadline: camp?.endDate ?? "2026-08-31",
-                          approvalRules: "Draft must be approved before publishing.",
-                        });
-                      }
-                      push("Invitation accepted — brief available");
-                      refresh();
-                    }}
-                  >
+                  <Button size="sm" onClick={() => void accept(inv)}>
                     Accept
                   </Button>
                   <Button
                     size="sm"
                     variant="secondary"
                     onClick={() => {
-                      marketplace.respondInvitation(inv.id, "Declined");
-                      push("Invitation declined");
-                      refresh();
+                      void marketplace
+                        .respondInvitationAsync(inv.id, "Declined")
+                        .then(() => {
+                          push("Invitation declined");
+                          refresh();
+                        })
+                        .catch((e) => push(e instanceof Error ? e.message : "Decline failed", "err"));
                     }}
                   >
                     Decline

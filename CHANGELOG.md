@@ -2,6 +2,16 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.4.4] — 2026-07-28
+
+### Added — Invite + brief server persistence (BA Priority B / option A)
+
+- Prisma `Invitation` + `CampaignBrief`; `/api/invitations` + `/api/briefs` (session-gated).
+- Accept can auto-create brief; brand "Issue brief" + creator acknowledge sync when logged in.
+- `hydrateBrandPersistence` also pulls invites/briefs into localStorage (same-browser creator demo).
+- Spec: `docs/superpowers/specs/2026-07-28-invite-brief-persist-design.md`.
+- Health `0.4.4`.
+
 ## [0.4.3] — 2026-07-28
 
 ### Added — Brand persistence hydrate (products + shortlists)

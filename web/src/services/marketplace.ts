@@ -153,6 +153,10 @@ function replaceShortlists(shortlists: Shortlist[]) {
   saveJson(KEYS.shortlists, shortlists);
 }
 
+function replaceInvitations(invitations: Invitation[]) {
+  saveJson(KEYS.invitations, invitations);
+}
+
 function upsertLocalProduct(product: Product) {
   const rest = getProducts().filter((p) => p.id !== product.id);
   replaceProducts([product, ...rest]);
@@ -161,6 +165,18 @@ function upsertLocalProduct(product: Product) {
 function upsertLocalShortlist(shortlist: Shortlist) {
   const rest = getShortlists().filter((s) => s.id !== shortlist.id);
   replaceShortlists([shortlist, ...rest]);
+}
+
+function upsertLocalInvitation(invitation: Invitation) {
+  const rest = getInvitations().filter((i) => i.id !== invitation.id);
+  replaceInvitations([invitation, ...rest]);
+}
+
+function upsertLocalBrief(brief: import("@/types").CampaignBrief) {
+  const key = "lumen.briefs";
+  const existing = loadJson(key, [] as import("@/types").CampaignBrief[]);
+  const rest = existing.filter((b) => b.id !== brief.id);
+  saveJson(key, [brief, ...rest]);
 }
 
 export const marketplace = {
@@ -372,12 +388,18 @@ export const marketplace = {
     loggedIn: boolean;
     products: number;
     shortlists: number;
+    invitations: number;
+    briefs: number;
   }> {
     const session = await fetchSession();
-    if (!session) return { loggedIn: false, products: 0, shortlists: 0 };
-    const [prodRes, slRes] = await Promise.all([
+    if (!session) {
+      return { loggedIn: false, products: 0, shortlists: 0, invitations: 0, briefs: 0 };
+    }
+    const [prodRes, slRes, invRes, briefRes] = await Promise.all([
       fetch("/api/products", { credentials: "same-origin" }),
       fetch("/api/shortlists", { credentials: "same-origin" }),
+      fetch("/api/invitations", { credentials: "same-origin" }),
+      fetch("/api/briefs", { credentials: "same-origin" }),
     ]);
     if (prodRes.ok) {
       const data = (await prodRes.json()) as { products: Product[] };
@@ -387,10 +409,20 @@ export const marketplace = {
       const data = (await slRes.json()) as { shortlists: Shortlist[] };
       replaceShortlists(data.shortlists ?? []);
     }
+    if (invRes.ok) {
+      const data = (await invRes.json()) as { invitations: Invitation[] };
+      replaceInvitations(data.invitations ?? []);
+    }
+    if (briefRes.ok) {
+      const data = (await briefRes.json()) as { briefs: import("@/types").CampaignBrief[] };
+      saveJson("lumen.briefs", data.briefs ?? []);
+    }
     return {
       loggedIn: true,
       products: getProducts().length,
       shortlists: getShortlists().length,
+      invitations: getInvitations().length,
+      briefs: loadJson("lumen.briefs", [] as unknown[]).length,
     };
   },
 
@@ -594,6 +626,31 @@ export const marketplace = {
     return invitation;
   },
 
+  async createInvitationAsync(input: {
+    influencerId: string;
+    campaignId: string;
+    message?: string;
+  }): Promise<Invitation> {
+    const session = await fetchSession();
+    if (!session) return this.createInvitation(input);
+    const res = await fetch("/api/invitations", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify(input),
+    });
+    const data = (await res.json()) as { invitation?: Invitation; error?: string };
+    if (!res.ok || !data.invitation) throw new Error(data.error || "Failed to create invitation");
+    upsertLocalInvitation(data.invitation);
+    const inf = this.getInfluencer(input.influencerId);
+    const camp = this.getCampaign(input.campaignId);
+    pushActivity(
+      "invite",
+      `Invitation sent to ${inf?.name ?? input.influencerId} for ${camp?.name ?? input.campaignId}`,
+    );
+    return data.invitation;
+  },
+
   respondInvitation(id: string, status: "Accepted" | "Declined"): Invitation | undefined {
     const invites = getInvitations();
     const idx = invites.findIndex((i) => i.id === id);
@@ -607,6 +664,42 @@ export const marketplace = {
     const inf = this.getInfluencer(invites[idx].influencerId);
     pushActivity("invite", `Invitation ${status.toLowerCase()} by ${inf?.name ?? invites[idx].influencerId}`);
     return invites[idx];
+  },
+
+  async respondInvitationAsync(
+    id: string,
+    status: "Accepted" | "Declined",
+    autoBrief?: {
+      title: string;
+      deliverables?: string[];
+      messaging: string;
+      restrictions?: string[];
+      deadline: string;
+      approvalRules: string;
+    },
+  ): Promise<Invitation | undefined> {
+    const session = await fetchSession();
+    if (!session) return this.respondInvitation(id, status);
+    const res = await fetch("/api/invitations", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({ id, status, autoBrief }),
+    });
+    const data = (await res.json()) as {
+      invitation?: Invitation;
+      brief?: import("@/types").CampaignBrief;
+      error?: string;
+    };
+    if (!res.ok || !data.invitation) throw new Error(data.error || "Failed to update invitation");
+    upsertLocalInvitation(data.invitation);
+    if (data.brief) upsertLocalBrief(data.brief);
+    const inf = this.getInfluencer(data.invitation.influencerId);
+    pushActivity(
+      "invite",
+      `Invitation ${status.toLowerCase()} by ${inf?.name ?? data.invitation.influencerId}`,
+    );
+    return data.invitation;
   },
 
   listJobs(): AnalysisJob[] {

@@ -20,7 +20,7 @@ export default function CreatorBriefsPage() {
   };
 
   useEffect(() => {
-    refresh();
+    void marketplace.hydrateBrandPersistence().then(() => refresh());
   }, []);
 
   return (
@@ -58,9 +58,10 @@ export default function CreatorBriefsPage() {
               <Button
                 size="sm"
                 onClick={() => {
-                  collaboration.acknowledgeBrief(b.id);
-                  push("Brief acknowledged");
-                  refresh();
+                  void collaboration.acknowledgeBriefAsync(b.id).then(() => {
+                    push("Brief acknowledged");
+                    refresh();
+                  });
                 }}
               >
                 Acknowledge brief
