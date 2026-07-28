@@ -17,6 +17,7 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 - 2026-07-28 https://influencers.lumen.universalgravity.org — health `0.4.3`, commit `17cbc3e`.
 - Auth → product + shortlist CRUD on SQLite **PASS**; unauth 401 **PASS**.
 - Checklist: `docs/MANUAL_QA_BRAND_PERSIST.md`. BA: `docs/reports/BA_STATUS_2026-07-28_v2.md`.
+- 2026-07-28 **Live TikHub enabled** (`DISCOVERY_MODE=live`, key in GH secret): `POST /api/discovery/tiktok` query `bangkok food` → `source=tikhub`, 8 real creators **PASS**. Product scan still demo (no OpenRouter key yet).
 
 ## [0.4.2] — 2026-07-28
 
