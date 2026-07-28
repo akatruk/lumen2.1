@@ -2,6 +2,15 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.3.3] — 2026-07-28
+
+### Added — TikTok Discover (demo connector)
+
+- `/discover` in-app TikTok creator search (query + city/language/topic/followers).
+- `/discover/[id]` influencer dossier (identity, reach, topics, style, audience, safety, evidence).
+- Demo `MockTikTokConnector` + `discovery.service` (localStorage); add-to-catalog merges into Influencers.
+- Manual QA: `docs/MANUAL_QA_DISCOVERY.md`. Smoke covers `/discover`.
+
 ## [0.3.2] — 2026-07-28
 
 ### Changed — Discovery model

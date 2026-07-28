@@ -12,6 +12,7 @@ import {
   Menu,
   Package,
   Presentation,
+  Search,
   Settings,
   Shield,
   Users,
@@ -24,6 +25,7 @@ import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 const nav = [
   { href: "/", key: "dashboard" as const, icon: LayoutDashboard },
+  { href: "/discover", key: "discover" as const, icon: Search },
   { href: "/presentation", key: "presentation" as const, icon: Presentation },
   { href: "/influencers", key: "influencers" as const, icon: Users },
   { href: "/products", key: "products" as const, icon: Package },

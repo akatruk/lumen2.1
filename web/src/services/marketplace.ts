@@ -32,6 +32,7 @@ const KEYS = {
   settings: "lumen.settings",
   invitations: "lumen.invitations",
   activity: "lumen.activity",
+  discoveredInfluencers: "lumen.discoveredInfluencers",
 } as const;
 
 const defaultSettings: AppSettings = {
@@ -149,6 +150,8 @@ export const marketplace = {
       "lumen.submissions",
       "lumen.performance",
       "lumen.creatorSession",
+      "lumen.discovery.dossiers",
+      "lumen.discovery.lastSearch",
     ].forEach((key) => {
       if (typeof window !== "undefined") window.localStorage.removeItem(key);
     });
@@ -159,7 +162,7 @@ export const marketplace = {
   },
 
   getDashboard(): DashboardStats {
-    const influencers = MOCK_INFLUENCERS;
+    const influencers = this.listInfluencers();
     const shortlists = getShortlists();
     const campaigns = getCampaigns();
     const topicMap = new Map<string, number>();
@@ -181,10 +184,24 @@ export const marketplace = {
 
   listInfluencers(): Influencer[] {
     const notes = getInfluencerNotes();
-    return MOCK_INFLUENCERS.map((inf) => ({
-      ...inf,
-      notes: notes[inf.id] ?? inf.notes,
-    })).sort((a, b) => b.matchScore - a.matchScore);
+    const discovered = loadJson(KEYS.discoveredInfluencers, [] as Influencer[]);
+    const byId = new Map<string, Influencer>();
+    for (const inf of MOCK_INFLUENCERS) {
+      byId.set(inf.id, { ...inf, notes: notes[inf.id] ?? inf.notes });
+    }
+    for (const inf of discovered) {
+      byId.set(inf.id, { ...inf, notes: notes[inf.id] ?? inf.notes });
+    }
+    return [...byId.values()].sort((a, b) => b.matchScore - a.matchScore);
+  },
+
+  addInfluencer(influencer: Influencer): Influencer {
+    const list = loadJson(KEYS.discoveredInfluencers, [] as Influencer[]);
+    const without = list.filter((i) => i.id !== influencer.id);
+    without.unshift(influencer);
+    saveJson(KEYS.discoveredInfluencers, without);
+    pushActivity("import", `Added ${influencer.name} to catalog from discovery`);
+    return influencer;
   },
 
   getInfluencer(id: string): Influencer | undefined {

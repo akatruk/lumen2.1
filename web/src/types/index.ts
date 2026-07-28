@@ -281,3 +281,83 @@ export interface AppSettings {
   defaultVideosToAnalyze: number;
   matchWeights: MatchBreakdown;
 }
+
+/** In-app TikTok discovery (see docs/DISCOVERY_AND_DOSSIER.md) */
+export interface DiscoverySearchParams {
+  query: string;
+  city?: string;
+  language?: LanguageCode | "all";
+  topic?: string;
+  minFollowers?: number;
+  limit?: number;
+}
+
+export interface DiscoveryCandidate {
+  id: string;
+  name: string;
+  handle: string;
+  profileUrl: string;
+  avatarInitials: string;
+  avatarColor: string;
+  city: string;
+  country: string;
+  languages: LanguageCode[];
+  topics: string[];
+  followers: number;
+  avgViews: number;
+  engagementRate: number;
+  bio: string;
+  source: string;
+  collectedAt: string;
+}
+
+export interface DossierAudienceSignal {
+  label: string;
+  confidence: number;
+  evidence?: string;
+}
+
+export interface DossierEvidenceItem {
+  videoId: string;
+  title: string;
+  url: string;
+  publishedAt: string;
+  views: number;
+  quote?: string;
+  timestamp?: string;
+  analysis?: VideoAnalysis;
+}
+
+export interface InfluencerDossier {
+  id: string;
+  candidateId: string;
+  influencerId?: string;
+  identity: {
+    name: string;
+    handle: string;
+    profileUrl: string;
+    avatarInitials: string;
+    avatarColor: string;
+    city: string;
+    country: string;
+    languages: LanguageCode[];
+    bio: string;
+  };
+  reach: {
+    followers: number;
+    avgViews: number;
+    engagementRate: number;
+    postingFrequency: string;
+  };
+  topics: { name: string; confidence: number }[];
+  style: { formats: string[]; tone: string[] };
+  audience: DossierAudienceSignal[];
+  brandSafety: BrandSafetySignal;
+  evidence: DossierEvidenceItem[];
+  source: string;
+  discoveredAt: string;
+  lastAnalyzedAt?: string;
+  analysisStatus: "idle" | "running" | "ready" | "failed";
+  inCatalog: boolean;
+}
+

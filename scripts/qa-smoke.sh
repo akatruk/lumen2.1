@@ -19,6 +19,7 @@ check() {
 echo "Smoke against ${BASE}"
 check "/api/health"
 check "/"
+check "/discover"
 check "/presentation"
 check "/influencers"
 check "/products"

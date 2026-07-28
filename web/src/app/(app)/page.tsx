@@ -43,7 +43,8 @@ export default function DashboardPage() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Link href="/products?new=1"><Button size="sm">Add Product</Button></Link>
+          <Link href="/discover"><Button size="sm">Discover TikTok</Button></Link>
+          <Link href="/products?new=1"><Button size="sm" variant="secondary">Add Product</Button></Link>
           <Link href="/campaigns?new=1"><Button size="sm" variant="secondary">Create Campaign</Button></Link>
           <Link href="/import"><Button size="sm" variant="secondary">Import Influencers</Button></Link>
           <Link href="/analysis-jobs"><Button size="sm" variant="secondary">Start Analysis</Button></Link>
