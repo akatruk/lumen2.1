@@ -50,9 +50,8 @@ if [ -n "${EXPECT_VERSION:-}" ]; then
 fi
 # Theme markers in HTML (Strom glass port)
 html=$(curl -sS "${BASE}/")
-echo "$html" | grep -q 'font-sans' || true
-for marker in 'LUMEN' 'Marketplace' '--font-sans' ; do
-  if echo "$html" | grep -q "$marker"; then
+for marker in 'LUMEN' 'Marketplace' 'geist_' 'grid-pattern' 'ambient-glow' 'bg-background'; do
+  if echo "$html" | grep -F -q "$marker"; then
     echo "PASS  marker  ${marker}"
   else
     echo "FAIL  marker  ${marker}"

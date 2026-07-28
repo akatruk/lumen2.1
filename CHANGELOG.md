@@ -2,6 +2,25 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.3.0] — 2026-07-28
+
+### Changed — Strom/Lumen visual system
+
+- Ported Strom V2 cyber-glass design tokens into `web/` (`globals.css`): dark default, royal/neon blue primary, glass panels, ambient glow + grid.
+- Switched fonts to Geist + Geist Mono; added `next-themes` ThemeProvider (default dark) and ThemeToggle.
+- Restyled brand + creator shells to match Lumen sidebar language (mono indexes, primary active bar, glass drawer).
+- Reworked UI kit (Button, Card, Badge, Field, Toast) onto semantic tokens; swept pages off slate/teal SaaS look.
+
+### Added
+
+- Manual QA checklist: `docs/MANUAL_QA_THEME.md`.
+- Smoke script theme markers + optional `EXPECT_VERSION`.
+
+### QA
+
+- 2026-07-28 live demo http://167.71.206.43:3000 — health `0.3.0`.
+- Smoke **18/18 PASS** + theme markers; theme P0/P1 **ALL PASS**; sign-off **READY TO SHIP**.
+
 ## [0.2.0] — 2026-07-24
 
 ### Added — Phase 2 Collaboration
