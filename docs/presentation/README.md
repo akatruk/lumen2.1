@@ -1,6 +1,6 @@
 # Lumen Influencer Marketplace — Video Presentation Pack
 
-**Length:** ~2:19 EN / ~2:13 ZH (dense live walkthrough)  
+**Length:** ~2:21 EN / ~2:15 ZH (dense live walkthrough)  
 **Audience:** stakeholders / investors / agency partners  
 **Demo URL:** https://influencers.lumen.universalgravity.org  
 
