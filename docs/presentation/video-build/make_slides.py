@@ -98,7 +98,7 @@ def slide_title():
         y += 46
     d.text(
         (120, 900),
-        "Live TikHub  ·  Live LLM scan  ·  Brand auth  ·  Invite → brief",
+        "Live TikHub  ·  Live LLM  ·  Honest safety  ·  Act-as sync",
         font=font(24),
         fill=MUTED,
     )
@@ -145,9 +145,9 @@ def slide_solution():
     d.text((120, 100), "SOLUTION", font=font(24, True), fill=BLUE)
     d.text((120, 160), "Scan → Discover → Collaborate", font=font(48, True), fill=INK)
     cards = [
-        ("Live product scan", "OpenRouter resume card — pitch, topics, geo, claims, confidence."),
-        ("Live TikHub Discover", "Real TikTok creators + match score and reasons vs the card."),
-        ("Persisted workflow", "Auth, shortlists, invites, and briefs on the server."),
+        ("Live product scan", "Decision first — pitch, topics, geo, prohibitions, confidence."),
+        ("Live TikHub Discover", "Real reach + ER reasons; Pending Analysis until scanned."),
+        ("Honest workflow", "Live badge, Core/More nav, Act-as sync, server persistence."),
     ]
     x = 120
     for title, body in cards:
@@ -220,7 +220,7 @@ def slide_close():
     img, d = new_slide()
     d.text((120, 260), "Video understanding", font=font(60, True), fill=INK)
     d.text((120, 350), "→ campaign decisions", font=font(60, True), fill=BLUE)
-    d.text((120, 500), "Live TikHub · Live LLM scan · Auth · Invite → brief", font=font(28), fill=MUTED)
+    d.text((120, 500), "Live TikHub · Live LLM · Pending Analysis · Act-as sync", font=font(28), fill=MUTED)
     d.text((120, 700), "Thank you.", font=font(40, True), fill=INK)
     save(img, "08_close")
 

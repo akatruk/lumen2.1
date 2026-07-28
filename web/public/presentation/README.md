@@ -1,28 +1,14 @@
 # Lumen Influencer Marketplace — Video Presentation Pack
 
-**Length:** ~3.5 minutes EN / ~3.5 minutes ZH  
+**Length:** ~2:19 EN / ~2:13 ZH  
 **Audience:** stakeholders / investors / agency partners  
-**Demo URL:** http://167.71.206.43:3000  
+**Demo URL:** https://influencers.lumen.universalgravity.org  
 
-## Generated walkthrough videos (0.3.5 remaster)
-
-Dark cyber-glass design + Product scan + card-ranked TikTok Discover:
+## Generated walkthrough videos (0.4.8 remaster)
 
 | Lang | Page | Direct file | Voice |
 | --- | --- | --- | --- |
-| EN | http://167.71.206.43:3000/presentation | `/presentation/demo.mp4` | Microsoft Ava Multilingual Neural |
-| 中文 | same page → **中文** tab | `/presentation/demo-zh.mp4` | Microsoft Xiaoxiao Neural (`zh-CN-XiaoxiaoNeural`) |
+| EN | `/presentation` | `/presentation/demo.mp4?v=0.4.8` | Microsoft Ava Multilingual Neural |
+| 中文 | same → **中文** | `/presentation/demo-zh.mp4?v=0.4.8` | Microsoft Xiaoxiao Neural |
 
-Closing slide has **no demo URL**.
-
-Source assets: `docs/presentation/video-build/` · scripts: `SCRIPT_4MIN.md` / `SCRIPT_4MIN_ZH.md` · deck: `slides.html`
-
-## Files
-
-| File | Use |
-| --- | --- |
-| [SCRIPT.md](./SCRIPT.md) | Longer spoken narration + timing |
-| [SCRIPT_4MIN.md](./SCRIPT_4MIN.md) | EN VO for demo.mp4 |
-| [SCRIPT_4MIN_ZH.md](./SCRIPT_4MIN_ZH.md) | ZH VO for demo-zh.mp4 |
-| [SHOT_LIST.md](./SHOT_LIST.md) | Screen-record sequence |
-| [slides.html](./slides.html) | Cyber-glass deck (also under `/presentation/slides.html`) |
+Source: `docs/presentation/video-build/` · `SCRIPT_4MIN.md` / `SCRIPT_4MIN_ZH.md`

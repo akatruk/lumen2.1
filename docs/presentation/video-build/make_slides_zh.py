@@ -95,7 +95,7 @@ def slide_title():
     for line in lines:
         d.text((120, y), line, font=font(32), fill=MUTED)
         y += 48
-    d.text((120, 900), "Live TikHub · Live LLM 扫描 · 品牌登录 · 邀请→Brief", font=font(24), fill=MUTED)
+    d.text((120, 900), "Live TikHub · Live LLM · 诚实安全 · Act-as 同步", font=font(24), fill=MUTED)
     save(img, "01_title")
 
 
@@ -139,9 +139,9 @@ def slide_solution():
     d.text((120, 100), "方案", font=font(24, True), fill=BLUE)
     d.text((120, 160), "扫描 → 发现 → 协作", font=font(48, True), fill=INK)
     cards = [
-        ("Live 产品扫描", "OpenRouter 简历卡——卖点、主题、地域、宣称与置信度。"),
-        ("Live TikHub Discover", "真实 TikTok 创作者 + 相对卡片的匹配分与理由。"),
-        ("持久化流程", "登录、短名单、邀请与 Brief 保存在服务器。"),
+        ("Live 产品扫描", "先看决策区——卖点、主题、地域、禁用宣称与置信度。"),
+        ("Live TikHub Discover", "真实触达与互动理由；未分析前 Pending Analysis。"),
+        ("诚实流程", "Live 徽章、Core/More 导航、Act-as 同步、服务端持久化。"),
     ]
     x = 120
     for title, body in cards:
@@ -214,7 +214,7 @@ def slide_close():
     img, d = new_slide()
     d.text((120, 260), "视频理解", font=font(60, True), fill=INK)
     d.text((120, 350), "→ 活动决策", font=font(60, True), fill=BLUE)
-    d.text((120, 500), "Live TikHub · Live LLM 扫描 · 登录 · 邀请→Brief", font=font(28), fill=MUTED)
+    d.text((120, 500), "Live TikHub · Live LLM · Pending Analysis · Act-as 同步", font=font(28), fill=MUTED)
     d.text((120, 700), "谢谢。", font=font(40, True), fill=INK)
     save(img, "08_close")
 

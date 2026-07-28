@@ -12,6 +12,12 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 - **Sidebar:** Core / More groups; Login moved to footer (out of mid-nav).
 - **Resume card:** Decision (pitch/topics/geo/prohibited + conf) vs Details accordion.
 
+### Changed — Presentation demo videos remaster (0.4.8)
+
+- Rebuild EN/ZH walkthroughs for Live badge, Decision/Details scan, TikHub followers + match reasons, PENDING ANALYSIS, Act-as sync, Core/More nav.
+- Cache-bust `demo.mp4?v=0.4.8` / `demo-zh.mp4?v=0.4.8` (Ava `-12%/-4Hz`, Xiaoxiao `-8%/-2Hz`).
+- Public: https://influencers.lumen.universalgravity.org/presentation
+
 ### QA
 
 - 2026-07-28 HTTPS manual QA **ALL P0 PASS** — checklist `docs/MANUAL_QA_UX_TOP5_2026-07-28.md`.
