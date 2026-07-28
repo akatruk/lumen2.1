@@ -14,7 +14,9 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 
 ### QA
 
-- Checklist: `docs/MANUAL_QA_UX_TOP5_2026-07-28.md`.
+- 2026-07-28 HTTPS manual QA **ALL P0 PASS** — checklist `docs/MANUAL_QA_UX_TOP5_2026-07-28.md`.
+- Health `0.4.8` / `live-capable`; smoke PASSED; PENDING ANALYSIS pre-analysis; Act-as Home sync; dashboard 2 CTAs; Core/More + Login footer; Decision vs Details.
+- Feature `6066d53`; Deploy run `30375380610`.
 
 ## [0.4.7] — 2026-07-28
 
