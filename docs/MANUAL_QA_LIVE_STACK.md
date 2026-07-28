@@ -1,10 +1,11 @@
 # Manual QA — Live stack: TikHub / LLM scan / Auth+DB (0.4.1)
 
-**Target:** http://167.71.206.43:3000  
-**Health:** http://167.71.206.43:3000/api/health  
+**Target:** https://influencers.lumen.universalgravity.org (also http://167.71.206.43:3000)  
+**Health:** https://influencers.lumen.universalgravity.org/api/health  
 **Expected version:** `0.4.1`  
 **Scope:** Prisma boot, HTTP session cookies, brand auth, product persistence, demo discovery/scan gates, live-mode wiring  
 **Mode this run:** Demo (no TikHub/OpenRouter keys on droplet). Live API cases marked **BLOCKED** until secrets set.
+**TLS:** nginx + Let's Encrypt — see `docs/DEPLOY_NGINX.md`. With HTTPS use `COOKIE_SECURE=true`.
 
 ## How to run
 
@@ -27,7 +28,7 @@ Prefer GitHub → repo **Secrets** / **Variables** (Deploy writes `/opt/lumen-ma
 | var | `PRODUCT_SCAN_MODE` | `live` |
 | var | `NEXT_PUBLIC_DISCOVERY_MODE` | `live` (rebuild) |
 | var | `NEXT_PUBLIC_PRODUCT_SCAN_MODE` | `live` (rebuild) |
-| var | `COOKIE_SECURE` | `false` on HTTP demo; `true` behind HTTPS |
+| var | `COOKIE_SECURE` | `true` behind HTTPS (set); `false` only for raw `:3000` HTTP |
 
 Rebuild required for `NEXT_PUBLIC_*`. Server keys can change at runtime without rebuild.
 

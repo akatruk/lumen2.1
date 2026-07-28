@@ -2,6 +2,21 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.4.2] — 2026-07-28
+
+### Added — Public HTTPS via nginx + Let's Encrypt
+
+- DNS: `influencers.lumen.universalgravity.org` → droplet `167.71.206.43`
+- nginx reverse proxy `:80`/`:443` → `127.0.0.1:3000`; HTTP→HTTPS redirect
+- Certbot cert + renew timer; config: `deploy/nginx/influencers.lumen.universalgravity.org.conf`
+- `COOKIE_SECURE=true` (GH var + droplet `.env`) for Secure session cookies
+- Ops notes: `docs/DEPLOY_NGINX.md`
+
+### QA
+
+- 2026-07-28 `https://influencers.lumen.universalgravity.org/api/health` → `0.4.1` ok
+- HTTP 301 → HTTPS; register Set-Cookie includes `Secure`; session sticks
+
 ## [0.4.1] — 2026-07-28
 
 ### Fixed — Prisma schema apply on Alpine (auth/persistence)
