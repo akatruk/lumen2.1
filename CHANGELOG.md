@@ -11,6 +11,10 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 - `marketplace.addInfluencer`: merge by handle as well as id (no catalog duplicates).
 - Health `0.3.6`. Audit: `docs/reports/BACKEND_AUDIT_2026-07-28.md`.
 
+### QA
+
+- 2026-07-28 live http://167.71.206.43:3000 — health `0.3.6`, Deploy `a97e2f3`, smoke **PASS**.
+
 ## [0.3.5] — 2026-07-28
 
 ### Changed — Presentation demo videos remaster
