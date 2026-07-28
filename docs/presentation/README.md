@@ -1,17 +1,17 @@
 # Lumen Influencer Marketplace — Video Presentation Pack
 
-**Length:** ~3.5 minutes EN / ~3.5 minutes ZH  
+**Length:** ~2:10 EN / ~2:10 ZH (dense live walkthrough)  
 **Audience:** stakeholders / investors / agency partners  
-**Demo URL:** http://167.71.206.43:3000  
+**Demo URL:** https://influencers.lumen.universalgravity.org  
 
-## Generated walkthrough videos (0.3.5 remaster)
+## Generated walkthrough videos (0.4.5 remaster)
 
-Dark cyber-glass design + Product scan + card-ranked TikTok Discover:
+Live TikHub + live OpenRouter scan + brand auth/persist + invite→brief:
 
 | Lang | Page | Direct file | Voice |
 | --- | --- | --- | --- |
-| EN | http://167.71.206.43:3000/presentation | `/presentation/demo.mp4` | Microsoft Ava Multilingual Neural |
-| 中文 | same page → **中文** tab | `/presentation/demo-zh.mp4` | Microsoft Xiaoxiao Neural (`zh-CN-XiaoxiaoNeural`) |
+| EN | https://influencers.lumen.universalgravity.org/presentation | `/presentation/demo.mp4?v=0.4.5` | Microsoft Ava Multilingual Neural |
+| 中文 | same page → **中文** tab | `/presentation/demo-zh.mp4?v=0.4.5` | Microsoft Xiaoxiao Neural |
 
 Closing slide has **no demo URL**.
 

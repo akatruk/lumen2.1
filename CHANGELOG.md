@@ -2,6 +2,16 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.4.5] — 2026-07-28
+
+### Changed — Presentation demo videos remaster (live stack)
+
+- Rebuild EN/ZH walkthroughs for live TikHub, live OpenRouter scan, brand auth/persist, invite→brief.
+- Fresh live screenshots (`/login`, `/products/scan`, `/discover`, `/invitations`, creator portal, …).
+- Updated `SCRIPT_4MIN.md` / `SCRIPT_4MIN_ZH.md`, slide generators + `slides.html`.
+- Cache-bust `demo.mp4?v=0.4.5` / `demo-zh.mp4?v=0.4.5`; health `0.4.5`.
+- Public: https://influencers.lumen.universalgravity.org/presentation
+
 ## [0.4.4] — 2026-07-28
 
 ### Added — Invite + brief server persistence (BA Priority B / option A)

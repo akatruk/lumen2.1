@@ -95,7 +95,7 @@ def slide_title():
     for line in lines:
         d.text((120, y), line, font=font(32), fill=MUTED)
         y += 48
-    d.text((120, 900), "产品扫描 · 按卡片排序 Discover · 创作者流程 · 可接入 Lumen", font=font(24), fill=MUTED)
+    d.text((120, 900), "Live TikHub · Live LLM 扫描 · 品牌登录 · 邀请→Brief", font=font(24), fill=MUTED)
     save(img, "01_title")
 
 
@@ -104,10 +104,10 @@ def slide_idea():
     d.text((120, 100), "核心理念", font=font(24, True), fill=BLUE)
     d.text((120, 160), "从产品出发", font=font(54, True), fill=INK)
     points = [
-        "扫描网址 / Brief / 照片 → 可编辑的产品简历卡。",
-        "应用内发现 TikTok 创作者，并对照产品卡排序。",
-        "打开档案查看主题、风格、受众、安全与证据。",
-        "邀请 → Brief → 成片 → 批准 → 在创作者自有账号发布。",
+        "品牌登录 → 产品、短名单、邀请与 Brief 服务端保存。",
+        "Live LLM 产品扫描 → 可编辑简历卡与置信度。",
+        "Live TikHub Discover → 真实创作者按卡片排序。",
+        "邀请 → 接受 → Brief → 成片 → 批准 → 自有账号发布。",
     ]
     y = 300
     for p in points:
@@ -139,9 +139,9 @@ def slide_solution():
     d.text((120, 100), "方案", font=font(24, True), fill=BLUE)
     d.text((120, 160), "扫描 → 发现 → 协作", font=font(48, True), fill=INK)
     cards = [
-        ("产品扫描", "简历卡含卖点、主题、地域、语言、宣称与置信度。"),
-        ("按卡排序 Discover", "TikTok 搜索 + 相对所选产品的匹配分与理由。"),
-        ("双控制台", "品牌赛博玻璃界面 + 创作者门户完成邀请到发布。"),
+        ("Live 产品扫描", "OpenRouter 简历卡——卖点、主题、地域、宣称与置信度。"),
+        ("Live TikHub Discover", "真实 TikTok 创作者 + 相对卡片的匹配分与理由。"),
+        ("持久化流程", "登录、短名单、邀请与 Brief 保存在服务器。"),
     ]
     x = 120
     for title, body in cards:
@@ -165,7 +165,7 @@ def slide_integration():
         d.text((290, y + 48), label, font=font(28, True), fill=INK)
     d.text(
         (220, 860),
-        "今天：演示 TikTok 连接器 + 模拟分析；下一步接入 live TikHub / Lumen API，无需重写界面。",
+        "今天 TikHub 发现与 OpenRouter 扫描已上线——下一步接入 Lumen Analysis API。",
         font=font(24),
         fill=MUTED,
     )
@@ -194,10 +194,10 @@ def slide_roadmap():
     d.text((120, 100), "路线图", font=font(24, True), fill=BLUE)
     d.text((120, 160), "分阶段稳健交付", font=font(48, True), fill=INK)
     phases = [
-        ("第一阶段", "发现 + 产品扫描", "已完成"),
-        ("第二阶段", "协作", "已完成"),
+        ("第一阶段", "发现 + Live 扫描", "已上线"),
+        ("第二阶段", "协作 + 持久化", "已上线"),
         ("第三阶段", "合同与支付", "下一步"),
-        ("第四阶段", "Live TikHub + 学习", "稍后"),
+        ("第四阶段", "更多数据源 + 学习", "稍后"),
     ]
     x = 120
     for title, body, state in phases:
@@ -214,7 +214,7 @@ def slide_close():
     img, d = new_slide()
     d.text((120, 260), "视频理解", font=font(60, True), fill=INK)
     d.text((120, 350), "→ 活动决策", font=font(60, True), fill=BLUE)
-    d.text((120, 500), "产品扫描 · 按卡排序 Discover · 创作者门户", font=font(28), fill=MUTED)
+    d.text((120, 500), "Live TikHub · Live LLM 扫描 · 登录 · 邀请→Brief", font=font(28), fill=MUTED)
     d.text((120, 700), "谢谢。", font=font(40, True), fill=INK)
     save(img, "08_close")
 

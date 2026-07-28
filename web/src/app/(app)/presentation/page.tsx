@@ -33,9 +33,9 @@ function toEmbed(url: string): { kind: "youtube" | "vimeo" | "file" | "unknown";
 
 export default function PresentationPage() {
   const defaultEn =
-    process.env.NEXT_PUBLIC_PRESENTATION_VIDEO_URL ?? "/presentation/demo.mp4?v=0.3.5";
+    process.env.NEXT_PUBLIC_PRESENTATION_VIDEO_URL ?? "/presentation/demo.mp4?v=0.4.5";
   const defaultZh =
-    process.env.NEXT_PUBLIC_PRESENTATION_VIDEO_URL_ZH ?? "/presentation/demo-zh.mp4?v=0.3.5";
+    process.env.NEXT_PUBLIC_PRESENTATION_VIDEO_URL_ZH ?? "/presentation/demo-zh.mp4?v=0.4.5";
 
   const [lang, setLang] = useState<Lang>("en");
   const [urlEn, setUrlEn] = useState(defaultEn);
@@ -203,11 +203,11 @@ export default function PresentationPage() {
           <div className="space-y-3 px-5 py-4 text-sm text-foreground">
             {lang === "zh" ? (
               <>
-                <p>1. 切入 — 内容契合度高于粉丝数</p>
-                <p>2. 问题 — 泰国创作者手工筛选难规模化</p>
-                <p>3. 方案 — 品牌端 + 创作者端 + Lumen 分析</p>
-                <p>4. 演示发现 — 匹配分数与目录</p>
-                <p>5. 演示协作 — 邀请到发布</p>
+                <p>1. 切入 — 从产品出发，而非粉丝数</p>
+                <p>2. 登录 + Live LLM 产品扫描 → 简历卡</p>
+                <p>3. Live TikHub Discover → 可解释匹配</p>
+                <p>4. 短名单 / 邀请 / Brief 服务端持久化</p>
+                <p>5. 创作者端接受与确认 Brief</p>
                 <p>6. 路线图 — 第三阶段合同与支付</p>
                 <a
                   href="/presentation/SCRIPT_4MIN_ZH.md"
@@ -220,11 +220,11 @@ export default function PresentationPage() {
               </>
             ) : (
               <>
-                <p>1. Hook — video fit over follower count</p>
-                <p>2. Problem — manual Thailand creator hunt</p>
-                <p>3. Solution — brand console + creator portal + Lumen analysis</p>
-                <p>4. Demo Discovery — match scores & catalog</p>
-                <p>5. Demo Collaboration — invite → publish</p>
+                <p>1. Hook — product-first, not vanity metrics</p>
+                <p>2. Brand login + live LLM product scan → resume card</p>
+                <p>3. Live TikHub Discover → explainable match</p>
+                <p>4. Shortlists / invites / briefs persist on server</p>
+                <p>5. Creator accept + acknowledge brief</p>
                 <p>6. Roadmap — Phase 3 contracts/payments</p>
                 <a
                   href="/presentation/SCRIPT.md"

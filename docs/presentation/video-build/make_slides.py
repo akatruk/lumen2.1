@@ -98,7 +98,7 @@ def slide_title():
         y += 46
     d.text(
         (120, 900),
-        "Product scan  ·  Card-ranked Discover  ·  Creator workflow  ·  Lumen-ready",
+        "Live TikHub  ·  Live LLM scan  ·  Brand auth  ·  Invite → brief",
         font=font(24),
         fill=MUTED,
     )
@@ -110,10 +110,10 @@ def slide_idea():
     d.text((120, 100), "THE IDEA", font=font(24, True), fill=BLUE)
     d.text((120, 160), "Start from the product", font=font(54, True), fill=INK)
     points = [
-        "Scan URL / brief / photos → editable Product Resume Card.",
-        "Discover TikTok creators in-app and rank them against the card.",
-        "Open dossiers with topics, style, audience, safety, and evidence.",
-        "Invite → brief → draft → approve → publish on the creator’s own accounts.",
+        "Brand login → server-backed products, shortlists, invites, and briefs.",
+        "Live LLM product scan → editable Resume Card with confidence.",
+        "Live TikHub Discover → real creators ranked vs the card.",
+        "Invite → accept → brief → draft → approve → publish on creator accounts.",
     ]
     y = 300
     for p in points:
@@ -145,9 +145,9 @@ def slide_solution():
     d.text((120, 100), "SOLUTION", font=font(24, True), fill=BLUE)
     d.text((120, 160), "Scan → Discover → Collaborate", font=font(48, True), fill=INK)
     cards = [
-        ("Product scan", "Resume card with pitch, topics, geo, languages, claims, confidence."),
-        ("Card-ranked Discover", "TikTok search + match score and reasons vs the selected product."),
-        ("Two consoles", "Brand cyber-glass UI + creator portal for invite-to-publish."),
+        ("Live product scan", "OpenRouter resume card — pitch, topics, geo, claims, confidence."),
+        ("Live TikHub Discover", "Real TikTok creators + match score and reasons vs the card."),
+        ("Persisted workflow", "Auth, shortlists, invites, and briefs on the server."),
     ]
     x = 120
     for title, body in cards:
@@ -171,7 +171,7 @@ def slide_integration():
         d.text((290, y + 48), label, font=font(28, True), fill=INK)
     d.text(
         (220, 860),
-        "Demo TikTok connector + mock analysis today — swap to live TikHub / Lumen API without rewriting UI.",
+        "TikHub discovery and OpenRouter scan are live today — Lumen Analysis API is next.",
         font=font(24),
         fill=MUTED,
     )
@@ -200,10 +200,10 @@ def slide_roadmap():
     d.text((120, 100), "ROADMAP", font=font(24, True), fill=BLUE)
     d.text((120, 160), "Phased, deliberate delivery", font=font(48, True), fill=INK)
     phases = [
-        ("Phase 1", "Discovery + Product scan", "Done"),
-        ("Phase 2", "Collaboration", "Done"),
+        ("Phase 1", "Discovery + live scan", "Live"),
+        ("Phase 2", "Collab + persistence", "Live"),
         ("Phase 3", "Contracts & payments", "Next"),
-        ("Phase 4", "Live TikHub + learning", "Later"),
+        ("Phase 4", "More sources + learning", "Later"),
     ]
     x = 120
     for title, body, state in phases:
@@ -220,7 +220,7 @@ def slide_close():
     img, d = new_slide()
     d.text((120, 260), "Video understanding", font=font(60, True), fill=INK)
     d.text((120, 350), "→ campaign decisions", font=font(60, True), fill=BLUE)
-    d.text((120, 500), "Product scan · Card-ranked Discover · Creator portal", font=font(28), fill=MUTED)
+    d.text((120, 500), "Live TikHub · Live LLM scan · Auth · Invite → brief", font=font(28), fill=MUTED)
     d.text((120, 700), "Thank you.", font=font(40, True), fill=INK)
     save(img, "08_close")
 
