@@ -34,7 +34,8 @@ function hash(s: string): number {
 }
 
 function pick<T>(arr: T[], seed: number): T {
-  return arr[seed % arr.length];
+  const i = Math.abs(seed | 0) % arr.length;
+  return arr[i]!;
 }
 
 function tokensFromQuery(query: string): string[] {
