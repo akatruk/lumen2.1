@@ -14,9 +14,9 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 
 ### QA
 
-- 2026-07-28 HTTPS — health `0.4.4`, commit `860502f`.
-- Invite → Accept+autoBrief → Acknowledge **PASS**; unauth 401 **PASS**.
-- Checklist: `docs/MANUAL_QA_INVITE_BRIEF.md`.
+- 2026-07-28 full loop: checklist `1b6457a` → build → Deploy → live HTTPS QA **ALL P0/P1 PASS**.
+- Invite → Accept+autoBrief → Acknowledge; smoke `0.4.4`; TikHub live regression count=3.
+- Feature commit `860502f`. Checklist: `docs/MANUAL_QA_INVITE_BRIEF.md`.
 
 ## [0.4.3] — 2026-07-28
 
