@@ -2,6 +2,15 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.3.1] — 2026-07-28
+
+### Added — Phase 0 product validation
+
+- Locked pilot decisions: F&B / Bangkok Bites Co. (Soi 11), th+en, own-account publish, manual+CSV+claim data sources.
+- Docs package under `docs/phase0/`: decisions, MVP scope, sample brief, analysis validation, compliance review.
+- Pilot influencer CSV (60 rows, F&B-leaning) for import validation.
+- ROADMAP Phase 0 marked complete; PRD §10 resolved.
+
 ## [0.3.0] — 2026-07-28
 
 ### Changed — Strom/Lumen visual system

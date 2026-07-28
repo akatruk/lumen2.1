@@ -2,21 +2,24 @@
 
 ## Phase 0: Product Validation
 
+**Status: COMPLETE (2026-07-28)** — package in [`docs/phase0/`](./phase0/README.md).  
+Open for production: external PDPA/legal sign-off (does not block backend specs).
+
 Goals:
 
-- select one pilot product category;
-- identify the first brand or agency users;
-- confirm the initial influencer data source;
-- define launch languages and campaign metrics;
-- confirm that creators publish to their own social accounts.
+- [x] select one pilot product category → **Restaurant / F&B (Bangkok)**;
+- [x] identify the first brand or agency users → **Bangkok Bites Co. / Soi 11 Thai Kitchen**;
+- [x] confirm the initial influencer data source → **manual URL + CSV + creator claim** (no scraping);
+- [x] define launch languages and campaign metrics → **th/en**; views/likes/comments/saves + cycle time;
+- [x] confirm that creators publish to their own social accounts → **yes**.
 
 Deliverables:
 
-- approved MVP scope;
-- sample campaign brief;
-- sample set of 50–100 influencer profiles;
-- validated Lumen analysis output;
-- data and compliance review.
+- [x] approved MVP scope → `phase0/MVP_SCOPE.md`;
+- [x] sample campaign brief → `phase0/SAMPLE_CAMPAIGN_BRIEF.md`;
+- [x] sample set of 50–100 influencer profiles → `phase0/influencer-pilot-set.csv` (60 rows);
+- [x] validated Lumen analysis output → `phase0/LUMEN_ANALYSIS_VALIDATION.md`;
+- [x] data and compliance review → `phase0/COMPLIANCE_AND_DATA.md`.
 
 ## Phase 1: Discovery MVP
 

@@ -187,10 +187,14 @@ Weights can be changed per campaign. Missing data must reduce confidence rather 
 
 ## 10. Decisions Required Before Implementation
 
-1. Which influencer data sources are approved for the MVP?
-2. Will creators publish only to their own social accounts, or will Lumen also host public videos?
-3. Which product category will be used for the pilot?
-4. Which languages are required at launch?
-5. Will the MVP support direct creator contact or agency-managed outreach only?
-6. Which campaign metrics are required for the pilot?
+**Resolved in Phase 0 (2026-07-28).** Canonical record: [`docs/phase0/PHASE0_DECISIONS.md`](./phase0/PHASE0_DECISIONS.md).
+
+| # | Question | Decision |
+| --- | --- | --- |
+| 1 | Which influencer data sources are approved for the MVP? | Manual profile URL + CSV import + creator claim. No uncontrolled scraping. Optional approved provider later after legal OK. |
+| 2 | Will creators publish only to their own social accounts, or will Lumen also host public videos? | **Own social accounts only.** No public consumer feed / auto-publish in MVP. |
+| 3 | Which product category will be used for the pilot? | **Restaurant / F&B (Bangkok)** — brand: Bangkok Bites Co., product: Soi 11 Thai Kitchen. |
+| 4 | Which languages are required at launch? | **Thai + English** for pilot KPIs. RU/ZH optional in analysis, not launch gates. |
+| 5 | Will the MVP support direct creator contact or agency-managed outreach only? | **Brand/agency-managed outreach** plus creator portal for accept / brief / submit. |
+| 6 | Which campaign metrics are required for the pilot? | Views, likes, comments, saves (if available), posts published, invite→publish cycle time; optional foot-traffic / promo redemptions (manual). |
 

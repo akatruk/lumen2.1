@@ -113,7 +113,9 @@ Only the minimum required public or authorized data should be stored. Influencer
 
 ## Project Status
 
-Phase 1 Discovery MVP UI lives in `web/` (Next.js + TypeScript + Tailwind). It uses mock Thailand data and a mock Lumen Analysis client. Shortlists, products, campaigns, and settings persist in browser `localStorage`.
+**Phase 0 Product Validation: complete** — see [`docs/phase0/`](docs/phase0/README.md) (F&B / Soi 11 pilot decisions, scope, brief, 60-row influencer CSV, analysis contract, compliance review).
+
+Phase 1–2 Discovery + Collaboration **demo UI** lives in `web/` (Next.js + TypeScript + Tailwind). It uses mock Thailand data and a mock Lumen Analysis client. Shortlists, products, campaigns, and settings persist in browser `localStorage`. Next build focus: production API/auth/Lumen wiring against the Phase 0 pilot scenario.
 
 ### Local development
 

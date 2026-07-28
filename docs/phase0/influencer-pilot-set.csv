@@ -1,0 +1,61 @@
+id,name,city,languages,topics,primary_platform,handle,followers,engagement_rate,verification_status,source_tag,profile_url,notes
+inf-1,Narin Chaiyaphum,Bangkok,th;en,food;bangkok;nightlife;lifestyle,tiktok,@narineatsbkk,428000,6.4,verified,demo-seed,https://tiktok.com/@narineatsbkk,Pilot F&B candidate
+inf-2,Maya Riverton,Phuket,en;th,travel;real estate;lifestyle,youtube,@mayaphuketlife,212000,3.8,verified,demo-seed-non-pilot,https://youtube.com/@mayaphuketlife,Adjacent / non-pilot category (demo seed)
+inf-3,Pimchanok Saetang,Bangkok,th;en;zh,skincare;beauty;wellness,tiktok,@pimglowth,610000,7.1,verified,demo-seed-non-pilot,https://tiktok.com/@pimglowth,Adjacent / non-pilot category (demo seed)
+inf-4,Sergei Orlov,Koh Samui,ru;en;th,travel;island;family,instagram,@sergei.samui,154000,4.6,verified,demo-seed-non-pilot,https://instagram.com/sergei.samui,Adjacent / non-pilot category (demo seed)
+inf-5,Anong Meadows,Chiang Mai,en;th,fitness;wellness;lifestyle,instagram,@anong.move,88000,4.2,verified,demo-seed-non-pilot,https://instagram.com/anong.move,Adjacent / non-pilot category (demo seed)
+inf-6,Kai Nakamura,Pattaya,en;th,travel;nightlife;food;lifestyle,tiktok,@kai.pattaya,98000,5.2,verified,demo-seed,https://tiktok.com/@kai.pattaya,Pilot F&B candidate
+inf-7,Lalita Wong,Phuket,th;en,travel;lifestyle;food;family,instagram,@lalita.eats,142000,4.8,verified,demo-seed,https://instagram.com/lalita.eats,Pilot F&B candidate
+inf-8,Tom Hughes,Bangkok,en;th,fitness;food;lifestyle;bangkok,youtube,@tomhughesbkk,76000,3.9,verified,demo-seed,https://youtube.com/@tomhughesbkk,Pilot F&B candidate
+inf-9,Ying Zhao,Bangkok,zh;en;th,beauty;skincare;travel,tiktok,@ying.bkk,320000,6.1,verified,demo-seed-non-pilot,https://tiktok.com/@ying.bkk,Adjacent / non-pilot category (demo seed)
+inf-10,Chai Boonmee,Chiang Mai,th;en,travel;adventure;food,tiktok,@chaieatsn,210000,5.9,verified,demo-seed,https://tiktok.com/@chaieatsn,Pilot F&B candidate
+inf-11,Elena Petrova,Phuket,ru;en,real estate;travel;investment,youtube,@elena.phuket,167000,3.5,verified,demo-seed-non-pilot,https://youtube.com/@elena.phuket,Adjacent / non-pilot category (demo seed)
+inf-12,Mina Torres,Koh Samui,en;th,travel;island;wellness,instagram,@mina.samui,91000,4.4,verified,demo-seed-non-pilot,https://instagram.com/mina.samui,Adjacent / non-pilot category (demo seed)
+pilot-013,June Chaiyaphum,Ayutthaya,th,food;cocktails;nightlife;bangkok,tiktok,@junechai18,176019,7.8,unverified,synthetic-pilot-fb,https://tiktok.com/@junechai18,Pilot F&B candidate
+pilot-014,Rose Saetang,Bangkok,th;en,food;cocktails;nightlife;bangkok,tiktok,@rosesaet65,96686,6.7,pending,synthetic-pilot-fb,https://tiktok.com/@rosesaet65,Pilot F&B candidate
+pilot-015,Lily Lim,Hua Hin,th;en;zh,food;travel;local;thailand,tiktok,@lilylim98,246870,4.3,unverified,synthetic-pilot-fb,https://tiktok.com/@lilylim98,Pilot F&B candidate
+pilot-016,Mix Nakamura,Bangkok,en;th,food;street food;bangkok;reviews,instagram,@mixnaka45,139500,6.8,unverified,synthetic-pilot-fb,https://instagram.com/mixnaka45,Pilot F&B candidate
+pilot-017,Jade Wong,Khon Kaen,th,food;family;bangkok;lifestyle,youtube,@jadewong25,94604,3.6,unverified,synthetic-pilot-fb,https://youtube.com/@jadewong25,Pilot F&B candidate
+pilot-018,Fah Lim,Bangkok,en;th,food;travel;local;thailand,instagram,@fahlim82,118085,4.4,pending,synthetic-pilot-fb,https://instagram.com/fahlim82,Pilot F&B candidate
+pilot-019,Gun Suwan,Koh Samui,th;en,food;cocktails;nightlife;bangkok,tiktok,@gunsuwa60,106880,6.5,verified,synthetic-pilot-fb,https://tiktok.com/@gunsuwa60,Pilot F&B candidate
+pilot-020,Mint Lim,Bangkok,th,food;mukbang;thai;reviews,instagram,@mintlim9,141421,6.3,unverified,synthetic-pilot-fb,https://instagram.com/mintlim9,Pilot F&B candidate
+pilot-021,Leo Boonmee,Chiang Mai,th;en,food;cocktails;nightlife;bangkok,youtube,@leoboon72,87993,4.9,pending,synthetic-pilot-fb,https://youtube.com/@leoboon72,Pilot F&B candidate
+pilot-022,Sky Lim,Bangkok,th;en;zh,food;vegan;wellness;bangkok,tiktok,@skylim97,152676,4.9,unverified,synthetic-pilot-fb,https://tiktok.com/@skylim97,Pilot F&B candidate
+pilot-023,Jade Suwan,Hua Hin,th;en;zh,food;travel;local;thailand,youtube,@jadesuwa2,93386,7.8,verified,synthetic-pilot-fb,https://youtube.com/@jadesuwa2,Pilot F&B candidate
+pilot-024,Mix Nakamura,Chiang Mai,en;th,food;cafes;lifestyle;bangkok,instagram,@mixnaka1,41400,3.3,verified,synthetic-pilot-fb,https://instagram.com/mixnaka1,Pilot F&B candidate
+pilot-025,Earth Decha,Khon Kaen,th;en;zh,food;cocktails;nightlife;bangkok,tiktok,@earthdech48,144984,7.1,unverified,synthetic-pilot-fb,https://tiktok.com/@earthdech48,Pilot F&B candidate
+pilot-026,Narin Suwan,Phuket,en;th,food;bangkok;nightlife;lifestyle,tiktok,@narinsuwa47,57218,7.7,verified,synthetic-pilot-fb,https://tiktok.com/@narinsuwa47,Pilot F&B candidate
+pilot-027,Fah Sombat,Hua Hin,th;en,food;cafes;lifestyle;bangkok,tiktok,@fahsomb85,68464,3.9,verified,synthetic-pilot-fb,https://tiktok.com/@fahsomb85,Pilot F&B candidate
+pilot-028,Rose Phan,Khon Kaen,th;en;ru,food;cocktails;nightlife;bangkok,youtube,@rosephan40,50541,4.6,verified,synthetic-pilot-fb,https://youtube.com/@rosephan40,Pilot F&B candidate
+pilot-029,Koi Nakamura,Bangkok,th;en,food;street food;bangkok;reviews,instagram,@koinaka3,83930,3.6,unverified,synthetic-pilot-fb,https://instagram.com/koinaka3,Pilot F&B candidate
+pilot-030,Mint Lim,Bangkok,th;en,food;family;bangkok;lifestyle,tiktok,@mintlim66,28269,3.5,unverified,synthetic-pilot-fb,https://tiktok.com/@mintlim66,Pilot F&B candidate
+pilot-031,Eli Kitt,Hua Hin,th;en,food;vegan;wellness;bangkok,instagram,@elikitt25,17526,4.4,unverified,synthetic-pilot-fb,https://instagram.com/elikitt25,Pilot F&B candidate
+pilot-032,Mint Preecha,Koh Samui,th;en;ru,food;street food;bangkok;reviews,tiktok,@mintpree52,289047,2.9,unverified,synthetic-pilot-fb,https://tiktok.com/@mintpree52,Pilot F&B candidate
+pilot-033,Chris Meesuk,Bangkok,en;th,food;cafes;lifestyle;bangkok,instagram,@chrismees60,44687,5.7,unverified,synthetic-pilot-fb,https://instagram.com/chrismees60,Pilot F&B candidate
+pilot-034,Chris Chaiyaphum,Bangkok,th;en,food;cafes;lifestyle;bangkok,instagram,@chrischai63,61982,7.9,unverified,synthetic-pilot-fb,https://instagram.com/chrischai63,Pilot F&B candidate
+pilot-035,Narin Siri,Chiang Mai,en;th,food;travel;local;thailand,instagram,@narinsiri90,92765,3.2,unverified,synthetic-pilot-fb,https://instagram.com/narinsiri90,Pilot F&B candidate
+pilot-036,Mint Kitt,Ayutthaya,th;en;zh,food;bangkok;nightlife;lifestyle,youtube,@mintkitt41,20355,5.4,verified,synthetic-pilot-fb,https://youtube.com/@mintkitt41,Pilot F&B candidate
+pilot-037,Mook Saetang,Khon Kaen,th;en,food;cafes;lifestyle;bangkok,tiktok,@mooksaet77,10112,5.8,pending,synthetic-pilot-fb,https://tiktok.com/@mooksaet77,Pilot F&B candidate
+pilot-038,Beam Suwan,Bangkok,en;th,food;family;bangkok;lifestyle,instagram,@beamsuwa27,98438,3.9,unverified,synthetic-pilot-fb,https://instagram.com/beamsuwa27,Pilot F&B candidate
+pilot-039,Earth Meesuk,Phuket,th;en,food;bangkok;nightlife;lifestyle,instagram,@earthmees80,38128,3.9,verified,synthetic-pilot-fb,https://instagram.com/earthmees80,Pilot F&B candidate
+pilot-040,Gun Lim,Phuket,th,food;cafes;lifestyle;bangkok,instagram,@gunlim70,137233,8.4,pending,synthetic-pilot-fb,https://instagram.com/gunlim70,Pilot F&B candidate
+pilot-041,Narin Preecha,Khon Kaen,th,food;street food;bangkok;reviews,tiktok,@narinpree34,79844,6.0,pending,synthetic-pilot-fb,https://tiktok.com/@narinpree34,Pilot F&B candidate
+pilot-042,Nam Preecha,Koh Samui,th,food;vegan;wellness;bangkok,instagram,@nampree7,31276,3.9,unverified,synthetic-pilot-fb,https://instagram.com/nampree7,Pilot F&B candidate
+pilot-043,Bam Decha,Chiang Mai,th;en,food;vegan;wellness;bangkok,youtube,@bamdech91,66990,2.7,verified,synthetic-pilot-fb,https://youtube.com/@bamdech91,Pilot F&B candidate
+pilot-044,Tawan Rattana,Bangkok,th,food;cafes;lifestyle;bangkok,instagram,@tawanratt17,30761,8.1,verified,synthetic-pilot-fb,https://instagram.com/tawanratt17,Pilot F&B candidate
+pilot-045,Beam Kim,Bangkok,th;en;ru,food;cocktails;nightlife;bangkok,youtube,@beamkim14,49057,7.7,verified,synthetic-pilot-fb,https://youtube.com/@beamkim14,Pilot F&B candidate
+pilot-046,Tawan Lim,Bangkok,th;en,food;mukbang;thai;reviews,tiktok,@tawanlim23,111903,8.1,verified,synthetic-pilot-fb,https://tiktok.com/@tawanlim23,Pilot F&B candidate
+pilot-047,Forth Tan,Bangkok,th;en;ru,food;street food;bangkok;reviews,instagram,@forthtan5,127237,7.3,unverified,synthetic-pilot-fb,https://instagram.com/forthtan5,Pilot F&B candidate
+pilot-048,Earth Lim,Bangkok,th;en,food;cocktails;nightlife;bangkok,instagram,@earthlim43,54956,7.1,unverified,synthetic-pilot-fb,https://instagram.com/earthlim43,Pilot F&B candidate
+pilot-049,Ann Siri,Koh Samui,th;en;zh,food;family;bangkok;lifestyle,tiktok,@annsiri15,134977,5.9,verified,synthetic-pilot-fb,https://tiktok.com/@annsiri15,Pilot F&B candidate
+pilot-050,Beam Nakamura,Krabi,en;th,food;family;bangkok;lifestyle,youtube,@beamnaka41,62321,7.3,pending,synthetic-pilot-fb,https://youtube.com/@beamnaka41,Pilot F&B candidate
+pilot-051,Krit Kim,Pattaya,th;en,food;family;bangkok;lifestyle,youtube,@kritkim41,91504,7.9,unverified,synthetic-pilot-fb,https://youtube.com/@kritkim41,Pilot F&B candidate
+pilot-052,Lily Park,Pattaya,th;en;ru,food;travel;local;thailand,youtube,@lilypark17,24235,4.6,pending,synthetic-pilot-fb,https://youtube.com/@lilypark17,Pilot F&B candidate
+pilot-053,Punn Suwan,Krabi,th,food;mukbang;thai;reviews,youtube,@punnsuwa1,54274,7.2,pending,synthetic-pilot-fb,https://youtube.com/@punnsuwa1,Pilot F&B candidate
+pilot-054,Pond Meesuk,Hua Hin,en;th,food;cocktails;nightlife;bangkok,youtube,@pondmees61,167812,4.0,pending,synthetic-pilot-fb,https://youtube.com/@pondmees61,Pilot F&B candidate
+pilot-055,Hugo Park,Bangkok,th;en,food;travel;local;thailand,tiktok,@hugopark26,132197,7.8,pending,synthetic-pilot-fb,https://tiktok.com/@hugopark26,Pilot F&B candidate
+pilot-056,Jade Prasert,Pattaya,th;en,food;cafes;lifestyle;bangkok,youtube,@jadepras89,105132,4.9,unverified,synthetic-pilot-fb,https://youtube.com/@jadepras89,Pilot F&B candidate
+pilot-057,Ben Meesuk,Bangkok,th;en;zh,food;cocktails;nightlife;bangkok,tiktok,@benmees59,32129,5.5,pending,synthetic-pilot-fb,https://tiktok.com/@benmees59,Pilot F&B candidate
+pilot-058,Pond Meesuk,Krabi,th;en;ru,food;mukbang;thai;reviews,youtube,@pondmees58,70188,3.8,pending,synthetic-pilot-fb,https://youtube.com/@pondmees58,Pilot F&B candidate
+pilot-059,Ben Prasert,Koh Samui,th;en,food;travel;local;thailand,instagram,@benpras10,102231,4.3,verified,synthetic-pilot-fb,https://instagram.com/benpras10,Pilot F&B candidate
+pilot-060,Fah Boonmee,Bangkok,th;en,food;mukbang;thai;reviews,youtube,@fahboon20,95310,4.8,unverified,synthetic-pilot-fb,https://youtube.com/@fahboon20,Pilot F&B candidate
