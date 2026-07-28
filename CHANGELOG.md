@@ -2,6 +2,15 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.3.5] — 2026-07-28
+
+### Changed — Presentation demo videos remaster
+
+- Rebuild EN/ZH walkthroughs for cyber-glass dark UI + Product scan + card-ranked Discover.
+- Updated `SCRIPT_4MIN.md` / `SCRIPT_4MIN_ZH.md`, dark `slides.html` + PNG slide generators.
+- New live screenshots (`/products/scan`, `/discover`, …); VO: Ava Multilingual / Xiaoxiao Neural.
+- Cache-bust defaults `demo.mp4?v=0.3.5` / `demo-zh.mp4?v=0.3.5`; health `0.3.5`.
+
 ## [0.3.4] — 2026-07-28
 
 ### Added — Product scan → resume card → card-ranked Discover

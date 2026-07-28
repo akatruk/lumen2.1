@@ -32,9 +32,10 @@ function toEmbed(url: string): { kind: "youtube" | "vimeo" | "file" | "unknown";
 }
 
 export default function PresentationPage() {
-  const defaultEn = process.env.NEXT_PUBLIC_PRESENTATION_VIDEO_URL ?? "/presentation/demo.mp4";
+  const defaultEn =
+    process.env.NEXT_PUBLIC_PRESENTATION_VIDEO_URL ?? "/presentation/demo.mp4?v=0.3.5";
   const defaultZh =
-    process.env.NEXT_PUBLIC_PRESENTATION_VIDEO_URL_ZH ?? "/presentation/demo-zh.mp4";
+    process.env.NEXT_PUBLIC_PRESENTATION_VIDEO_URL_ZH ?? "/presentation/demo-zh.mp4?v=0.3.5";
 
   const [lang, setLang] = useState<Lang>("en");
   const [urlEn, setUrlEn] = useState(defaultEn);
@@ -43,10 +44,20 @@ export default function PresentationPage() {
   const [draftZh, setDraftZh] = useState(defaultZh);
 
   useEffect(() => {
+    const normalizeDefault = (saved: string | undefined, def: string) => {
+      const s = saved?.trim();
+      if (!s) return def;
+      // Upgrade stale localStorage paths after remasters
+      if (s === "/presentation/demo.mp4" || s === "/presentation/demo-zh.mp4") return def;
+      if (s.startsWith("/presentation/demo.mp4?") || s.startsWith("/presentation/demo-zh.mp4?")) {
+        return def;
+      }
+      return s;
+    };
     const savedEn = loadJson<string>(VIDEO_KEY_EN, defaultEn);
     const savedZh = loadJson<string>(VIDEO_KEY_ZH, defaultZh);
-    const nextEn = savedEn?.trim() ? savedEn.trim() : defaultEn;
-    const nextZh = savedZh?.trim() ? savedZh.trim() : defaultZh;
+    const nextEn = normalizeDefault(savedEn, defaultEn);
+    const nextZh = normalizeDefault(savedZh, defaultZh);
     setUrlEn(nextEn);
     setUrlZh(nextZh);
     setDraftEn(nextEn);

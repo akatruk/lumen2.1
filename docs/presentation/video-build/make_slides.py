@@ -1,24 +1,26 @@
 #!/usr/bin/env python3
-"""Generate title/idea slides for the presentation video."""
+"""Generate cyber-glass dark slides for the presentation video (EN)."""
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 OUT = Path(__file__).resolve().parent / "slides"
 OUT.mkdir(parents=True, exist_ok=True)
 W, H = 1920, 1080
-BG = (244, 247, 246)
-INK = (15, 23, 42)
-MUTED = (100, 116, 139)
-TEAL = (15, 118, 110)
-CARD = (255, 255, 255)
-LINE = (226, 232, 240)
+BG = (0, 0, 0)
+INK = (248, 250, 252)
+MUTED = (148, 163, 184)
+BLUE = (59, 130, 246)
+BLUE_DIM = (37, 99, 235)
+CARD = (15, 23, 42)
+LINE = (39, 48, 66)
+GLOW = (30, 64, 175)
 
 
 def font(size, bold=False):
     candidates = [
         "/System/Library/Fonts/Supplemental/Arial Bold.ttf" if bold else "/System/Library/Fonts/Supplemental/Arial.ttf",
-        "/System/Library/Fonts/Supplemental/Helvetica.ttc",
         "/Library/Fonts/Arial.ttf",
+        "/System/Library/Fonts/Helvetica.ttc",
     ]
     for p in candidates:
         if Path(p).exists():
@@ -31,12 +33,18 @@ def font(size, bold=False):
 
 def new_slide():
     img = Image.new("RGB", (W, H), BG)
-    draw = ImageDraw.Draw(img)
-    # soft corner wash
-    for i in range(40):
-        a = 8
-        draw.ellipse((-200 + i, -200 + i, 700 - i, 500 - i), outline=(15, 118, 110, a))
-    return img, draw
+    d = ImageDraw.Draw(img)
+    # ambient glows
+    for i in range(80):
+        a = 80 - i
+        d.ellipse((-280 + i, -280 + i, 720 - i, 520 - i), outline=(30, 64, 175))
+    for i in range(60):
+        d.ellipse((1280 + i, 620 + i, 2100 - i, 1280 - i), outline=(30, 41, 80))
+    # subtle grid dots
+    for x in range(40, W, 48):
+        for y in range(40, H, 48):
+            d.point((x, y), fill=(30, 41, 59))
+    return img, d
 
 
 def wrap(draw, text, f, max_w):
@@ -61,141 +69,158 @@ def save(img, name):
     print("slide", path.name)
 
 
+def card(d, box, title, body, title_f=None, body_f=None):
+    title_f = title_f or font(30, True)
+    body_f = body_f or font(24)
+    x0, y0, x1, y1 = box
+    d.rounded_rectangle(box, radius=16, fill=CARD, outline=LINE)
+    d.rectangle((x0, y0, x0 + 4, y1), fill=BLUE)
+    d.text((x0 + 28, y0 + 24), title, font=title_f, fill=BLUE)
+    y = y0 + 70
+    for line in wrap(d, body, body_f, x1 - x0 - 56):
+        d.text((x0 + 28, y), line, font=body_f, fill=MUTED)
+        y += 34
+
+
 def slide_title():
     img, d = new_slide()
-    d.text((120, 160), "LUMEN", font=font(28, True), fill=TEAL)
-    d.text((120, 220), "Influencer Marketplace", font=font(72, True), fill=INK)
+    d.text((120, 150), "LUMEN 2.1", font=font(28, True), fill=BLUE)
+    d.text((120, 210), "Influencer Marketplace", font=font(68, True), fill=INK)
     lines = wrap(
         d,
-        "A thoughtful Thailand product: match creators by video understanding, then collaborate from invite to published post.",
-        font(34),
+        "Cyber-glass brand console: scan a product, discover TikTok creators, rank by resume card, then collaborate to publish.",
+        font(32),
         1500,
     )
-    y = 380
+    y = 360
     for line in lines:
-        d.text((120, y), line, font=font(34), fill=MUTED)
-        y += 48
-    d.text((120, 920), "3–5 minute product story  ·  Discovery + Collaboration  ·  Lumen-ready", font=font(26), fill=MUTED)
+        d.text((120, y), line, font=font(32), fill=MUTED)
+        y += 46
+    d.text(
+        (120, 900),
+        "Product scan  ·  Card-ranked Discover  ·  Creator workflow  ·  Lumen-ready",
+        font=font(24),
+        fill=MUTED,
+    )
     save(img, "01_title")
 
 
 def slide_idea():
     img, d = new_slide()
-    d.text((120, 120), "THE IDEA", font=font(26, True), fill=TEAL)
-    d.text((120, 180), "Fit over follower count", font=font(58, True), fill=INK)
+    d.text((120, 100), "THE IDEA", font=font(24, True), fill=BLUE)
+    d.text((120, 160), "Start from the product", font=font(54, True), fill=INK)
     points = [
-        "Brands need creators whose recent videos match the product.",
-        "Lumen turns video into transcript, topics, language, style, and safety.",
-        "The marketplace turns that insight into shortlists and campaigns.",
-        "Creators stay in control — they publish on their own social accounts.",
+        "Scan URL / brief / photos → editable Product Resume Card.",
+        "Discover TikTok creators in-app and rank them against the card.",
+        "Open dossiers with topics, style, audience, safety, and evidence.",
+        "Invite → brief → draft → approve → publish on the creator’s own accounts.",
     ]
-    y = 320
+    y = 300
     for p in points:
-        d.rounded_rectangle((120, y, 1800, y + 100), radius=16, fill=CARD, outline=LINE)
-        d.text((160, y + 30), p, font=font(30), fill=INK)
-        y += 120
+        d.rounded_rectangle((120, y, 1800, y + 110), radius=14, fill=CARD, outline=LINE)
+        d.rectangle((120, y, 126, y + 110), fill=BLUE)
+        d.text((160, y + 36), p, font=font(28), fill=INK)
+        y += 130
     save(img, "02_idea")
 
 
 def slide_problem():
     img, d = new_slide()
-    d.text((120, 120), "PROBLEM", font=font(26, True), fill=TEAL)
-    d.text((120, 180), "Manual discovery does not scale", font=font(54, True), fill=INK)
+    d.text((120, 100), "PROBLEM", font=font(24, True), fill=BLUE)
+    d.text((120, 160), "Manual discovery does not scale", font=font(50, True), fill=INK)
     boxes = [
-        ("Hunt", "Search creators across TikTok, Instagram, YouTube by hand."),
-        ("Watch", "Review dozens of videos to guess topical fit."),
-        ("Chat", "Chase briefs and drafts in scattered threads."),
-        ("Risk", "Follower count hides language, geo, and brand-safety gaps."),
+        ("Hunt", "Search creators across TikTok by hand and paste links into sheets."),
+        ("Guess", "Watch dozens of videos to infer topical and geo fit."),
+        ("Chat chaos", "Chase briefs and drafts in scattered messenger threads."),
+        ("Risk", "Follower count hides language, city, and brand-safety gaps."),
     ]
-    positions = [(120, 320), (1000, 320), (120, 620), (1000, 620)]
+    positions = [(120, 300), (1000, 300), (120, 620), (1000, 620)]
     for (x, y), (title, body) in zip(positions, boxes):
-        d.rounded_rectangle((x, y, x + 800, y + 220), radius=18, fill=CARD, outline=LINE)
-        d.text((x + 40, y + 36), title, font=font(34, True), fill=TEAL)
-        for i, line in enumerate(wrap(d, body, font(26), 700)):
-            d.text((x + 40, y + 100 + i * 36), line, font=font(26), fill=MUTED)
+        card(d, (x, y, x + 800, y + 240), title, body, font(32, True), font(26))
     save(img, "03_problem")
 
 
 def slide_solution():
     img, d = new_slide()
-    d.text((120, 120), "SOLUTION", font=font(26, True), fill=TEAL)
-    d.text((120, 180), "Three pieces, one workflow", font=font(54, True), fill=INK)
+    d.text((120, 100), "SOLUTION", font=font(24, True), fill=BLUE)
+    d.text((120, 160), "Scan → Discover → Collaborate", font=font(48, True), fill=INK)
     cards = [
-        ("Brand console", "Products, campaigns, discovery, shortlists, reviews, performance."),
-        ("Creator portal", "Invites, briefs, drafts, publication URLs, profile claims."),
-        ("Lumen analysis", "Video intelligence reused from the core Lumen platform."),
+        ("Product scan", "Resume card with pitch, topics, geo, languages, claims, confidence."),
+        ("Card-ranked Discover", "TikTok search + match score and reasons vs the selected product."),
+        ("Two consoles", "Brand cyber-glass UI + creator portal for invite-to-publish."),
     ]
     x = 120
     for title, body in cards:
-        d.rounded_rectangle((x, 340, x + 540, 820), radius=20, fill=CARD, outline=LINE)
-        d.text((x + 36, 390), title, font=font(32, True), fill=TEAL)
-        y = 470
-        for line in wrap(d, body, font(28), 460):
-            d.text((x + 36, y), line, font=font(28), fill=MUTED)
-            y += 40
+        card(d, (x, 340, x + 540, 820), title, body, font(30, True), font(26))
         x += 580
     save(img, "04_solution")
 
 
 def slide_integration():
     img, d = new_slide()
-    d.text((120, 120), "INTEGRATION WITH LUMEN", font=font(26, True), fill=TEAL)
-    d.text((120, 180), "Marketplace on top of analysis", font=font(52, True), fill=INK)
-    # architecture boxes
+    d.text((120, 100), "INTEGRATION WITH LUMEN", font=font(24, True), fill=BLUE)
+    d.text((120, 160), "Marketplace on top of analysis", font=font(48, True), fill=INK)
     layers = [
-        (220, "Brand Console  ·  Creator Portal", TEAL),
-        (440, "Marketplace API  ·  matching, campaigns, invitations", (3, 105, 161)),
-        (660, "Lumen Analysis API  ·  ASR, topics, style, brand safety", (15, 23, 42)),
+        (220, "Brand Console  ·  Creator Portal  ·  Product Scan + Discover", BLUE),
+        (440, "Marketplace services  ·  matching, campaigns, invitations, dossiers", BLUE_DIM),
+        (660, "Lumen Analysis API  ·  ASR, topics, style, brand safety", INK),
     ]
     for y, label, color in layers:
-        d.rounded_rectangle((220, y, 1700, y + 140), radius=18, fill=CARD, outline=LINE)
+        d.rounded_rectangle((220, y, 1700, y + 140), radius=16, fill=CARD, outline=LINE)
         d.rectangle((220, y, 250, y + 140), fill=color)
-        d.text((290, y + 48), label, font=font(32, True), fill=INK)
-    d.text((220, 860), "Same job contract today with a mock client — swap to live Lumen without rewriting the UI.", font=font(26), fill=MUTED)
+        d.text((290, y + 48), label, font=font(28, True), fill=INK)
+    d.text(
+        (220, 860),
+        "Demo TikTok connector + mock analysis today — swap to live TikHub / Lumen API without rewriting UI.",
+        font=font(24),
+        fill=MUTED,
+    )
     save(img, "05_integration")
 
 
 def slide_workflow():
     img, d = new_slide()
-    d.text((120, 120), "COLLABORATION LOOP", font=font(26, True), fill=TEAL)
-    d.text((120, 180), "Invite → Publish", font=font(54, True), fill=INK)
+    d.text((120, 100), "COLLABORATION LOOP", font=font(24, True), fill=BLUE)
+    d.text((120, 160), "Invite → Publish", font=font(50, True), fill=INK)
     steps = ["Invite", "Accept", "Brief", "Draft", "Review", "Approve", "Publish", "Metrics"]
-    x = 100
+    x = 90
     for i, s in enumerate(steps):
-        d.rounded_rectangle((x, 480, x + 190, 600), radius=40, fill=(236, 253, 245), outline=(167, 243, 208))
-        d.text((x + 28, 520), s, font=font(24, True), fill=(6, 95, 70))
+        d.rounded_rectangle((x, 480, x + 195, 600), radius=36, fill=(15, 23, 42), outline=BLUE)
+        tw = d.textlength(s, font=font(22, True))
+        d.text((x + (195 - tw) / 2, 522), s, font=font(22, True), fill=BLUE)
         if i < len(steps) - 1:
-            d.text((x + 198, 520), "→", font=font(28, True), fill=MUTED)
-        x += 220
-    d.text((120, 720), "No payments yet — Phase 3. First we prove matching and workflow.", font=font(28), fill=MUTED)
+            d.text((x + 200, 522), "→", font=font(26, True), fill=MUTED)
+        x += 225
+    d.text((120, 720), "No payments yet — Phase 3. First we prove scan, matching, and workflow.", font=font(26), fill=MUTED)
     save(img, "06_workflow")
 
 
 def slide_roadmap():
     img, d = new_slide()
-    d.text((120, 120), "ROADMAP", font=font(26, True), fill=TEAL)
-    d.text((120, 180), "Phased, deliberate delivery", font=font(52, True), fill=INK)
+    d.text((120, 100), "ROADMAP", font=font(24, True), fill=BLUE)
+    d.text((120, 160), "Phased, deliberate delivery", font=font(48, True), fill=INK)
     phases = [
-        ("Phase 1", "Discovery MVP", "Done"),
+        ("Phase 1", "Discovery + Product scan", "Done"),
         ("Phase 2", "Collaboration", "Done"),
         ("Phase 3", "Contracts & payments", "Next"),
-        ("Phase 4", "Scale & learning", "Later"),
+        ("Phase 4", "Live TikHub + learning", "Later"),
     ]
     x = 120
     for title, body, state in phases:
-        d.rounded_rectangle((x, 360, x + 400, 720), radius=18, fill=CARD, outline=LINE)
-        d.text((x + 32, 400), title, font=font(28, True), fill=TEAL)
-        d.text((x + 32, 470), body, font=font(30, True), fill=INK)
-        d.text((x + 32, 600), state, font=font(26), fill=MUTED)
+        d.rounded_rectangle((x, 360, x + 400, 720), radius=16, fill=CARD, outline=LINE)
+        d.rectangle((x, 360, x + 4, 720), fill=BLUE)
+        d.text((x + 32, 400), title, font=font(26, True), fill=BLUE)
+        d.text((x + 32, 470), body, font=font(28, True), fill=INK)
+        d.text((x + 32, 600), state, font=font(24), fill=MUTED)
         x += 440
     save(img, "07_roadmap")
 
 
 def slide_close():
     img, d = new_slide()
-    d.text((120, 260), "Video understanding", font=font(64, True), fill=INK)
-    d.text((120, 350), "→ campaign decisions", font=font(64, True), fill=TEAL)
-    d.text((120, 520), "Creator portal · Presentation · Brand console", font=font(30), fill=MUTED)
+    d.text((120, 260), "Video understanding", font=font(60, True), fill=INK)
+    d.text((120, 350), "→ campaign decisions", font=font(60, True), fill=BLUE)
+    d.text((120, 500), "Product scan · Card-ranked Discover · Creator portal", font=font(28), fill=MUTED)
     d.text((120, 700), "Thank you.", font=font(40, True), fill=INK)
     save(img, "08_close")
 

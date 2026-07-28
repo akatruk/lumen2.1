@@ -6,19 +6,19 @@
   <title>Lumen Influencer Marketplace — Presentation</title>
   <style>
     :root {
-      --bg: #f4f7f6;
-      --card: #ffffff;
-      --ink: #0f172a;
-      --muted: #64748b;
-      --accent: #0f766e;
-      --accent-2: #0369a1;
-      --line: #e2e8f0;
+      --bg: #000000;
+      --card: #0f172a;
+      --ink: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #3b82f6;
+      --accent-2: #60a5fa;
+      --line: #273048;
     }
     * { box-sizing: border-box; }
     html, body {
       margin: 0;
       height: 100%;
-      font-family: "Source Sans 3", "Segoe UI", sans-serif;
+      font-family: "Geist", "Segoe UI", system-ui, sans-serif;
       background: var(--bg);
       color: var(--ink);
     }
@@ -30,9 +30,12 @@
       flex-direction: column;
       justify-content: center;
       background:
-        radial-gradient(1200px 600px at 100% -10%, rgba(15,118,110,.08), transparent),
-        radial-gradient(900px 500px at -10% 110%, rgba(3,105,161,.06), transparent),
+        radial-gradient(1000px 500px at -10% -10%, rgba(59,130,246,.18), transparent),
+        radial-gradient(900px 500px at 110% 110%, rgba(37,99,235,.12), transparent),
+        linear-gradient(rgba(30,41,59,.35) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30,41,59,.35) 1px, transparent 1px),
         var(--bg);
+      background-size: auto, auto, 48px 48px, 48px 48px;
     }
     .slide.active { display: flex; }
     .eyebrow {
@@ -42,12 +45,13 @@
       color: var(--accent);
       font-weight: 700;
       margin-bottom: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     }
     h1 {
       font-size: clamp(2.2rem, 5vw, 3.6rem);
       line-height: 1.1;
       margin: 0 0 1rem;
-      max-width: 16ch;
+      max-width: 18ch;
       font-weight: 700;
     }
     h2 {
@@ -58,7 +62,7 @@
     .lead {
       font-size: clamp(1.1rem, 2vw, 1.4rem);
       color: var(--muted);
-      max-width: 42rem;
+      max-width: 44rem;
       line-height: 1.45;
     }
     ul {
@@ -76,11 +80,13 @@
       margin-top: 1.5rem;
     }
     .card {
-      background: var(--card);
+      background: rgba(15, 23, 42, 0.85);
       border: 1px solid var(--line);
-      border-radius: 14px;
+      border-radius: 12px;
       padding: 1.2rem 1.3rem;
-      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 24px rgba(59,130,246,0.06);
+      border-left: 3px solid var(--accent);
     }
     .card h3 {
       margin: 0 0 0.4rem;
@@ -97,9 +103,10 @@
       padding: 0.75rem 1.25rem;
       font-size: 0.8rem;
       color: var(--muted);
-      background: rgba(244,247,246,.85);
-      backdrop-filter: blur(6px);
+      background: rgba(0,0,0,.75);
+      backdrop-filter: blur(8px);
       border-top: 1px solid var(--line);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     }
     .progress {
       position: fixed;
@@ -107,6 +114,7 @@
       background: var(--accent);
       width: 0%;
       transition: width .2s ease;
+      box-shadow: 0 0 12px rgba(59,130,246,.6);
     }
     .url { color: var(--accent-2); font-weight: 600; word-break: break-all; }
     .flow {
@@ -117,9 +125,9 @@
       align-items: center;
     }
     .chip {
-      background: #ecfdf5;
-      color: #065f46;
-      border: 1px solid #a7f3d0;
+      background: rgba(59,130,246,.12);
+      color: var(--accent-2);
+      border: 1px solid rgba(59,130,246,.35);
       border-radius: 999px;
       padding: 0.35rem 0.75rem;
       font-size: 0.9rem;
@@ -143,17 +151,17 @@
   <div class="deck" id="deck">
 
     <section class="slide active">
-      <div class="eyebrow">Lumen · Thailand</div>
+      <div class="eyebrow">Lumen 2.1 · Thailand</div>
       <h1>Influencer Marketplace</h1>
-      <p class="lead">Find creators whose <strong>videos</strong> fit the product — then collaborate from invite to published post.</p>
-      <p class="lead" style="margin-top:1.5rem;font-size:1rem;">Demo · Discovery + Collaboration MVP</p>
+      <p class="lead">Scan a product → discover TikTok creators → rank by resume card → collaborate to publish.</p>
+      <p class="lead" style="margin-top:1.5rem;font-size:1rem;">Cyber-glass demo · Discovery + Collaboration</p>
     </section>
 
     <section class="slide">
       <div class="eyebrow">Problem</div>
       <h2>Follower count is not fit</h2>
       <ul>
-        <li>Teams still hunt creators manually across TikTok, Instagram, YouTube.</li>
+        <li>Teams still hunt creators manually across TikTok.</li>
         <li>They watch videos, guess audience fit, and chase briefs in chat.</li>
         <li>Wrong creators burn budget and create brand-safety risk.</li>
         <li>Thailand campaigns need language, city, and content-style precision.</li>
@@ -162,19 +170,19 @@
 
     <section class="slide">
       <div class="eyebrow">Solution</div>
-      <h2>Match on content, run the workflow</h2>
+      <h2>Scan → Discover → Collaborate</h2>
       <div class="grid">
         <div class="card">
-          <h3>Brand console</h3>
-          <p>Products, campaigns, discovery, shortlists, invitations, reviews, performance.</p>
+          <h3>Product scan</h3>
+          <p>URL / brief / photos → editable Product Resume Card.</p>
         </div>
         <div class="card">
-          <h3>Creator portal</h3>
-          <p>Accept invites, read briefs, submit drafts, publish links, claim profiles.</p>
+          <h3>Card-ranked Discover</h3>
+          <p>In-app TikTok search with match score + reasons vs the card.</p>
         </div>
         <div class="card">
-          <h3>Lumen analysis</h3>
-          <p>Transcripts, topics, language, style, entities, brand-safety signals.</p>
+          <h3>Two consoles</h3>
+          <p>Brand cyber-glass UI + creator portal for invite-to-publish.</p>
         </div>
       </div>
     </section>
@@ -185,8 +193,8 @@
       <div class="two-col">
         <ul>
           <li><strong>Geo:</strong> Bangkok, Phuket, Chiang Mai, Pattaya, Samui</li>
-          <li><strong>Platforms:</strong> TikTok, Instagram, YouTube</li>
-          <li><strong>Languages:</strong> Thai + English now; RU / ZH next</li>
+          <li><strong>Platforms:</strong> TikTok first (IG / YT later)</li>
+          <li><strong>Languages:</strong> Thai + English; RU / ZH next</li>
         </ul>
         <ul>
           <li>Real estate & hospitality</li>
@@ -199,21 +207,21 @@
 
     <section class="slide">
       <div class="eyebrow">Phase 1</div>
-      <h2>Discovery MVP</h2>
+      <h2>Discovery + Product scan</h2>
       <ul>
-        <li>Explainable match scores (8 signals)</li>
-        <li>Catalog filters, shortlists, compare</li>
-        <li>Products & campaigns</li>
-        <li>Demo analysis jobs + compliant import UI</li>
+        <li>Product Resume Card from scan materials</li>
+        <li>TikTok Discover + influencer dossiers</li>
+        <li>Explainable card-ranked match scores</li>
+        <li>Catalog, shortlists, campaigns</li>
       </ul>
       <p class="lead" style="margin-top:1.5rem;">Live demo next → brand console</p>
     </section>
 
     <section class="slide">
       <div class="eyebrow">Demo cue</div>
-      <h2>Show the brand console</h2>
-      <p class="lead">Open the demo and walk Dashboard → Influencers → Profile match → Products.</p>
-      <p class="url" style="margin-top:1.5rem;">http://167.71.206.43:3000</p>
+      <h2>Show scan → Discover</h2>
+      <p class="lead">Walk Products → Scan → Save &amp; Discover → dossier → add to catalog.</p>
+      <p class="url" style="margin-top:1.5rem;">/products/scan · /discover</p>
     </section>
 
     <section class="slide">
@@ -251,8 +259,7 @@
       <div class="eyebrow">Demo cue</div>
       <h2>Show collaboration</h2>
       <p class="lead">Brand Reviews + Creator portal (Narin · Soi 11 path).</p>
-      <p class="url" style="margin-top:1rem;">http://167.71.206.43:3000/creator</p>
-      <p class="url">http://167.71.206.43:3000/reviews</p>
+      <p class="url" style="margin-top:1rem;">/creator · /reviews</p>
     </section>
 
     <section class="slide">
@@ -260,21 +267,21 @@
       <h2>Built to connect Lumen</h2>
       <ul>
         <li>Next.js brand + creator UI (live demo)</li>
-        <li>Service / repository layer — mocks today, API tomorrow</li>
+        <li>Demo TikTok connector → live TikHub next</li>
         <li>Lumen Analysis client abstraction ready</li>
         <li>Next: NestJS · PostgreSQL · real jobs · auth</li>
       </ul>
-      <p class="lead" style="margin-top:1.2rem;">No uncontrolled scraping. Official APIs & approved providers only.</p>
+      <p class="lead" style="margin-top:1.2rem;">No uncontrolled scraping. Official APIs &amp; approved providers only.</p>
     </section>
 
     <section class="slide">
       <div class="eyebrow">Roadmap</div>
       <h2>Phased delivery</h2>
       <div class="grid">
-        <div class="card"><h3>Phase 1 ✓</h3><p>Discovery MVP</p></div>
+        <div class="card"><h3>Phase 1 ✓</h3><p>Discovery + Product scan</p></div>
         <div class="card"><h3>Phase 2 ✓</h3><p>Collaboration demo</p></div>
         <div class="card"><h3>Phase 3</h3><p>Contracts & payments</p></div>
-        <div class="card"><h3>Phase 4</h3><p>Scale & learning</p></div>
+        <div class="card"><h3>Phase 4</h3><p>Live TikHub & learning</p></div>
       </div>
     </section>
 
