@@ -85,7 +85,7 @@ export async function PATCH(req: Request) {
   try {
     const body = PatchBody.parse(await req.json());
 
-    let existing =
+    const existing =
       user.role === "creator" && user.influencerId
         ? await prisma.invitation.findFirst({
             where: { id: body.id, ...creatorInfluencerFilter(user.influencerId) },
