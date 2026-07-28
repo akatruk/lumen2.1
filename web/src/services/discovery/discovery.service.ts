@@ -66,7 +66,7 @@ function dossierFromCandidate(
     topics: c.topics.map((name, i) => ({ name, confidence: Math.max(0.55, 0.92 - i * 0.08) })),
     style: { formats: [], tone: [] },
     audience: [],
-    brandSafety: { status: "safe", flags: [], notes: "Not analyzed yet." },
+    brandSafety: { status: "unknown", flags: [], notes: "Pending analysis — not scanned yet." },
     evidence,
     source: c.source,
     discoveredAt: c.collectedAt,

@@ -4,24 +4,23 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { collaboration } from "@/services/collaboration";
 import { influencerIdsMatch, marketplace } from "@/services/marketplace";
+import { useCreatorSessionId } from "@/hooks/useCreatorSession";
 import type { CampaignBrief, Invitation, Submission } from "@/types";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 
 export default function CreatorHomePage() {
-  const [influencerId, setInfluencerId] = useState("inf-1");
+  const influencerId = useCreatorSessionId();
   const [invites, setInvites] = useState<Invitation[]>([]);
   const [briefs, setBriefs] = useState<CampaignBrief[]>([]);
   const [subs, setSubs] = useState<Submission[]>([]);
 
   useEffect(() => {
-    const id = collaboration.getCreatorSession()?.influencerId ?? "inf-1";
-    setInfluencerId(id);
-    setInvites(marketplace.listInvitations().filter((i) => influencerIdsMatch(i.influencerId, id)));
-    setBriefs(collaboration.listBriefs({ influencerId: id }));
-    setSubs(collaboration.listSubmissions({ influencerId: id }));
-  }, []);
+    setInvites(marketplace.listInvitations().filter((i) => influencerIdsMatch(i.influencerId, influencerId)));
+    setBriefs(collaboration.listBriefs({ influencerId }));
+    setSubs(collaboration.listSubmissions({ influencerId }));
+  }, [influencerId]);
 
   const me = marketplace.getInfluencer(influencerId);
 
@@ -30,7 +29,7 @@ export default function CreatorHomePage() {
       <div>
         <h1 className="text-2xl font-semibold text-foreground">Creator home</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          {me?.name} · manage invitations, briefs, drafts, and publication.
+          {me?.name ?? influencerId} · manage invitations, briefs, drafts, and publication.
         </p>
       </div>
 

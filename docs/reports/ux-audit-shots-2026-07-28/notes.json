@@ -1,0 +1,67 @@
+[
+  {
+    "name": "00_home",
+    "url": "https://influencers.lumen.universalgravity.org/",
+    "file": "/Users/akatruk_macbook/Documents/github/lumen2.1/docs/reports/ux-audit-shots-2026-07-28/00_home.png"
+  },
+  {
+    "name": "01_scan_empty",
+    "url": "https://influencers.lumen.universalgravity.org/products/scan",
+    "file": "/Users/akatruk_macbook/Documents/github/lumen2.1/docs/reports/ux-audit-shots-2026-07-28/01_scan_empty.png"
+  },
+  {
+    "name": "02_scan_card",
+    "url": "https://influencers.lumen.universalgravity.org/products/scan",
+    "file": "/Users/akatruk_macbook/Documents/github/lumen2.1/docs/reports/ux-audit-shots-2026-07-28/02_scan_card.png"
+  },
+  {
+    "name": "03_discover_ready",
+    "url": "https://influencers.lumen.universalgravity.org/discover?productId=prod-vakfq9b",
+    "file": "/Users/akatruk_macbook/Documents/github/lumen2.1/docs/reports/ux-audit-shots-2026-07-28/03_discover_ready.png"
+  },
+  {
+    "name": "04_discover_ranked",
+    "url": "https://influencers.lumen.universalgravity.org/discover?productId=prod-vakfq9b",
+    "file": "/Users/akatruk_macbook/Documents/github/lumen2.1/docs/reports/ux-audit-shots-2026-07-28/04_discover_ranked.png"
+  },
+  {
+    "name": "05_dossier",
+    "url": "https://influencers.lumen.universalgravity.org/discover/disc-tt-naaeat.ontheearth",
+    "file": "/Users/akatruk_macbook/Documents/github/lumen2.1/docs/reports/ux-audit-shots-2026-07-28/05_dossier.png"
+  },
+  {
+    "name": "06_creator",
+    "url": "https://influencers.lumen.universalgravity.org/creator",
+    "file": "/Users/akatruk_macbook/Documents/github/lumen2.1/docs/reports/ux-audit-shots-2026-07-28/06_creator.png"
+  },
+  {
+    "name": "07_login",
+    "url": "https://influencers.lumen.universalgravity.org/login",
+    "file": "/Users/akatruk_macbook/Documents/github/lumen2.1/docs/reports/ux-audit-shots-2026-07-28/07_login.png"
+  },
+  {
+    "name": "08_invitations",
+    "url": "https://influencers.lumen.universalgravity.org/invitations",
+    "file": "/Users/akatruk_macbook/Documents/github/lumen2.1/docs/reports/ux-audit-shots-2026-07-28/08_invitations.png"
+  },
+  {
+    "name": "09_influencers",
+    "url": "https://influencers.lumen.universalgravity.org/influencers",
+    "file": "/Users/akatruk_macbook/Documents/github/lumen2.1/docs/reports/ux-audit-shots-2026-07-28/09_influencers.png"
+  },
+  {
+    "name": "10_presentation",
+    "url": "https://influencers.lumen.universalgravity.org/presentation",
+    "file": "/Users/akatruk_macbook/Documents/github/lumen2.1/docs/reports/ux-audit-shots-2026-07-28/10_presentation.png"
+  },
+  {
+    "name": "11_mobile_scan",
+    "url": "https://influencers.lumen.universalgravity.org/products/scan",
+    "file": "/Users/akatruk_macbook/Documents/github/lumen2.1/docs/reports/ux-audit-shots-2026-07-28/11_mobile_scan.png"
+  },
+  {
+    "name": "12_mobile_discover",
+    "url": "https://influencers.lumen.universalgravity.org/discover",
+    "file": "/Users/akatruk_macbook/Documents/github/lumen2.1/docs/reports/ux-audit-shots-2026-07-28/12_mobile_discover.png"
+  }
+]

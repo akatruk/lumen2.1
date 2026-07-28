@@ -2,6 +2,20 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.4.8] — 2026-07-28
+
+### Fixed / improved — UX audit top-5
+
+- **Safety badge honesty:** pre-analysis dossiers use `unknown` / `PENDING ANALYSIS` (not false `safe`).
+- **Creator Act-as sync:** `useCreatorSessionId` + session event bus; home/invites/briefs/subs/claim follow Act-as without stale seed subtitle.
+- **Dashboard:** 2 primary CTAs (Scan + Discover); secondary under More; kill “demo set” / “demo audit trail” copy.
+- **Sidebar:** Core / More groups; Login moved to footer (out of mid-nav).
+- **Resume card:** Decision (pitch/topics/geo/prohibited + conf) vs Details accordion.
+
+### QA
+
+- Checklist: `docs/MANUAL_QA_UX_TOP5_2026-07-28.md`.
+
 ## [0.4.7] — 2026-07-28
 
 ### Fixed / improved — BA P1 honesty + match reasons + creator Act-as + card quality

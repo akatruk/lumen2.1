@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { collaboration } from "@/services/collaboration";
 import { influencerIdsMatch, marketplace } from "@/services/marketplace";
+import { useCreatorSessionId } from "@/hooks/useCreatorSession";
 import type { Invitation } from "@/types";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -12,16 +13,18 @@ import { formatDateTime } from "@/lib/utils";
 
 export default function CreatorInvitationsPage() {
   const { push } = useToast();
+  const influencerId = useCreatorSessionId();
   const [invites, setInvites] = useState<Invitation[]>([]);
 
   const refresh = () => {
-    const id = collaboration.getCreatorSession()?.influencerId ?? "inf-1";
-    setInvites(marketplace.listInvitations().filter((i) => influencerIdsMatch(i.influencerId, id)));
+    setInvites(
+      marketplace.listInvitations().filter((i) => influencerIdsMatch(i.influencerId, influencerId)),
+    );
   };
 
   useEffect(() => {
     void marketplace.hydrateBrandPersistence().then(() => refresh());
-  }, []);
+  }, [influencerId]);
 
   function briefPayload(inv: Invitation) {
     const camp = marketplace.getCampaign(inv.campaignId);

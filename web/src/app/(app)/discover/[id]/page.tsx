@@ -286,7 +286,9 @@ export default function DiscoverDossierPage() {
         <Card>
           <CardHeader title="Brand safety" monoLabel="06" />
           <div className="space-y-2 px-5 pb-5 text-sm">
-            <Badge tone={d.brandSafety.status}>{d.brandSafety.status}</Badge>
+            <Badge tone={d.brandSafety.status}>
+              {d.brandSafety.status === "unknown" ? "PENDING ANALYSIS" : d.brandSafety.status}
+            </Badge>
             <p className="text-muted-foreground">{d.brandSafety.notes}</p>
             {d.brandSafety.flags.length ? (
               <div className="flex flex-wrap gap-1">

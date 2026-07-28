@@ -20,6 +20,8 @@ const KEYS = {
   activity: "lumen.activity",
 } as const;
 
+const CREATOR_SESSION_EVENT = "lumen:creator-session";
+
 function uid(prefix: string) {
   return `${prefix}-${Math.random().toString(36).slice(2, 9)}`;
 }
@@ -135,9 +137,25 @@ export const collaboration = {
   setCreatorSession(influencerId: string | null) {
     if (!influencerId) {
       if (typeof window !== "undefined") window.localStorage.removeItem(KEYS.creatorSession);
-      return;
+    } else {
+      saveJson(KEYS.creatorSession, { influencerId } satisfies CreatorSession);
     }
-    saveJson(KEYS.creatorSession, { influencerId } satisfies CreatorSession);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent(CREATOR_SESSION_EVENT, { detail: { influencerId } }),
+      );
+    }
+  },
+
+  /** Subscribe to Act-as changes (same-tab). Returns unsubscribe. */
+  subscribeCreatorSession(cb: (influencerId: string | null) => void) {
+    if (typeof window === "undefined") return () => {};
+    const handler = (e: Event) => {
+      const id = (e as CustomEvent<{ influencerId: string | null }>).detail?.influencerId ?? null;
+      cb(id);
+    };
+    window.addEventListener(CREATOR_SESSION_EVENT, handler);
+    return () => window.removeEventListener(CREATOR_SESSION_EVENT, handler);
   },
 
   listClaims() {

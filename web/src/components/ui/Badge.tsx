@@ -14,6 +14,7 @@ const toneMap: Record<string, string> = {
   safe: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
   review: "bg-amber-500/10 text-amber-500 border-amber-500/20",
   risk: "bg-destructive/10 text-destructive border-destructive/20",
+  unknown: "bg-muted text-muted-foreground border-border",
 };
 
 export function Badge({

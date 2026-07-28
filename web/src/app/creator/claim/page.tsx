@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { collaboration } from "@/services/collaboration";
 import { marketplace } from "@/services/marketplace";
+import { useCreatorSessionId } from "@/hooks/useCreatorSession";
 import type { ProfileClaim } from "@/types";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -12,12 +13,12 @@ import { useToast } from "@/components/Toast";
 
 export default function CreatorClaimPage() {
   const { push } = useToast();
+  const influencerId = useCreatorSessionId();
   const [claims, setClaims] = useState<ProfileClaim[]>([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [proof, setProof] = useState("I control the listed social accounts and can post a verification code.");
 
-  const influencerId = collaboration.getCreatorSession()?.influencerId ?? "inf-1";
   const me = marketplace.getInfluencer(influencerId);
 
   const refresh = () => {

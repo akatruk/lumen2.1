@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { collaboration } from "@/services/collaboration";
 import { marketplace } from "@/services/marketplace";
+import { useCreatorSessionId } from "@/hooks/useCreatorSession";
 import type { CampaignBrief, Submission } from "@/types";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -12,6 +13,7 @@ import { useToast } from "@/components/Toast";
 
 export default function CreatorSubmissionsPage() {
   const { push } = useToast();
+  const influencerId = useCreatorSessionId();
   const [briefs, setBriefs] = useState<CampaignBrief[]>([]);
   const [subs, setSubs] = useState<Submission[]>([]);
   const [briefId, setBriefId] = useState("");
@@ -21,16 +23,15 @@ export default function CreatorSubmissionsPage() {
   const [pubUrl, setPubUrl] = useState("");
 
   const refresh = () => {
-    const id = collaboration.getCreatorSession()?.influencerId ?? "inf-1";
-    const b = collaboration.listBriefs({ influencerId: id });
+    const b = collaboration.listBriefs({ influencerId });
     setBriefs(b);
-    setBriefId((prev) => prev || b[0]?.id || "");
-    setSubs(collaboration.listSubmissions({ influencerId: id }));
+    setBriefId((prev) => (b.some((x) => x.id === prev) ? prev : b[0]?.id || ""));
+    setSubs(collaboration.listSubmissions({ influencerId }));
   };
 
   useEffect(() => {
     refresh();
-  }, []);
+  }, [influencerId]);
 
   const selected = briefs.find((b) => b.id === briefId);
 

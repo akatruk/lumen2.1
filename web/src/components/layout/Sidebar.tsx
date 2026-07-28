@@ -25,25 +25,93 @@ import { useI18n } from "@/lib/i18n";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { ModeBadge } from "@/components/layout/ModeBadge";
 
-const nav = [
-  { href: "/", key: "dashboard" as const, icon: LayoutDashboard },
-  { href: "/discover", key: "discover" as const, icon: Search },
-  { href: "/presentation", key: "presentation" as const, icon: Presentation },
-  { href: "/influencers", key: "influencers" as const, icon: Users },
-  { href: "/products", key: "products" as const, icon: Package },
-  { href: "/login", key: "login" as const, icon: LogIn },
-  { href: "/campaigns", key: "campaigns" as const, icon: Briefcase },
-  { href: "/shortlists", key: "shortlists" as const, icon: ClipboardList },
-  { href: "/invitations", key: "invitations" as const, icon: Mail },
-  { href: "/reviews", key: "reviews" as const, icon: CheckSquare },
-  { href: "/claims", key: "claims" as const, icon: Shield },
-  { href: "/analysis-jobs", key: "analysisJobs" as const, icon: BarChart3 },
-  { href: "/settings", key: "settings" as const, icon: Settings },
+type NavKey =
+  | "dashboard"
+  | "discover"
+  | "presentation"
+  | "influencers"
+  | "products"
+  | "login"
+  | "campaigns"
+  | "shortlists"
+  | "invitations"
+  | "reviews"
+  | "claims"
+  | "analysisJobs"
+  | "settings";
+
+type NavItem = { href: string; key: NavKey; icon: typeof LayoutDashboard };
+
+const coreNav: NavItem[] = [
+  { href: "/", key: "dashboard", icon: LayoutDashboard },
+  { href: "/discover", key: "discover", icon: Search },
+  { href: "/products", key: "products", icon: Package },
+  { href: "/campaigns", key: "campaigns", icon: Briefcase },
+  { href: "/influencers", key: "influencers", icon: Users },
 ];
+
+const moreNav: NavItem[] = [
+  { href: "/presentation", key: "presentation", icon: Presentation },
+  { href: "/shortlists", key: "shortlists", icon: ClipboardList },
+  { href: "/invitations", key: "invitations", icon: Mail },
+  { href: "/reviews", key: "reviews", icon: CheckSquare },
+  { href: "/claims", key: "claims", icon: Shield },
+  { href: "/analysis-jobs", key: "analysisJobs", icon: BarChart3 },
+  { href: "/settings", key: "settings", icon: Settings },
+];
+
+function NavLink({
+  item,
+  index,
+  onNavigate,
+}: {
+  item: NavItem;
+  index: number;
+  onNavigate?: () => void;
+}) {
+  const pathname = usePathname();
+  const { t } = useI18n();
+  const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+  const Icon = item.icon;
+  const formattedIndex = String(index).padStart(2, "0");
+
+  return (
+    <Link
+      href={item.href}
+      onClick={onNavigate}
+      className={cn(
+        "group relative flex items-center justify-between overflow-hidden rounded border border-transparent px-3 py-2.5 text-sm font-medium transition-all duration-200",
+        active
+          ? "border-primary/25 bg-primary/10 text-primary shadow-[0_0_15px_rgba(59,130,246,0.06)]"
+          : "text-muted-foreground hover:bg-accent/30 hover:text-foreground",
+      )}
+    >
+      {active ? <div className="absolute top-2.5 bottom-2.5 left-0 w-[3px] rounded-r bg-primary" /> : null}
+      <div className="flex items-center gap-3">
+        <Icon
+          className={cn(
+            "h-4 w-4 shrink-0 transition-transform duration-200 group-hover:scale-110",
+            active ? "text-primary" : "text-muted-foreground group-hover:text-foreground",
+          )}
+        />
+        <span className="truncate tracking-tight">{t.nav[item.key]}</span>
+      </div>
+      <span
+        className={cn(
+          "select-none font-mono text-[10px] tracking-widest transition-colors",
+          active ? "text-primary" : "text-muted-foreground/50 group-hover:text-muted-foreground",
+        )}
+      >
+        [{formattedIndex}]
+      </span>
+    </Link>
+  );
+}
 
 function NavContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const { t } = useI18n();
+  const loginActive = pathname.startsWith("/login");
 
   return (
     <div className="flex h-full flex-col">
@@ -64,49 +132,46 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
       </div>
 
       <nav className="flex-1 overflow-y-auto p-3">
+        <div className="mb-2 px-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/70">
+          Core
+        </div>
         <ul className="space-y-1.5">
-          {nav.map((item, index) => {
-            const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-            const Icon = item.icon;
-            const formattedIndex = String(index + 1).padStart(2, "0");
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={onNavigate}
-                  className={cn(
-                    "group relative flex items-center justify-between overflow-hidden rounded border border-transparent px-3 py-2.5 text-sm font-medium transition-all duration-200",
-                    active
-                      ? "border-primary/25 bg-primary/10 text-primary shadow-[0_0_15px_rgba(59,130,246,0.06)]"
-                      : "text-muted-foreground hover:bg-accent/30 hover:text-foreground",
-                  )}
-                >
-                  {active ? <div className="absolute top-2.5 bottom-2.5 left-0 w-[3px] rounded-r bg-primary" /> : null}
-                  <div className="flex items-center gap-3">
-                    <Icon
-                      className={cn(
-                        "h-4 w-4 shrink-0 transition-transform duration-200 group-hover:scale-110",
-                        active ? "text-primary" : "text-muted-foreground group-hover:text-foreground",
-                      )}
-                    />
-                    <span className="truncate tracking-tight">{t.nav[item.key]}</span>
-                  </div>
-                  <span
-                    className={cn(
-                      "select-none font-mono text-[10px] tracking-widest transition-colors",
-                      active ? "text-primary" : "text-muted-foreground/50 group-hover:text-muted-foreground",
-                    )}
-                  >
-                    [{formattedIndex}]
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
+          {coreNav.map((item, i) => (
+            <li key={item.href}>
+              <NavLink item={item} index={i + 1} onNavigate={onNavigate} />
+            </li>
+          ))}
+        </ul>
+
+        <div className="mb-2 mt-5 px-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/70">
+          More
+        </div>
+        <ul className="space-y-1.5">
+          {moreNav.map((item, i) => (
+            <li key={item.href}>
+              <NavLink item={item} index={coreNav.length + i + 1} onNavigate={onNavigate} />
+            </li>
+          ))}
         </ul>
       </nav>
 
       <div className="space-y-3 border-t border-border/40 bg-black/5 p-4 dark:bg-white/[0.01]">
+        <Link
+          href="/login"
+          onClick={onNavigate}
+          className={cn(
+            "flex items-center justify-between rounded border px-3 py-2 text-sm font-medium transition-colors",
+            loginActive
+              ? "border-primary/25 bg-primary/10 text-primary"
+              : "border-border/60 text-muted-foreground hover:bg-accent/30 hover:text-foreground",
+          )}
+        >
+          <span className="flex items-center gap-2">
+            <LogIn className="h-4 w-4" />
+            {t.nav.login}
+          </span>
+          <span className="font-mono text-[10px] text-muted-foreground/60">auth</span>
+        </Link>
         <Link
           href="/creator"
           onClick={onNavigate}

@@ -149,7 +149,7 @@ export default function ProductScanPage() {
           <CardHeader
             title="Resume card"
             monoLabel="02"
-            subtitle={`confidence ${Math.round(card.confidence * 100)}% · ${card.sourceMode ?? "demo-scan"}`}
+            subtitle={`${card.sourceMode ?? "demo-scan"}`}
             action={
               <div className="flex gap-2">
                 <Button size="sm" variant="secondary" onClick={() => void saveNew()}>
@@ -161,163 +161,187 @@ export default function ProductScanPage() {
               </div>
             }
           />
-          <div className="grid gap-4 px-5 py-4 md:grid-cols-2">
-            <Field label="Name">
-              <Input value={card.name} onChange={(e) => updateCard("name", e.target.value)} />
-            </Field>
-            <Field label="Brand">
-              <Input value={card.brand} onChange={(e) => updateCard("brand", e.target.value)} />
-            </Field>
-            <Field label="Category">
-              <Input value={card.category} onChange={(e) => updateCard("category", e.target.value)} />
-            </Field>
-            <Field label="Audience">
-              <Input value={card.audience} onChange={(e) => updateCard("audience", e.target.value)} />
-            </Field>
-            <div className="md:col-span-2">
-              <Field label="Pitch (≤240)">
-                <Textarea
-                  value={card.pitch}
-                  onChange={(e) => updateCard("pitch", e.target.value.slice(0, 240))}
-                  rows={3}
-                />
-              </Field>
-              <div className="mt-1 font-mono text-[10px] text-muted-foreground">{card.pitch.length}/240</div>
-            </div>
-            <Field label="Geography (comma)">
-              <Input
-                value={card.geography.join(", ")}
-                onChange={(e) =>
-                  updateCard(
-                    "geography",
-                    e.target.value.split(",").map((s) => s.trim()).filter(Boolean),
-                  )
-                }
-              />
-            </Field>
-            <Field label="Languages (th,en,…)">
-              <Input
-                value={card.languages.join(",")}
-                onChange={(e) =>
-                  updateCard(
-                    "languages",
-                    e.target.value
-                      .split(",")
-                      .map((s) => s.trim())
-                      .filter(Boolean) as LanguageCode[],
-                  )
-                }
-              />
-            </Field>
-            <Field label="Desired topics">
-              <Input
-                value={card.desired_topics.join(", ")}
-                onChange={(e) =>
-                  updateCard(
-                    "desired_topics",
-                    e.target.value.split(",").map((s) => s.trim()).filter(Boolean),
-                  )
-                }
-              />
-            </Field>
-            <Field label="Tone">
-              <Input
-                value={card.tone.join(", ")}
-                onChange={(e) =>
-                  updateCard(
-                    "tone",
-                    e.target.value.split(",").map((s) => s.trim()).filter(Boolean),
-                  )
-                }
-              />
-            </Field>
-            <Field label="Benefits">
-              <Textarea
-                value={card.benefits.join("\n")}
-                onChange={(e) =>
-                  updateCard(
-                    "benefits",
-                    e.target.value.split("\n").map((s) => s.trim()).filter(Boolean).slice(0, 5),
-                  )
-                }
-                rows={4}
-              />
-            </Field>
-            <Field label="Prohibited claims">
-              <Textarea
-                value={card.prohibited_claims.join("\n")}
-                onChange={(e) =>
-                  updateCard(
-                    "prohibited_claims",
-                    e.target.value.split("\n").map((s) => s.trim()).filter(Boolean),
-                  )
-                }
-                rows={4}
-              />
-            </Field>
-            <Field label="Platforms">
-              <Select
-                value={card.platforms[0] ?? "tiktok"}
-                onChange={(e) => updateCard("platforms", [e.target.value as Platform])}
-              >
-                <option value="tiktok">TikTok</option>
-                <option value="instagram">Instagram</option>
-                <option value="youtube">YouTube</option>
-              </Select>
-            </Field>
-            <Field label="Budget type">
-              <Select
-                value={card.budget.type}
-                onChange={(e) =>
-                  updateCard("budget", {
-                    ...card.budget,
-                    type: e.target.value as ProductResumeCard["budget"]["type"],
-                  })
-                }
-              >
-                <option value="unknown">unknown</option>
-                <option value="barter">barter</option>
-                <option value="fixed">fixed</option>
-                <option value="range">range</option>
-              </Select>
-            </Field>
-            <Field label="Budget notes">
-              <Input
-                value={card.budget.notes}
-                onChange={(e) => updateCard("budget", { ...card.budget, notes: e.target.value })}
-              />
-            </Field>
-            <Field label="Success metrics">
-              <Input
-                value={card.success_metrics.join(", ")}
-                onChange={(e) =>
-                  updateCard(
-                    "success_metrics",
-                    e.target.value.split(",").map((s) => s.trim()).filter(Boolean),
-                  )
-                }
-              />
-            </Field>
-          </div>
-          {(card.missing_fields.length > 0 || card.evidence_notes.length > 0) && (
-            <div className="space-y-2 border-t border-border/40 px-5 py-4 text-xs text-muted-foreground">
-              {card.missing_fields.length ? (
-                <div>
-                  Missing:{" "}
-                  {card.missing_fields.map((m) => (
-                    <Badge key={m} className="mr-1">
-                      {m}
-                    </Badge>
-                  ))}
+
+          <div className="space-y-5 px-5 py-4">
+            <section className="space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h3 className="font-mono text-[11px] uppercase tracking-widest text-primary">Decision</h3>
+                <Badge tone={card.confidence >= 0.75 ? "Active" : card.confidence >= 0.5 ? "Reviewing" : "Queued"}>
+                  conf {Math.round(card.confidence * 100)}%
+                </Badge>
+              </div>
+              <div className="md:col-span-2">
+                <Field label="Pitch (≤240)">
+                  <Textarea
+                    value={card.pitch}
+                    onChange={(e) => updateCard("pitch", e.target.value.slice(0, 240))}
+                    rows={3}
+                  />
+                </Field>
+                <div className="mt-1 font-mono text-[10px] text-muted-foreground">{card.pitch.length}/240</div>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <Field label="Desired topics">
+                  <Input
+                    value={card.desired_topics.join(", ")}
+                    onChange={(e) =>
+                      updateCard(
+                        "desired_topics",
+                        e.target.value.split(",").map((s) => s.trim()).filter(Boolean),
+                      )
+                    }
+                  />
+                </Field>
+                <Field label="Geography (comma)">
+                  <Input
+                    value={card.geography.join(", ")}
+                    onChange={(e) =>
+                      updateCard(
+                        "geography",
+                        e.target.value.split(",").map((s) => s.trim()).filter(Boolean),
+                      )
+                    }
+                  />
+                </Field>
+                <div className="md:col-span-2">
+                  <Field label="Prohibited claims">
+                    <Textarea
+                      value={card.prohibited_claims.join("\n")}
+                      onChange={(e) =>
+                        updateCard(
+                          "prohibited_claims",
+                          e.target.value.split("\n").map((s) => s.trim()).filter(Boolean),
+                        )
+                      }
+                      rows={3}
+                    />
+                  </Field>
                 </div>
-              ) : null}
-              <ul className="list-disc pl-4">
-                {card.evidence_notes.map((n) => (
-                  <li key={n}>{n}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+              </div>
+              {(card.missing_fields.length > 0 || card.evidence_notes.length > 0) && (
+                <div className="space-y-2 text-xs text-muted-foreground">
+                  {card.missing_fields.length ? (
+                    <div>
+                      Missing:{" "}
+                      {card.missing_fields.map((m) => (
+                        <Badge key={m} className="mr-1">
+                          {m}
+                        </Badge>
+                      ))}
+                    </div>
+                  ) : null}
+                  <ul className="list-disc pl-4">
+                    {card.evidence_notes.map((n) => (
+                      <li key={n}>{n}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </section>
+
+            <details className="group rounded border border-border/50 open:bg-muted/20">
+              <summary className="cursor-pointer list-none px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-muted-foreground hover:text-foreground [&::-webkit-details-marker]:hidden">
+                <span className="inline-flex items-center gap-2">
+                  <span className="text-primary group-open:rotate-90 transition-transform">▸</span>
+                  Details — name, budget, tone, metrics
+                </span>
+              </summary>
+              <div className="grid gap-4 border-t border-border/40 px-4 py-4 md:grid-cols-2">
+                <Field label="Name">
+                  <Input value={card.name} onChange={(e) => updateCard("name", e.target.value)} />
+                </Field>
+                <Field label="Brand">
+                  <Input value={card.brand} onChange={(e) => updateCard("brand", e.target.value)} />
+                </Field>
+                <Field label="Category">
+                  <Input value={card.category} onChange={(e) => updateCard("category", e.target.value)} />
+                </Field>
+                <Field label="Audience">
+                  <Input value={card.audience} onChange={(e) => updateCard("audience", e.target.value)} />
+                </Field>
+                <Field label="Languages (th,en,…)">
+                  <Input
+                    value={card.languages.join(",")}
+                    onChange={(e) =>
+                      updateCard(
+                        "languages",
+                        e.target.value
+                          .split(",")
+                          .map((s) => s.trim())
+                          .filter(Boolean) as LanguageCode[],
+                      )
+                    }
+                  />
+                </Field>
+                <Field label="Tone">
+                  <Input
+                    value={card.tone.join(", ")}
+                    onChange={(e) =>
+                      updateCard(
+                        "tone",
+                        e.target.value.split(",").map((s) => s.trim()).filter(Boolean),
+                      )
+                    }
+                  />
+                </Field>
+                <Field label="Benefits">
+                  <Textarea
+                    value={card.benefits.join("\n")}
+                    onChange={(e) =>
+                      updateCard(
+                        "benefits",
+                        e.target.value.split("\n").map((s) => s.trim()).filter(Boolean).slice(0, 5),
+                      )
+                    }
+                    rows={4}
+                  />
+                </Field>
+                <Field label="Platforms">
+                  <Select
+                    value={card.platforms[0] ?? "tiktok"}
+                    onChange={(e) => updateCard("platforms", [e.target.value as Platform])}
+                  >
+                    <option value="tiktok">TikTok</option>
+                    <option value="instagram">Instagram</option>
+                    <option value="youtube">YouTube</option>
+                  </Select>
+                </Field>
+                <Field label="Budget type">
+                  <Select
+                    value={card.budget.type}
+                    onChange={(e) =>
+                      updateCard("budget", {
+                        ...card.budget,
+                        type: e.target.value as ProductResumeCard["budget"]["type"],
+                      })
+                    }
+                  >
+                    <option value="unknown">unknown</option>
+                    <option value="barter">barter</option>
+                    <option value="fixed">fixed</option>
+                    <option value="range">range</option>
+                  </Select>
+                </Field>
+                <Field label="Budget notes">
+                  <Input
+                    value={card.budget.notes}
+                    onChange={(e) => updateCard("budget", { ...card.budget, notes: e.target.value })}
+                  />
+                </Field>
+                <Field label="Success metrics">
+                  <Input
+                    value={card.success_metrics.join(", ")}
+                    onChange={(e) =>
+                      updateCard(
+                        "success_metrics",
+                        e.target.value.split(",").map((s) => s.trim()).filter(Boolean),
+                      )
+                    }
+                  />
+                </Field>
+              </div>
+            </details>
+          </div>
         </Card>
       ) : null}
     </div>

@@ -91,7 +91,6 @@ export default function CreatorLayout({ children }: { children: React.ReactNode 
             onChange={(e) => {
               collaboration.setCreatorSession(e.target.value);
               setSessionId(e.target.value);
-              router.refresh();
             }}
             aria-label="Act as creator"
           >
@@ -154,6 +153,7 @@ export default function CreatorLayout({ children }: { children: React.ReactNode 
             className="justify-start"
             onClick={() => {
               collaboration.setCreatorSession(null);
+              setSessionId(null);
               router.push("/creator");
             }}
           >

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { collaboration } from "@/services/collaboration";
 import { marketplace } from "@/services/marketplace";
+import { useCreatorSessionId } from "@/hooks/useCreatorSession";
 import type { CampaignBrief } from "@/types";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -12,16 +13,16 @@ import { formatDate } from "@/lib/utils";
 
 export default function CreatorBriefsPage() {
   const { push } = useToast();
+  const influencerId = useCreatorSessionId();
   const [briefs, setBriefs] = useState<CampaignBrief[]>([]);
 
   const refresh = () => {
-    const id = collaboration.getCreatorSession()?.influencerId ?? "inf-1";
-    setBriefs(collaboration.listBriefs({ influencerId: id }));
+    setBriefs(collaboration.listBriefs({ influencerId }));
   };
 
   useEffect(() => {
     void marketplace.hydrateBrandPersistence().then(() => refresh());
-  }, []);
+  }, [influencerId]);
 
   return (
     <div className="space-y-6">

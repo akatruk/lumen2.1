@@ -42,13 +42,20 @@ export default function DashboardPage() {
             Thailand discovery workspace for brands and agencies.
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Link href="/discover"><Button size="sm">Discover TikTok</Button></Link>
-          <Link href="/products/scan"><Button size="sm" variant="secondary">Scan product</Button></Link>
-          <Link href="/products?new=1"><Button size="sm" variant="secondary">Add Product</Button></Link>
-          <Link href="/campaigns?new=1"><Button size="sm" variant="secondary">Create Campaign</Button></Link>
-          <Link href="/import"><Button size="sm" variant="secondary">Import Influencers</Button></Link>
-          <Link href="/analysis-jobs"><Button size="sm" variant="secondary">Start Analysis</Button></Link>
+        <div className="flex flex-wrap items-center gap-2">
+          <Link href="/products/scan"><Button size="sm">Scan product</Button></Link>
+          <Link href="/discover"><Button size="sm" variant="secondary">Discover TikTok</Button></Link>
+          <details className="relative">
+            <summary className="cursor-pointer list-none rounded border border-border px-3 py-1.5 font-mono text-xs text-muted-foreground hover:bg-accent/40 hover:text-foreground [&::-webkit-details-marker]:hidden">
+              More actions ▾
+            </summary>
+            <div className="absolute right-0 z-20 mt-1 flex min-w-[11rem] flex-col gap-1 rounded border border-border bg-card p-2 shadow-lg">
+              <Link href="/products?new=1" className="rounded px-2 py-1.5 text-sm hover:bg-muted">Add product</Link>
+              <Link href="/campaigns?new=1" className="rounded px-2 py-1.5 text-sm hover:bg-muted">Create campaign</Link>
+              <Link href="/import" className="rounded px-2 py-1.5 text-sm hover:bg-muted">Import influencers</Link>
+              <Link href="/analysis-jobs" className="rounded px-2 py-1.5 text-sm hover:bg-muted">Start analysis</Link>
+            </div>
+          </details>
         </div>
       </div>
 
@@ -63,7 +70,7 @@ export default function DashboardPage() {
 
       <div className="grid gap-6 xl:grid-cols-3">
         <Card className="xl:col-span-2">
-          <CardHeader title="Recommended influencers" subtitle="Highest match scores in the demo set" />
+          <CardHeader title="Recommended influencers" subtitle="Highest match scores in catalog" />
           <div className="divide-y divide-border/40">
             {recommended.map((inf) => (
               <Link
@@ -139,7 +146,7 @@ export default function DashboardPage() {
       </Card>
 
       <Card>
-        <CardHeader title="Activity" subtitle="Local demo audit trail" />
+        <CardHeader title="Activity" subtitle="Recent workspace activity" />
         <div className="divide-y divide-border/40">
           {activity.map((event) => (
             <div key={event.id} className="flex items-start justify-between gap-4 px-5 py-3 text-sm">
