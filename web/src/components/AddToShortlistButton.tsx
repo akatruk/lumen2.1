@@ -13,9 +13,11 @@ export function AddToShortlistButton({ influencer }: { influencer: Influencer })
   const { push } = useToast();
 
   useEffect(() => {
-    const data = marketplace.listShortlists();
-    setLists(data);
-    setSelected(data[0]?.id ?? "");
+    void marketplace.hydrateBrandPersistence().then(() => {
+      const data = marketplace.listShortlists();
+      setLists(data);
+      setSelected(data[0]?.id ?? "");
+    });
   }, []);
 
   return (
@@ -37,8 +39,10 @@ export function AddToShortlistButton({ influencer }: { influencer: Influencer })
         disabled={!selected}
         onClick={() => {
           if (!selected) return;
-          const list = marketplace.addToShortlist(selected, influencer.id);
-          push(`Added ${influencer.name} to ${list?.name ?? "shortlist"}`);
+          void marketplace.addToShortlistAsync(selected, influencer.id).then((list) => {
+            push(`Added ${influencer.name} to ${list?.name ?? "shortlist"}`);
+            setLists(marketplace.listShortlists());
+          });
         }}
       >
         Add to shortlist

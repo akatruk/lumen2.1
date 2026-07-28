@@ -25,7 +25,7 @@ const TOPICS = ["All", "food", "nightlife", "travel", "lifestyle", "skincare", "
 
 export default function DiscoverPage() {
   const searchParams = useSearchParams();
-  const products = useMemo(() => marketplace.listProducts(), []);
+  const [products, setProducts] = useState<Product[]>([]);
 
   const [productId, setProductId] = useState<string>("");
   const [query, setQuery] = useState("food bangkok");
@@ -38,6 +38,12 @@ export default function DiscoverPage() {
   const [ranked, setRanked] = useState<RankedDiscoveryMatch[]>([]);
   const [rawCount, setRawCount] = useState(0);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    void marketplace.hydrateBrandPersistence().then(() => {
+      setProducts(marketplace.listProducts());
+    });
+  }, []);
 
   const selectedProduct: Product | undefined = products.find((p) => p.id === productId);
 

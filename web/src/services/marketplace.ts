@@ -133,6 +133,36 @@ function pushActivity(type: ActivityEvent["type"], message: string) {
   return event;
 }
 
+async function fetchSession(): Promise<{ id: string; email: string } | null> {
+  if (typeof window === "undefined") return null;
+  try {
+    const res = await fetch("/api/auth", { credentials: "same-origin" });
+    if (!res.ok) return null;
+    const data = (await res.json()) as { user: { id: string; email: string } | null };
+    return data.user;
+  } catch {
+    return null;
+  }
+}
+
+function replaceProducts(products: Product[]) {
+  saveJson(KEYS.products, products);
+}
+
+function replaceShortlists(shortlists: Shortlist[]) {
+  saveJson(KEYS.shortlists, shortlists);
+}
+
+function upsertLocalProduct(product: Product) {
+  const rest = getProducts().filter((p) => p.id !== product.id);
+  replaceProducts([product, ...rest]);
+}
+
+function upsertLocalShortlist(shortlist: Shortlist) {
+  const rest = getShortlists().filter((s) => s.id !== shortlist.id);
+  replaceShortlists([shortlist, ...rest]);
+}
+
 export const marketplace = {
   getSettings(): AppSettings {
     return loadJson(KEYS.settings, defaultSettings);
@@ -269,6 +299,23 @@ export const marketplace = {
     return product;
   },
 
+  /** Logged-in: server SoT. Logged-out: localStorage demo. */
+  async createProductAsync(input: Omit<Product, "id" | "createdAt">): Promise<Product> {
+    const session = await fetchSession();
+    if (!session) return this.createProduct(input);
+    const res = await fetch("/api/products", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify(input),
+    });
+    const data = (await res.json()) as { product?: Product; error?: string };
+    if (!res.ok || !data.product) throw new Error(data.error || "Failed to create product");
+    upsertLocalProduct(data.product);
+    pushActivity("product", `Created product ${data.product.name}`);
+    return data.product;
+  },
+
   updateProduct(id: string, patch: Partial<Product>): Product | undefined {
     const products = getProducts();
     const idx = products.findIndex((p) => p.id === id);
@@ -276,6 +323,23 @@ export const marketplace = {
     products[idx] = { ...products[idx], ...patch, id };
     saveJson(KEYS.products, products);
     return products[idx];
+  },
+
+  async updateProductAsync(id: string, patch: Partial<Product>): Promise<Product | undefined> {
+    const local = this.updateProduct(id, patch);
+    if (!local) return undefined;
+    const session = await fetchSession();
+    if (!session) return local;
+    const res = await fetch("/api/products", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({ ...local, id }),
+    });
+    const data = (await res.json()) as { product?: Product; error?: string };
+    if (!res.ok || !data.product) throw new Error(data.error || "Failed to update product");
+    upsertLocalProduct(data.product);
+    return data.product;
   },
 
   /** Persist resume card onto product and sync core fields */
@@ -290,18 +354,44 @@ export const marketplace = {
     const fields = productScan.toProductFields(card);
     const product = this.createProduct(fields);
     pushActivity("product", `Scanned product resume card for ${product.name}`);
-    // Best-effort server persistence when brand is logged in
-    if (typeof window !== "undefined") {
-      void fetch("/api/products", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(product),
-        credentials: "same-origin",
-      }).catch(() => {
-        /* anonymous / offline demo — localStorage remains source of truth */
-      });
-    }
     return product;
+  },
+
+  async createProductFromCardAsync(card: ProductResumeCard): Promise<Product> {
+    const fields = productScan.toProductFields(card);
+    const product = await this.createProductAsync(fields);
+    pushActivity("product", `Scanned product resume card for ${product.name}`);
+    return product;
+  },
+
+  /**
+   * When brand session exists, replace local products + shortlists with server data.
+   * Anonymous demo keeps localStorage / mocks untouched.
+   */
+  async hydrateBrandPersistence(): Promise<{
+    loggedIn: boolean;
+    products: number;
+    shortlists: number;
+  }> {
+    const session = await fetchSession();
+    if (!session) return { loggedIn: false, products: 0, shortlists: 0 };
+    const [prodRes, slRes] = await Promise.all([
+      fetch("/api/products", { credentials: "same-origin" }),
+      fetch("/api/shortlists", { credentials: "same-origin" }),
+    ]);
+    if (prodRes.ok) {
+      const data = (await prodRes.json()) as { products: Product[] };
+      replaceProducts(data.products ?? []);
+    }
+    if (slRes.ok) {
+      const data = (await slRes.json()) as { shortlists: Shortlist[] };
+      replaceShortlists(data.shortlists ?? []);
+    }
+    return {
+      loggedIn: true,
+      products: getProducts().length,
+      shortlists: getShortlists().length,
+    };
   },
 
   listCampaigns(): Campaign[] {
@@ -364,6 +454,27 @@ export const marketplace = {
     return shortlist;
   },
 
+  async createShortlistAsync(input: {
+    name: string;
+    productId?: string;
+    campaignId?: string;
+    notes?: string;
+  }): Promise<Shortlist> {
+    const session = await fetchSession();
+    if (!session) return this.createShortlist(input);
+    const res = await fetch("/api/shortlists", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify(input),
+    });
+    const data = (await res.json()) as { shortlist?: Shortlist; error?: string };
+    if (!res.ok || !data.shortlist) throw new Error(data.error || "Failed to create shortlist");
+    upsertLocalShortlist(data.shortlist);
+    pushActivity("shortlist", `Created shortlist ${data.shortlist.name}`);
+    return data.shortlist;
+  },
+
   addToShortlist(shortlistId: string, influencerId: string, note = "") {
     const lists = getShortlists();
     const list = lists.find((s) => s.id === shortlistId);
@@ -377,6 +488,23 @@ export const marketplace = {
     return list;
   },
 
+  async addToShortlistAsync(shortlistId: string, influencerId: string, note = "") {
+    const list = this.addToShortlist(shortlistId, influencerId, note);
+    if (!list) return undefined;
+    const session = await fetchSession();
+    if (!session) return list;
+    const res = await fetch("/api/shortlists", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify(list),
+    });
+    const data = (await res.json()) as { shortlist?: Shortlist; error?: string };
+    if (!res.ok || !data.shortlist) throw new Error(data.error || "Failed to update shortlist");
+    upsertLocalShortlist(data.shortlist);
+    return data.shortlist;
+  },
+
   removeFromShortlist(shortlistId: string, influencerId: string) {
     const lists = getShortlists();
     const list = lists.find((s) => s.id === shortlistId);
@@ -384,6 +512,23 @@ export const marketplace = {
     list.items = list.items.filter((i) => i.influencerId !== influencerId);
     saveJson(KEYS.shortlists, lists);
     return list;
+  },
+
+  async removeFromShortlistAsync(shortlistId: string, influencerId: string) {
+    const list = this.removeFromShortlist(shortlistId, influencerId);
+    if (!list) return undefined;
+    const session = await fetchSession();
+    if (!session) return list;
+    const res = await fetch("/api/shortlists", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify(list),
+    });
+    const data = (await res.json()) as { shortlist?: Shortlist; error?: string };
+    if (!res.ok || !data.shortlist) throw new Error(data.error || "Failed to update shortlist");
+    upsertLocalShortlist(data.shortlist);
+    return data.shortlist;
   },
 
   updateShortlistItemNote(shortlistId: string, influencerId: string, note: string) {
@@ -403,6 +548,23 @@ export const marketplace = {
     lists[idx] = { ...lists[idx], ...patch, id };
     saveJson(KEYS.shortlists, lists);
     return lists[idx];
+  },
+
+  async updateShortlistAsync(id: string, patch: Partial<Shortlist>) {
+    const list = this.updateShortlist(id, patch);
+    if (!list) return undefined;
+    const session = await fetchSession();
+    if (!session) return list;
+    const res = await fetch("/api/shortlists", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify(list),
+    });
+    const data = (await res.json()) as { shortlist?: Shortlist; error?: string };
+    if (!res.ok || !data.shortlist) throw new Error(data.error || "Failed to update shortlist");
+    upsertLocalShortlist(data.shortlist);
+    return data.shortlist;
   },
 
   listInvitations(): Invitation[] {

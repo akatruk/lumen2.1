@@ -69,16 +69,16 @@ export default function ProductScanPage() {
     setCard({ ...card, [key]: value, sourceMode: "manual" });
   }
 
-  function saveNew() {
+  async function saveNew() {
     if (!card) return;
-    const product = marketplace.createProductFromCard(card);
+    const product = await marketplace.createProductFromCardAsync(card);
     push(`Saved ${product.name}`);
     router.push(`/products/${product.id}`);
   }
 
-  function saveAndDiscover() {
+  async function saveAndDiscover() {
     if (!card) return;
-    const product = marketplace.createProductFromCard(card);
+    const product = await marketplace.createProductFromCardAsync(card);
     push(`Saved ${product.name} — opening Discover`);
     router.push(`/discover?productId=${product.id}`);
   }
@@ -152,10 +152,10 @@ export default function ProductScanPage() {
             subtitle={`confidence ${Math.round(card.confidence * 100)}% · ${card.sourceMode ?? "demo-scan"}`}
             action={
               <div className="flex gap-2">
-                <Button size="sm" variant="secondary" onClick={saveNew}>
+                <Button size="sm" variant="secondary" onClick={() => void saveNew()}>
                   Save product
                 </Button>
-                <Button size="sm" onClick={saveAndDiscover}>
+                <Button size="sm" onClick={() => void saveAndDiscover()}>
                   Save & Discover matches
                 </Button>
               </div>

@@ -9,13 +9,14 @@ generator client {
 }
 
 model User {
-  id           String    @id @default(cuid())
-  email        String    @unique
+  id           String     @id @default(cuid())
+  email        String     @unique
   passwordHash String
   name         String
-  role         String    @default("brand")
-  createdAt    DateTime  @default(now())
+  role         String     @default("brand")
+  createdAt    DateTime   @default(now())
   products     Product[]
+  shortlists   Shortlist[]
 }
 
 model Product {
@@ -38,6 +39,19 @@ model Product {
   resumeCardJson    String?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+}
+
+model Shortlist {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String
+  productId  String?
+  campaignId String?
+  notes      String   @default("")
+  itemsJson  String   @default("[]")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model DiscoveryCache {

@@ -6,6 +6,7 @@ import { Card, CardHeader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Field, Input } from "@/components/ui/Field";
 import { useToast } from "@/components/Toast";
+import { marketplace } from "@/services/marketplace";
 
 type User = { id: string; email: string; name: string; role: string };
 
@@ -42,6 +43,7 @@ export default function LoginPage() {
       const data = (await res.json()) as { error?: string; user?: User };
       if (!res.ok || !data.user) throw new Error(data.error || "Auth failed");
       setUser(data.user);
+      await marketplace.hydrateBrandPersistence();
       push(`Signed in as ${data.user.email}`);
       router.push("/products/scan");
     } catch (e) {

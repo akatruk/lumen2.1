@@ -24,7 +24,7 @@ export default function ShortlistsPage() {
   };
 
   useEffect(() => {
-    refresh();
+    void marketplace.hydrateBrandPersistence().then(() => refresh());
   }, []);
 
   const selected = useMemo(() => lists.find((l) => l.id === selectedId), [lists, selectedId]);
@@ -57,10 +57,11 @@ export default function ShortlistsPage() {
             size="sm"
             onClick={() => {
               if (!name.trim()) return;
-              const created = marketplace.createShortlist({ name: name.trim() });
-              setName("");
-              refresh();
-              setSelectedId(created.id);
+              void marketplace.createShortlistAsync({ name: name.trim() }).then((created) => {
+                setName("");
+                refresh();
+                setSelectedId(created.id);
+              });
             }}
           >
             Create shortlist
@@ -127,8 +128,7 @@ export default function ShortlistsPage() {
                           size="sm"
                           variant="ghost"
                           onClick={() => {
-                            marketplace.removeFromShortlist(selected.id, inf.id);
-                            refresh();
+                            void marketplace.removeFromShortlistAsync(selected.id, inf.id).then(() => refresh());
                           }}
                         >
                           Remove
@@ -153,8 +153,7 @@ export default function ShortlistsPage() {
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   onBlur={() => {
-                    marketplace.updateShortlist(selected.id, { notes });
-                    refresh();
+                    void marketplace.updateShortlistAsync(selected.id, { notes }).then(() => refresh());
                   }}
                 />
               </Field>

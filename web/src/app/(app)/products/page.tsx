@@ -34,8 +34,10 @@ export default function ProductsPage() {
   const refresh = () => setProducts(marketplace.listProducts());
 
   useEffect(() => {
-    refresh();
-    if (search.get("new") === "1") setOpen(true);
+    void marketplace.hydrateBrandPersistence().then(() => {
+      refresh();
+      if (search.get("new") === "1") setOpen(true);
+    });
   }, [search]);
 
   const title = useMemo(() => (editingId ? "Edit product" : "Create product"), [editingId]);
@@ -59,7 +61,7 @@ export default function ProductsPage() {
     setOpen(true);
   }
 
-  function submit() {
+  async function submit() {
     const payload = {
       name: form.name.trim(),
       brand: form.brand.trim(),
@@ -73,10 +75,11 @@ export default function ProductsPage() {
       benefits: form.benefits.split(",").map((s) => s.trim()).filter(Boolean),
       prohibitedClaims: form.prohibitedClaims.split(",").map((s) => s.trim()).filter(Boolean),
       desiredTopics: form.desiredTopics.split(",").map((s) => s.trim()).filter(Boolean),
+      platforms: ["tiktok" as const],
     };
     if (!payload.name || !payload.brand) return;
-    if (editingId) marketplace.updateProduct(editingId, payload);
-    else marketplace.createProduct(payload);
+    if (editingId) await marketplace.updateProductAsync(editingId, payload);
+    else await marketplace.createProductAsync(payload);
     setOpen(false);
     setEditingId(null);
     setForm(emptyForm);
@@ -127,7 +130,7 @@ export default function ProductsPage() {
             <Field label="Prohibited claims"><Textarea value={form.prohibitedClaims} onChange={(e) => setForm({ ...form, prohibitedClaims: e.target.value })} /></Field>
           </div>
           <div className="flex gap-2 border-t border-border/40 px-5 py-4">
-            <Button onClick={submit}>Save</Button>
+            <Button onClick={() => void submit()}>Save</Button>
             <Button variant="secondary" onClick={() => setOpen(false)}>Cancel</Button>
           </div>
         </Card>

@@ -2,6 +2,16 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.4.3] — 2026-07-28
+
+### Added — Brand persistence hydrate (products + shortlists)
+
+- Logged-in brand: `GET /api/products` + new `GET/POST/PUT /api/shortlists` as server SoT.
+- `marketplace.hydrateBrandPersistence()` on login / products / shortlists / discover.
+- Async create/update for products & shortlists when session exists; anonymous demo stays localStorage.
+- Prisma `Shortlist` model (`itemsJson`). BA status: `docs/reports/BA_STATUS_2026-07-28_v2.md`.
+- Health `0.4.3`.
+
 ## [0.4.2] — 2026-07-28
 
 ### Added — Public HTTPS via nginx + Let's Encrypt
