@@ -12,6 +12,12 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 - **Resume card:** merge brief prohibitions into `prohibited_claims`; calibrate confidence from filled fields (not LLM self-score alone).
 - Dossier Evidence subtitle reflects TikHub vs demo source.
 
+### QA
+
+- 2026-07-28 HTTPS manual QA **ALL P0/P1 PASS** — checklist `docs/MANUAL_QA_BA_P1_PACK.md`.
+- Followers live non-zero; reasons include Reach/ER/views; Act-as `[TikHub]`; scan conf 0.92 + prohibitions on rich brief; badge Live.
+- Feature `1c163ae`; smoke `0.4.7`.
+
 ## [0.4.6] — 2026-07-28
 
 ### Fixed — TikHub followers/reach mapping (BA P1)
