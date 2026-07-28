@@ -2,6 +2,14 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.3.2] — 2026-07-28
+
+### Changed — Discovery model
+
+- Product requirement: **in-app TikTok discovery** builds influencer **dossiers** (topics/brand, style, audience, safety, evidence). CSV/URL are fallback only.
+- New canonical doc: `docs/DISCOVERY_AND_DOSSIER.md`.
+- Updated Phase 0 decisions, MVP scope, PRD §5.2/§9/§10, architecture, roadmap, compliance.
+
 ## [0.3.1] — 2026-07-28
 
 ### Added — Phase 0 product validation

@@ -70,15 +70,19 @@ The user can:
 - add product description, category, price range, target location, target audience, and prohibited claims;
 - create a campaign with platforms, deliverables, dates, budget range, and success metrics.
 
-### 5.2 Influencer Collection
+### 5.2 Influencer Collection & Discovery
 
 The system can:
 
-- import influencer profile URLs manually or by CSV;
-- ingest data through approved providers or platform APIs;
+- **discover TikTok influencers from inside the product** (internal search: keywords, topics, geo, language, reach band);
+- ingest candidates through an **approved connector** (platform API and/or contracted provider — not uncontrolled scraping);
+- build and refresh an **influencer dossier** (brand/topics, style, audience signals, safety, evidence from recent videos);
+- import influencer profile URLs manually or by CSV as a **fallback**;
 - avoid duplicate profiles;
 - record data source, collection time, and authorization status;
 - allow a creator to claim or request removal of a profile.
+
+Canonical spec: [`DISCOVERY_AND_DOSSIER.md`](./DISCOVERY_AND_DOSSIER.md).
 
 ### 5.3 Video Analysis
 
@@ -178,7 +182,7 @@ Weights can be changed per campaign. Missing data must reduce confidence rather 
 
 ## 9. MVP Success Criteria
 
-- an operator can import a creator and analyze recent videos;
+- an operator can **discover** a creator on TikTok from the app, open a dossier, and analyze recent videos;
 - a brand can create a product and receive explainable creator recommendations;
 - a campaign can progress from shortlist to accepted invitation;
 - a creator can submit content for review;
@@ -191,7 +195,7 @@ Weights can be changed per campaign. Missing data must reduce confidence rather 
 
 | # | Question | Decision |
 | --- | --- | --- |
-| 1 | Which influencer data sources are approved for the MVP? | Manual profile URL + CSV import + creator claim. No uncontrolled scraping. Optional approved provider later after legal OK. |
+| 1 | Which influencer data sources are approved for the MVP? | **Primary: in-app TikTok discovery** via approved API/provider connector → Lumen analysis → dossier. Fallback: manual URL + CSV + creator claim. No uncontrolled DIY scraping. |
 | 2 | Will creators publish only to their own social accounts, or will Lumen also host public videos? | **Own social accounts only.** No public consumer feed / auto-publish in MVP. |
 | 3 | Which product category will be used for the pilot? | **Restaurant / F&B (Bangkok)** — brand: Bangkok Bites Co., product: Soi 11 Thai Kitchen. |
 | 4 | Which languages are required at launch? | **Thai + English** for pilot KPIs. RU/ZH optional in analysis, not launch gates. |

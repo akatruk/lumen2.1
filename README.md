@@ -91,8 +91,9 @@ Only the minimum required public or authorized data should be stored. Influencer
 ### Phase 1: Discovery MVP
 
 - product and campaign setup;
-- manual/CSV influencer import;
-- video analysis;
+- **in-app TikTok discovery** and influencer **dossiers**;
+- manual/CSV influencer import (fallback);
+- video analysis via Lumen;
 - filters, scoring, and shortlists;
 - internal campaign workflow.
 
@@ -113,9 +114,9 @@ Only the minimum required public or authorized data should be stored. Influencer
 
 ## Project Status
 
-**Phase 0 Product Validation: complete** — see [`docs/phase0/`](docs/phase0/README.md) (F&B / Soi 11 pilot decisions, scope, brief, 60-row influencer CSV, analysis contract, compliance review).
+**Phase 0 Product Validation: complete** — see [`docs/phase0/`](docs/phase0/README.md) (F&B / Soi 11 pilot). Discovery model: **app finds TikTok creators and builds dossiers** — [`docs/DISCOVERY_AND_DOSSIER.md`](docs/DISCOVERY_AND_DOSSIER.md).
 
-Phase 1–2 Discovery + Collaboration **demo UI** lives in `web/` (Next.js + TypeScript + Tailwind). It uses mock Thailand data and a mock Lumen Analysis client. Shortlists, products, campaigns, and settings persist in browser `localStorage`. Next build focus: production API/auth/Lumen wiring against the Phase 0 pilot scenario.
+Phase 1–2 Discovery + Collaboration **demo UI** lives in `web/` (Next.js + TypeScript + Tailwind). It uses mock Thailand data and a mock Lumen Analysis client (catalog is fixture-based today; live TikTok discovery is the next production build). Shortlists, products, campaigns, and settings persist in browser `localStorage`.
 
 ### Local development
 

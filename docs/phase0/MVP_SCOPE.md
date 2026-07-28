@@ -9,6 +9,8 @@
 ### Brand console
 
 - Product + campaign CRUD for the pilot brand
+- **In-app TikTok discovery** (search/filters) → candidate list
+- **Influencer dossier** (topics/brand signals, style, audience, safety, evidence)
 - Influencer catalog: search, filters (platform, city, language, topic, followers, match)
 - Explainable match score vs product/campaign (weights configurable)
 - Shortlists + compare (2–4)
@@ -17,7 +19,7 @@
 - Reviews: approve / request changes
 - Claims queue (verify / reject)
 - Analysis jobs queue (submit + progress + failure visibility)
-- Import preview: profile URL list + CSV (no live scrape in pilot UI)
+- Fallback import: profile URL list + CSV (supplement only)
 - Activity / audit trail for workflow actions
 - Settings: default videos-to-analyze, match weights, demo reset (until real tenant settings)
 
@@ -38,9 +40,10 @@
 
 ### Data
 
-- Thailand-focused creators; TikTok primary
+- Thailand-focused creators; **TikTok discovered in-app**
 - Languages th/en for pilot KPIs
-- Pilot set ≥50 profiles (see `influencer-pilot-set.csv`); demo UI may show a subset
+- Seed/fixture CSV (`influencer-pilot-set.csv`) for demos/tests only — **not** the production acquisition model
+- Dossiers persisted with freshness + source attribution
 
 ## Out of scope (pilot)
 
@@ -48,17 +51,18 @@
 | --- | --- |
 | Payments / escrow / tax | Phase 3 + legal |
 | Micro-contracts / e-sign | Phase 3 |
-| Uncontrolled scraping | Compliance |
+| Uncontrolled DIY scraping | Compliance — use approved connector |
 | Auto-publish to socials | Creators own accounts |
 | Real-time platform analytics for all networks | Provider cost; manual snapshots OK |
 | Multi-tenant agency workspaces | Phase 4 |
 | RU/ZH as launch KPI | Optional analysis only |
 | Public consumer feed | Not marketplace |
+| Agency-only creator sourcing as the main path | Product must self-discover |
 
 ## Exit criteria (pilot success)
 
-1. Operator imports F&B creators (CSV/URL) and runs analysis jobs to completion.
-2. Brand gets explainable shortlist for Soi 11 campaign with evidence.
+1. Operator **searches TikTok from the app**, opens dossiers, and runs analysis jobs to completion.
+2. Brand gets explainable shortlist for Soi 11 campaign with dossier evidence.
 3. At least one invitation → brief → draft → approve → publish URL path completes.
 4. Every recommendation and status change is auditable.
 5. No dependency on payments or contracts to finish the loop.

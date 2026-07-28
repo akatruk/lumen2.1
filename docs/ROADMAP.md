@@ -9,7 +9,7 @@ Goals:
 
 - [x] select one pilot product category → **Restaurant / F&B (Bangkok)**;
 - [x] identify the first brand or agency users → **Bangkok Bites Co. / Soi 11 Thai Kitchen**;
-- [x] confirm the initial influencer data source → **manual URL + CSV + creator claim** (no scraping);
+- [x] confirm the initial influencer data source → **in-app TikTok discovery** (approved connector) + dossier; CSV/URL fallback;
 - [x] define launch languages and campaign metrics → **th/en**; views/likes/comments/saves + cycle time;
 - [x] confirm that creators publish to their own social accounts → **yes**.
 
@@ -27,7 +27,8 @@ Capabilities:
 
 - authentication and roles;
 - brand, product, and campaign records;
-- influencer import by profile URL and CSV;
+- **in-app TikTok discovery** + influencer **dossier** (topics/brand, style, audience, safety);
+- influencer import by profile URL and CSV (fallback);
 - influencer catalog and filters;
 - Lumen video-analysis integration;
 - topic, language, style, and safety summaries;
@@ -36,7 +37,7 @@ Capabilities:
 
 Exit criteria:
 
-- operators can analyze the pilot creator set;
+- operators can discover TikTok creators in-app, open dossiers, and analyze videos;
 - recommendations can be reviewed with source evidence;
 - brands can produce a usable shortlist.
 
@@ -87,14 +88,13 @@ Capabilities:
 
 Start with a narrow pilot:
 
-- one product category;
-- TikTok as the first discovery surface;
+- one product category (**F&B / Bangkok**);
+- TikTok as the first discovery surface (**in-app search → dossier**);
 - Thailand-based creators;
 - Thai and English analysis;
-- manual/CSV import plus one approved data provider;
-- 100–500 creator profiles;
+- approved TikTok connector (+ CSV/URL fallback);
 - brand-managed outreach;
 - no payments in the application.
 
-This scope validates whether video-based matching produces better campaign shortlists before the project invests in contracts, payments, and full marketplace automation.
+This scope validates whether **internal discovery + video-based dossiers** produce better campaign shortlists before the project invests in contracts, payments, and full marketplace automation.
 

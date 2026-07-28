@@ -17,18 +17,25 @@
 
 ## 2. Approved collection methods (pilot)
 
-**Allowed**
+**Primary (required product capability)**
 
-1. Manual paste of public profile URLs by brand/agency operators  
-2. CSV import of profile URLs + optional public metrics (operator-attested)  
-3. Creator-initiated profile claim + corrections / removal request  
-4. Future: one **contracted** data provider or official platform API (legal OK required)
+1. **In-app TikTok discovery** via Marketplace → approved connector (official API and/or contracted provider, e.g. same class as Lumen TikHub)
+2. Automatic pull of public profile metadata + recent public videos for dossier + Lumen analysis
+3. Source + collection timestamp recorded on every profile/video
+
+**Secondary (fallback)**
+
+4. Manual paste of public profile URLs  
+5. CSV import of profile URLs + optional public metrics (operator-attested)  
+6. Creator-initiated profile claim + corrections / removal request  
 
 **Forbidden**
 
-1. Uncontrolled scraping / ToS-violating automation  
+1. Uncontrolled DIY scraping / ToS-violating automation outside an approved connector  
 2. Purchasing shady “follower dumps” without provenance  
 3. Storing private DMs or non-public content without authorization  
+
+See also [`../DISCOVERY_AND_DOSSIER.md`](../DISCOVERY_AND_DOSSIER.md).
 
 ## 3. Retention (pilot defaults — tune with counsel)
 
@@ -70,7 +77,7 @@ Pilot stores creator and brand operational data that may include personal data u
 
 | Platform | Pilot posture |
 | --- | --- |
-| TikTok | Public URL + creator-authorized; prefer official API/provider later |
+| TikTok | **In-app discovery via approved connector**; creator claim/correction; prefer official API or contracted provider (Lumen-compatible) |
 | Instagram | Same |
 | YouTube | Same; lower priority for F&B pilot |
 

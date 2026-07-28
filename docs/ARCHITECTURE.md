@@ -12,7 +12,8 @@ Brand Console ───────┐
 Creator Portal ──────┘          │
                                 ├── Redis / BullMQ
                                 ├── Object Storage
-                                ├── Data Source Connectors
+                                ├── TikTok Discovery Connector (approved API/provider)
+                                ├── Data Source Connectors (CSV/URL fallback, claim)
                                 └── Lumen Analysis API
                                          │
                                          └── Transcription and Video Analysis
@@ -20,7 +21,7 @@ Creator Portal ──────┘          │
 
 ### Brand Console
 
-Supports product setup, discovery, filters, match comparison, shortlists, campaign creation, invitations, content review, and reporting.
+Supports product setup, **in-app TikTok discovery**, influencer **dossiers**, filters, match comparison, shortlists, campaign creation, invitations, content review, and reporting.
 
 ### Creator Portal
 
@@ -28,21 +29,27 @@ Supports profile claiming, account verification, invitations, briefs, content su
 
 ### Marketplace API
 
-Owns marketplace users, brands, products, influencer records, campaigns, invitations, submissions, and match results.
+Owns marketplace users, brands, products, influencer records, **dossiers**, campaigns, invitations, submissions, and match results.
 
 ### Lumen Analysis API
 
 Accepts an authorized video reference or media object and returns a normalized analysis result. The marketplace should treat Lumen as an asynchronous service.
 
+### TikTok Discovery Connector
+
+Searches and fetches public TikTok creator/video metadata through an **approved** platform API or contracted provider (same integration class as Lumen’s TikHub usage). Normalizes results into influencer + video snapshots for dossier build. Uncontrolled scraping is out of scope.
+
 ### Data Source Connectors
 
-Each connector translates an approved platform API, data provider, CSV import, or creator-authorized connection into a common influencer and video format.
+Additional connectors translate CSV import, manual URL paste, or creator-authorized connection into the same influencer and video format (fallback paths).
+
+Canonical product spec: [`DISCOVERY_AND_DOSSIER.md`](./DISCOVERY_AND_DOSSIER.md).
 
 ## 3. Service Boundary
 
 The marketplace owns:
 
-- influencer discovery and profile management;
+- influencer **discovery** (TikTok in-app), dossier management, and profile management;
 - brands, products, and campaigns;
 - matching and ranking;
 - invitations and collaboration;
