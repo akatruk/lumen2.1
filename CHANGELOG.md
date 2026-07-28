@@ -10,6 +10,16 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 - `/discover/[id]` influencer dossier (identity, reach, topics, style, audience, safety, evidence).
 - Demo `MockTikTokConnector` + `discovery.service` (localStorage); add-to-catalog merges into Influencers.
 - Manual QA: `docs/MANUAL_QA_DISCOVERY.md`. Smoke covers `/discover`.
+- Health version `0.3.3`.
+
+### Fixed
+
+- Discovery mock `pick()` signed-shift crash on synthetic candidates (`0ca537f`).
+
+### QA
+
+- 2026-07-28 live http://167.71.206.43:3000 — health `0.3.3`.
+- Smoke **PASS** (incl. `/discover`); Discover P0/P1 **ALL PASS**; sign-off **READY TO SHIP**.
 
 ## [0.3.2] — 2026-07-28
 
