@@ -1,21 +1,21 @@
 /**
  * Fixture: TikHub web search puts followers on item.authorStats, not author.
- * Run: cd web && npx --yes tsx src/server/tikhub.followers.fixture.ts
+ * Kept outside `src/` so Next.js production typecheck ignores it.
+ * Run: cd web && npx --yes tsx scripts/tikhub.followers.fixture.ts
  */
 import Module from "node:module";
 
-const originalLoad = (Module as unknown as { _load: (...args: unknown[]) => unknown })._load;
-(Module as unknown as { _load: (...args: unknown[]) => unknown })._load = function (
-  request: string,
-  parent: unknown,
-  isMain: boolean,
-) {
-  if (request === "server-only") return {};
-  return originalLoad(request, parent, isMain);
+const mod = Module as unknown as {
+  _load: (...args: unknown[]) => unknown;
+};
+const originalLoad = mod._load;
+mod._load = (...args: unknown[]) => {
+  if (args[0] === "server-only") return {};
+  return originalLoad(...args);
 };
 
 async function main() {
-  const { normalizeTikHubItem, videosToCandidates } = await import("./tikhub");
+  const { normalizeTikHubItem, videosToCandidates } = await import("../src/server/tikhub");
 
   const sample = {
     id: "712345",
