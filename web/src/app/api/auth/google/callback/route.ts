@@ -46,8 +46,7 @@ export async function GET(req: Request) {
     const profile = await exchangeGoogleCode(code);
     const user = await loginOrRegisterGoogle(profile);
     const token = await createSessionToken(user);
-    const dest = new URL("/login", appOrigin());
-    dest.searchParams.set("google", "1");
+    const dest = new URL("/products/scan", appOrigin());
     const res = NextResponse.redirect(dest);
     res.cookies.set(SESSION_COOKIE, token, sessionCookieOptions());
     res.cookies.set(GOOGLE_STATE_COOKIE, "", { path: "/", maxAge: 0 });

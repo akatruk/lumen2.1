@@ -97,6 +97,7 @@
     "password": "密码",
     "register": "注册",
     "needAccount": "没有账号？",
-    "haveAccount": "已有账号？"
+    "haveAccount": "已有账号？",
+    "googleSessionMissing": "Google 登录完成，但没有会话 cookie — 检查 COOKIE_SECURE / HTTPS。"
   }
 }

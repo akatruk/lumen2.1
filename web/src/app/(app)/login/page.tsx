@@ -37,7 +37,9 @@ export default function LoginPage() {
 
   useEffect(() => {
     const err = search.get("error");
-    if (err) push(err, "err");
+    if (err) {
+      push(decodeURIComponent(err.replace(/\+/g, " ")), "err");
+    }
     if (search.get("google") === "1") {
       void (async () => {
         const r = await fetch("/api/auth");
@@ -47,10 +49,12 @@ export default function LoginPage() {
           await marketplace.hydrateBrandPersistence();
           push(`${t.login.signedInAs} ${d.user.email}`);
           router.replace("/products/scan");
+          return;
         }
+        push(t.login.googleSessionMissing, "err");
       })();
     }
-  }, [search, push, router, t.login.signedInAs]);
+  }, [search, push, router, t.login.signedInAs, t.login.googleSessionMissing]);
 
   async function submit() {
     setLoading(true);
@@ -94,6 +98,12 @@ export default function LoginPage() {
         <h1 className="text-2xl font-semibold text-foreground">{t.login.title}</h1>
         <p className="mt-1 text-sm text-muted-foreground">{t.login.subtitle}</p>
       </div>
+
+      {search.get("error") ? (
+        <div className="rounded border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+          {decodeURIComponent(search.get("error")!.replace(/\+/g, " "))}
+        </div>
+      ) : null}
 
       {user ? (
         <Card className="space-y-4 p-5">

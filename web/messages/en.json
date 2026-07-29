@@ -97,6 +97,7 @@
     "password": "Password",
     "register": "Register",
     "needAccount": "Need an account?",
-    "haveAccount": "Have an account?"
+    "haveAccount": "Have an account?",
+    "googleSessionMissing": "Google sign-in finished but no session cookie — check COOKIE_SECURE / HTTPS."
   }
 }
