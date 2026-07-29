@@ -39,6 +39,8 @@ jobs:
             --exclude 'web/node_modules' \
             --exclude 'web/.next' \
             --exclude '.DS_Store' \
+            --exclude '.env' \
+            --exclude '.env.google' \
             ./ "${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/"
 
       - name: Write runtime env on droplet
