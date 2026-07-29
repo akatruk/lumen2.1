@@ -30,6 +30,8 @@
 | M3 | `/products/scan` → **Load Shanghai sample** | Brief/card 沪上小馆; CTA **not** “Soi 11” | **PASS** — `Load Shanghai sample` in HTML |
 | M4 | Scan → Demo scan | Card geo China/Shanghai, langs zh, platforms douyin | **PASS** — wired (demo path); sample CTA China |
 | M5 | Grep HTML markers | No `Load Soi 11` / `Bangkok, Phuket` as UI defaults | **PASS** — zero bad hits on key pages |
+| M6 | Fresh session `/` | Shell defaults to **Chinese** (`仪表盘`, `发现抖音达人`) | **PASS** — live UI defaults zh |
+| M7 | Click `EN`, reload `/` | Shell flips to English and persists after reload | **PASS** — `localStorage.lumen.uiLocale="en"`, heading `Dashboard` after reload |
 
 ## Douyin regression (P0)
 
@@ -73,9 +75,9 @@ phase0 historical Thailand banners; topping up TikHub Douyin credits; sibling re
 | Field | Value |
 | --- | --- |
 | Date | 2026-07-29 |
-| Tester | Auto (agent) — curl/smoke/API/HTML markers |
-| Build / commit | `d26f63f` |
-| Deploy run | [30433415063](https://github.com/akatruk/lumen2.1/actions/runs/30433415063) **success** |
+| Tester | Auto (agent) — curl/smoke/API/HTML markers + live browser locale toggle |
+| Build / commit | `6dc3fea` |
+| Deploy run | [30449109927](https://github.com/akatruk/lumen2.1/actions/runs/30449109927) **success** |
 | Environment | https://influencers.lumen.universalgravity.org |
 | P0 summary | **ALL PASS** |
 | P1 summary | **PASS** (L2 = explicit TikHub Douyin 402) |
