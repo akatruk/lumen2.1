@@ -49,8 +49,9 @@ Consent screen: add yourself as **test user** while app is in Testing — requir
 | Date | 2026-07-29 |
 | Tester | Auto (agent) — curl/smoke/API + live browser; G3b/G4 human-gated |
 | Feature commits | `f81c366` · `759c1ad` · `9b66287` |
-| Docs / QA commit | _(this doc)_ |
+| Docs / QA commit | `023f24b` |
 | Deploy run (secrets wiring) | [30451654311](https://github.com/akatruk/lumen2.1/actions/runs/30451654311) **success** |
+| Deploy run (docs QA) | [30451853088](https://github.com/akatruk/lumen2.1/actions/runs/30451853088) **success** |
 | Environment | https://influencers.lumen.universalgravity.org |
 | P0 summary | **PASS** (G3b/G4 **BLOCKED** pending Google test-user interactive sign-in) |
 | Smoke | `EXPECT_VERSION=0.5.3` **PASSED** |
