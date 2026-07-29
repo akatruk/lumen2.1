@@ -2,7 +2,7 @@
 
 **Target:** https://influencers.lumen.universalgravity.org  
 **Health:** `/api/health` · expect `version=0.5.3`, `googleOAuth=true`  
-**Secrets:** droplet `/opt/lumen-marketplace/.env.google` only (not GH/Vault)
+**Secrets:** GitHub Actions secrets `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` (Deploy → droplet `.env`)
 
 ## P0
 

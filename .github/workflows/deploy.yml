@@ -58,9 +58,12 @@ jobs:
           COOKIE_SECURE: ${{ vars.COOKIE_SECURE }}
           OPENROUTER_MODEL: ${{ vars.OPENROUTER_MODEL }}
           NEXT_PUBLIC_APP_URL: ${{ vars.NEXT_PUBLIC_APP_URL }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
         run: |
           set -euo pipefail
           umask 077
+          APP_URL="${NEXT_PUBLIC_APP_URL:-https://influencers.lumen.universalgravity.org}"
           cat > /tmp/lumen-marketplace.env <<EOF
           DISCOVERY_MODE=${DISCOVERY_MODE:-demo}
           PRODUCT_SCAN_MODE=${PRODUCT_SCAN_MODE:-demo}
@@ -71,14 +74,13 @@ jobs:
           OPENROUTER_MODEL=${OPENROUTER_MODEL:-openai/gpt-4o-mini}
           AUTH_SECRET=${AUTH_SECRET:-change-me-in-production}
           COOKIE_SECURE=${COOKIE_SECURE:-false}
-          NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-https://influencers.lumen.universalgravity.org}
+          NEXT_PUBLIC_APP_URL=${APP_URL}
+          GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+          GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+          GOOGLE_CALLBACK_URL=${APP_URL}/api/auth/google/callback
           EOF
           # strip leading spaces from heredoc indent
           sed -i 's/^[[:space:]]*//' /tmp/lumen-marketplace.env
-          # Preserve Google OAuth keys from droplet-only file (not GH Secrets)
-          if ssh "${DEPLOY_USER}@${DEPLOY_HOST}" "test -f '${DEPLOY_PATH}/.env.google'"; then
-            ssh "${DEPLOY_USER}@${DEPLOY_HOST}" "cat '${DEPLOY_PATH}/.env.google'" >> /tmp/lumen-marketplace.env
-          fi
           scp /tmp/lumen-marketplace.env "${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/.env"
           ssh "${DEPLOY_USER}@${DEPLOY_HOST}" "chmod 600 '${DEPLOY_PATH}/.env'"
           rm -f /tmp/lumen-marketplace.env

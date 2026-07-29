@@ -151,6 +151,11 @@ Required repository secrets:
 | `DEPLOY_USER` | `root` |
 | `DEPLOY_PATH` | `/opt/lumen-marketplace` |
 | `DEPLOY_SSH_KEY` | private key authorized on the host |
+| `AUTH_SECRET` | JWT cookie signing |
+| `TIKHUB_API_KEY` | live Douyin discovery |
+| `OPENROUTER_API_KEY` | live product scan |
+| `GOOGLE_CLIENT_ID` | brand Google SSO |
+| `GOOGLE_CLIENT_SECRET` | brand Google SSO |
 
 Also create GitHub Environment `production` (optional protection rules).
 

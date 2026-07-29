@@ -37,18 +37,16 @@ curl -fsS https://influencers.lumen.universalgravity.org/api/health
 
 Direct `:3000` remains open for ops; prefer the HTTPS hostname for demos.
 
-## Google OAuth secrets (droplet-only)
+## Google OAuth secrets (CI/CD)
 
-Do **not** put Google client secrets in GitHub Secrets/Vault for this app.
+Repo **Secrets** (Settings → Secrets and variables → Actions):
 
-On the droplet:
+| Secret | Purpose |
+| --- | --- |
+| `GOOGLE_CLIENT_ID` | GCP OAuth Web client ID |
+| `GOOGLE_CLIENT_SECRET` | GCP OAuth Web client secret |
 
-```bash
-# /opt/lumen-marketplace/.env.google  (chmod 600)
-GOOGLE_CLIENT_ID=...
-GOOGLE_CLIENT_SECRET=...
-GOOGLE_CALLBACK_URL=https://influencers.lumen.universalgravity.org/api/auth/google/callback
-NEXT_PUBLIC_APP_URL=https://influencers.lumen.universalgravity.org
-```
+Deploy writes them into `/opt/lumen-marketplace/.env` together with `GOOGLE_CALLBACK_URL=${NEXT_PUBLIC_APP_URL}/api/auth/google/callback`.
 
-Deploy merges `.env.google` into `.env` on every push. Google Console redirect URI must match callback.
+Google Console redirect URI must match:
+`https://influencers.lumen.universalgravity.org/api/auth/google/callback`

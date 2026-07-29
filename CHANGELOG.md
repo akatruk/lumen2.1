@@ -9,7 +9,7 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 - `/api/auth/google/start` + `/api/auth/google/callback` (OAuth code flow, CSRF state cookie).
 - Prisma `User.googleId` + optional `passwordHash` (passwordless Google accounts; email/password still works).
 - Login UI: **Continue with Google** when `googleOAuth=true` on health.
-- Secrets live on droplet `/opt/lumen-marketplace/.env.google` (merged into `.env` on Deploy; **not** GitHub Secrets / Vault).
+- Secrets: GitHub Actions `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` → Deploy writes droplet `.env` (+ `GOOGLE_CALLBACK_URL`).
 - Health `0.5.3` + `googleOAuth` flag.
 
 ## [0.5.2] — 2026-07-29
