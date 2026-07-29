@@ -18,6 +18,7 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 - Target: https://influencers.lumen.universalgravity.org — health `0.5.2` / `creatorAuth=act-as` / Deploy [`30433415063`](https://github.com/akatruk/lumen2.1/actions/runs/30433415063) **success** (`d26f63f`).
 - Manual QA: `docs/MANUAL_QA_CHINA.md` — **P0 ALL PASS**; smoke `EXPECT_VERSION=0.5.2` **PASSED**.
 - Live Douyin POST still explicit TikHub **402** (Douyin balance) — no silent intl TikTok fallback.
+- Additional live slice QA (`docs/MANUAL_QA_LIVE.md`): Step 0 live Douyin search remains blocked with TikHub **402**, while Step 2 live Product Scan works (OpenRouter `sourceMode: "live-scan"`). Step 3 Discover rank waits on Douyin endpoint top-up. Post-deploy: `30437601682`.
 - Presentation mp4s remastered China/Douyin VO `?v=0.5.2` (EN+ZH HTTP 200).
 
 ## [0.5.1] — 2026-07-29
