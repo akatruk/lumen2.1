@@ -1,7 +1,10 @@
 {
   "app": {
     "name": "Lumen Influencer Marketplace",
-    "tagline": "Thailand Discovery MVP"
+    "tagline": "China Discovery MVP",
+    "badge": "Marketplace",
+    "console": "Influencer console",
+    "creatorPortal": "Open creator portal →"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -16,6 +19,65 @@
     "reviews": "Reviews",
     "claims": "Claims",
     "analysisJobs": "Analysis Jobs",
-    "settings": "Settings"
+    "settings": "Settings",
+    "core": "Core",
+    "more": "More"
+  },
+  "lang": {
+    "en": "EN",
+    "zh": "中文",
+    "switch": "Language"
+  },
+  "common": {
+    "loading": "Loading…",
+    "save": "Save",
+    "cancel": "Cancel",
+    "saved": "Saved",
+    "reset": "Reset"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "China discovery workspace for brands and agencies — Douyin primary.",
+    "loading": "Loading dashboard…",
+    "scanProduct": "Scan product",
+    "discoverDouyin": "Discover Douyin",
+    "moreActions": "More actions ▾",
+    "addProduct": "Add product",
+    "createCampaign": "Create campaign",
+    "importInfluencers": "Import influencers",
+    "startAnalysis": "Start analysis",
+    "tileInfluencers": "Influencers",
+    "tileAnalyzedVideos": "Analyzed videos",
+    "tileActiveCampaigns": "Active campaigns",
+    "tileInShortlists": "In shortlists",
+    "recommended": "Recommended influencers",
+    "recommendedSub": "Highest match scores in catalog",
+    "recentJobs": "Recent analysis jobs",
+    "recentActivity": "Recent activity",
+    "viewAll": "View all"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Interface language and workspace preferences.",
+    "workspace": "Workspace preferences",
+    "interfaceLanguage": "Interface language",
+    "defaultVideos": "Default videos to analyze",
+    "matchWeights": "Match score weights (%)",
+    "matchWeightsSub": "Used for future scoring; shown for transparency",
+    "topicRelevance": "Topic relevance",
+    "audienceGeography": "Audience and geography",
+    "language": "Language",
+    "contentStyle": "Content style",
+    "engagementQuality": "Engagement quality",
+    "postingConsistency": "Posting consistency",
+    "brandSafety": "Brand safety",
+    "commercialFit": "Commercial fit",
+    "saveSettings": "Save settings",
+    "savedLocal": "Saved to localStorage",
+    "demoData": "Demo data",
+    "demoDataSub": "Clears localStorage and reloads seed fixtures",
+    "resetDemo": "Reset demo data",
+    "langEn": "English",
+    "langZh": "Chinese"
   }
 }

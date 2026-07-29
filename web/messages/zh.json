@@ -1,0 +1,83 @@
+{
+  "app": {
+    "name": "Lumen 达人市集",
+    "tagline": "中国达人发现 MVP",
+    "badge": "市集",
+    "console": "达人控制台",
+    "creatorPortal": "打开创作者门户 →"
+  },
+  "nav": {
+    "dashboard": "仪表盘",
+    "discover": "发现",
+    "presentation": "演示",
+    "influencers": "达人",
+    "products": "产品",
+    "login": "登录",
+    "campaigns": "活动",
+    "shortlists": "候选名单",
+    "invitations": "邀请",
+    "reviews": "审核",
+    "claims": "认领",
+    "analysisJobs": "分析任务",
+    "settings": "设置",
+    "core": "核心",
+    "more": "更多"
+  },
+  "lang": {
+    "en": "EN",
+    "zh": "中文",
+    "switch": "语言"
+  },
+  "common": {
+    "loading": "加载中…",
+    "save": "保存",
+    "cancel": "取消",
+    "saved": "已保存",
+    "reset": "重置"
+  },
+  "dashboard": {
+    "title": "仪表盘",
+    "subtitle": "面向品牌与机构的中国达人发现工作台 — 抖音优先。",
+    "loading": "正在加载仪表盘…",
+    "scanProduct": "扫描产品",
+    "discoverDouyin": "发现抖音达人",
+    "moreActions": "更多操作 ▾",
+    "addProduct": "添加产品",
+    "createCampaign": "创建活动",
+    "importInfluencers": "导入达人",
+    "startAnalysis": "开始分析",
+    "tileInfluencers": "达人",
+    "tileAnalyzedVideos": "已分析视频",
+    "tileActiveCampaigns": "进行中活动",
+    "tileInShortlists": "候选名单中",
+    "recommended": "推荐达人",
+    "recommendedSub": "目录中匹配分最高",
+    "recentJobs": "最近分析任务",
+    "recentActivity": "最近动态",
+    "viewAll": "查看全部"
+  },
+  "settings": {
+    "title": "设置",
+    "subtitle": "界面语言与工作区偏好。",
+    "workspace": "工作区偏好",
+    "interfaceLanguage": "界面语言",
+    "defaultVideos": "默认分析视频数",
+    "matchWeights": "匹配分权重（%）",
+    "matchWeightsSub": "用于后续评分；此处透明展示",
+    "topicRelevance": "话题相关度",
+    "audienceGeography": "受众与地域",
+    "language": "语言",
+    "contentStyle": "内容风格",
+    "engagementQuality": "互动质量",
+    "postingConsistency": "发布稳定性",
+    "brandSafety": "品牌安全",
+    "commercialFit": "商业契合度",
+    "saveSettings": "保存设置",
+    "savedLocal": "已保存到 localStorage",
+    "demoData": "演示数据",
+    "demoDataSub": "清除 localStorage 并重新加载种子数据",
+    "resetDemo": "重置演示数据",
+    "langEn": "English",
+    "langZh": "中文"
+  }
+}

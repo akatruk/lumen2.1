@@ -23,6 +23,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/lib/i18n";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { ModeBadge } from "@/components/layout/ModeBadge";
 
 type NavKey =
@@ -122,18 +123,18 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
               LUMEN <span className="font-sans text-sm font-normal text-primary">2.1</span>
             </span>
             <span className="rounded border border-primary/20 bg-primary/10 px-1.5 py-0.5 font-mono text-[10px] uppercase text-primary">
-              Marketplace
+              {t.app.badge}
             </span>
           </div>
           <span className="mt-0.5 font-mono text-[11px] tracking-wide text-muted-foreground">
-            Influencer console
+            {t.app.console}
           </span>
         </div>
       </div>
 
       <nav className="flex-1 overflow-y-auto p-3">
         <div className="mb-2 px-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/70">
-          Core
+          {t.nav.core}
         </div>
         <ul className="space-y-1.5">
           {coreNav.map((item, i) => (
@@ -144,7 +145,7 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
         </ul>
 
         <div className="mb-2 mt-5 px-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/70">
-          More
+          {t.nav.more}
         </div>
         <ul className="space-y-1.5">
           {moreNav.map((item, i) => (
@@ -177,11 +178,14 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
           onClick={onNavigate}
           className="block font-mono text-xs font-medium text-primary hover:underline"
         >
-          Open creator portal →
+          {t.app.creatorPortal}
         </Link>
         <div className="flex items-center justify-between gap-2">
           <ModeBadge />
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            <LanguageToggle />
+            <ThemeToggle />
+          </div>
         </div>
       </div>
     </div>

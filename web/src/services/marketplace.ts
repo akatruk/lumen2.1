@@ -63,7 +63,7 @@ export function influencerIdsMatch(a: string, b: string): boolean {
 }
 
 const defaultSettings: AppSettings = {
-  locale: "en",
+  locale: "zh",
   defaultVideosToAnalyze: 5,
   matchWeights: {
     topicRelevance: 25,

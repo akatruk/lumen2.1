@@ -21,6 +21,7 @@ import { ToastProvider } from "@/components/Toast";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Field";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { LanguageToggle } from "@/components/ui/LanguageToggle";
 import { ModeBadge } from "@/components/layout/ModeBadge";
 
 const nav = [
@@ -167,6 +168,7 @@ export default function CreatorLayout({ children }: { children: React.ReactNode 
           </Button>
           <div className="flex items-center gap-2">
             <ModeBadge />
+            <LanguageToggle />
             <ThemeToggle />
           </div>
         </div>
