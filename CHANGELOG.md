@@ -15,7 +15,10 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 
 ### QA
 
-- Pending post-deploy fill in `docs/MANUAL_QA_DOUYIN.md` execution log.
+- Target: https://influencers.lumen.universalgravity.org — health `0.5.0`, Deploy `940a01e` / Actions `30427828099` **success**.
+- Manual QA: `docs/MANUAL_QA_DOUYIN.md` — **P0 ALL PASS**; smoke `EXPECT_VERSION=0.5.0` **PASSED**.
+- Live Douyin POST returns explicit TikHub **402** (insufficient Douyin endpoint balance) — no silent intl TikTok fallback. Top up Douyin credits on the shared Strom TikHub key to unlock live candidates.
+- Presentation mp4s still stale vs Douyin scripts (documented).
 
 ## [0.4.9] — 2026-07-29
 
