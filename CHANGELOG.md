@@ -2,6 +2,15 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.5.1] — 2026-07-29
+
+### Changed — Remove intl TikTok creator OAuth; remaster Douyin videos
+
+- Creator portal: **Act-as Douyin only** — deleted `/api/auth/tiktok/*`, `tiktok-oauth.ts`, and login CTA. Health exposes `creatorAuth: "act-as"` (no `tiktokOAuth`).
+- Renamed discovery connectors: `live-douyin.connector.ts`, `mock-douyin.connector.ts`.
+- Presentation: rebuilt `demo.mp4` / `demo-zh.mp4` from Douyin scripts + regenerated slides (`?v=0.5.1`).
+- Deploy env no longer writes `TIKTOK_*`. Health `0.5.1`.
+
 ## [0.5.0] — 2026-07-29
 
 ### Changed — Primary platform is now China / Douyin (中国抖音)
@@ -9,7 +18,7 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 - Product truth: **Douyin is the primary discovery platform**; Thailand F&B / intl TikTok discovery are **historical**. See `docs/DISCOVERY_AND_DOSSIER.md`.
 - Live discovery: TikHub `POST /api/v1/douyin/search/fetch_general_search_v1` via `/api/discovery/douyin`. `/api/discovery/tiktok` = **deprecated alias** (same Douyin impl).
 - Defaults: `platform=douyin`, language `zh`, CN geography, `douyin.com` URLs; demo connector `douyin-demo-connector`.
-- Creds reused from Strom/lumen: `TIKHUB_*`, `OPENROUTER_*` (no new accounts). `TIKTOK_CLIENT_*` = intl creator-login leftover only (**not** Douyin login).
+- Creds reused from Strom/lumen: `TIKHUB_*`, `OPENROUTER_*` (no new accounts). Intl TikTok OAuth removed in 0.5.1.
 - Docs/prompts/presentation scripts swept to Douyin/China. `demo.mp4` / `demo-zh.mp4` still **stale** until rebuild.
 - Manual QA: `docs/MANUAL_QA_DOUYIN.md`. Health `0.5.0`.
 

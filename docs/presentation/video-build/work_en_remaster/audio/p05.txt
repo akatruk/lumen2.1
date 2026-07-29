@@ -1,0 +1,1 @@
+Scan a product from a URL, brief, and photo names. OpenRouter builds a Product Resume Card. Decision fields come first — pitch, topics, geography, prohibited claims, and confidence. Name, budget, and tone sit under Details.

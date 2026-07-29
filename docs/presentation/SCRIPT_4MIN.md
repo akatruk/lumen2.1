@@ -14,7 +14,7 @@ Scan a product from a URL, brief, and photo names. OpenRouter builds a Product R
 
 Open Discover with that product. Live TikHub returns real Douyin creators with non-zero followers. We rank them with explainable reasons — reach, engagement rate, average views, language, and niche. Open a dossier: brand safety stays Pending Analysis until videos are actually scanned — no false Safe badge.
 
-In the creator portal, Act-as lists TikHub-discovered Douyin creators first. Switch identity and the home subtitle, invitations, and briefs follow that creator — not a stale seed profile. (Creator login today is an international TikTok OAuth leftover, not Douyin login — Act-as is the honest path for Douyin creators until Douyin Open Platform OAuth ships.)
+In the creator portal, Act-as lists TikHub-discovered Douyin creators first. Switch identity and the home subtitle, invitations, and briefs follow that creator — not a stale seed profile. Creator identity is Act-as Douyin — no international TikTok login.
 
 Lumen remains the analysis engine. The marketplace owns brands, products, discovery, matching, and workflow. TikHub and OpenRouter are live today — reused from the existing Strom/lumen accounts, no new integrations. Phase three adds contracts and payments.
 

@@ -88,7 +88,7 @@ def slide_title():
     d.text((120, 210), "Influencer Marketplace", font=font(68, True), fill=INK)
     lines = wrap(
         d,
-        "Cyber-glass brand console: scan a product, discover TikTok creators, rank by resume card, then collaborate to publish.",
+        "Cyber-glass brand console: scan a product, discover Douyin creators, rank by resume card, then collaborate to publish.",
         font(32),
         1500,
     )
@@ -98,7 +98,7 @@ def slide_title():
         y += 46
     d.text(
         (120, 900),
-        "Live TikHub  ·  Live LLM  ·  Honest safety  ·  Act-as sync",
+        "Live TikHub Douyin  ·  Live LLM  ·  Honest safety  ·  Act-as",
         font=font(24),
         fill=MUTED,
     )
@@ -112,7 +112,7 @@ def slide_idea():
     points = [
         "Brand login → server-backed products, shortlists, invites, and briefs.",
         "Live LLM product scan → editable Resume Card with confidence.",
-        "Live TikHub Discover → real creators ranked vs the card.",
+        "Live TikHub Discover → real Douyin creators ranked vs the card.",
         "Invite → accept → brief → draft → approve → publish on creator accounts.",
     ]
     y = 300
@@ -129,7 +129,7 @@ def slide_problem():
     d.text((120, 100), "PROBLEM", font=font(24, True), fill=BLUE)
     d.text((120, 160), "Manual discovery does not scale", font=font(50, True), fill=INK)
     boxes = [
-        ("Hunt", "Search creators across TikTok by hand and paste links into sheets."),
+        ("Hunt", "Search creators across Douyin by hand and paste links into sheets."),
         ("Guess", "Watch dozens of videos to infer topical and geo fit."),
         ("Chat chaos", "Chase briefs and drafts in scattered messenger threads."),
         ("Risk", "Follower count hides language, city, and brand-safety gaps."),
@@ -146,7 +146,7 @@ def slide_solution():
     d.text((120, 160), "Scan → Discover → Collaborate", font=font(48, True), fill=INK)
     cards = [
         ("Live product scan", "Decision first — pitch, topics, geo, prohibitions, confidence."),
-        ("Live TikHub Discover", "Real reach + ER reasons; Pending Analysis until scanned."),
+        ("Live TikHub Discover", "Real Douyin reach + ER reasons; Pending Analysis until scanned."),
         ("Honest workflow", "Live badge, Core/More nav, Act-as sync, server persistence."),
     ]
     x = 120
@@ -171,7 +171,7 @@ def slide_integration():
         d.text((290, y + 48), label, font=font(28, True), fill=INK)
     d.text(
         (220, 860),
-        "TikHub discovery and OpenRouter scan are live today — Lumen Analysis API is next.",
+        "TikHub Douyin discovery and OpenRouter scan are live today — Lumen Analysis API is next.",
         font=font(24),
         fill=MUTED,
     )
@@ -220,7 +220,7 @@ def slide_close():
     img, d = new_slide()
     d.text((120, 260), "Video understanding", font=font(60, True), fill=INK)
     d.text((120, 350), "→ campaign decisions", font=font(60, True), fill=BLUE)
-    d.text((120, 500), "Live TikHub · Live LLM · Pending Analysis · Act-as sync", font=font(28), fill=MUTED)
+    d.text((120, 500), "Live Douyin · Live LLM · Pending Analysis · Act-as", font=font(28), fill=MUTED)
     d.text((120, 700), "Thank you.", font=font(40, True), fill=INK)
     save(img, "08_close")
 

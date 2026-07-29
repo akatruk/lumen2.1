@@ -8,8 +8,8 @@ import type {
 } from "@/types";
 import { loadJson, saveJson } from "@/lib/storage";
 import { marketplace } from "@/services/marketplace";
-import { mockTikTokConnector } from "./mock-tiktok.connector";
-import { liveTikTokConnector } from "./live-tiktok.connector";
+import { mockDouyinConnector } from "./mock-douyin.connector";
+import { liveDouyinConnector } from "./live-douyin.connector";
 import type { DouyinDiscoveryConnector } from "./types";
 
 const KEYS = {
@@ -21,7 +21,7 @@ function getConnector(): DouyinDiscoveryConnector {
   // Client hint: NEXT_PUBLIC_DISCOVERY_MODE=live → call server Douyin TikHub route.
   // Server still requires DISCOVERY_MODE=live + TIKHUB_API_KEY (reuse from Strom/lumen).
   const mode = (process.env.NEXT_PUBLIC_DISCOVERY_MODE ?? "demo").toLowerCase();
-  return mode === "live" ? liveTikTokConnector : mockTikTokConnector;
+  return mode === "live" ? liveDouyinConnector : mockDouyinConnector;
 }
 
 function loadDossiers(): Record<string, InfluencerDossier> {

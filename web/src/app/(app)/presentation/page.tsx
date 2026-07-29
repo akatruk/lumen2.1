@@ -33,9 +33,9 @@ function toEmbed(url: string): { kind: "youtube" | "vimeo" | "file" | "unknown";
 
 export default function PresentationPage() {
   const defaultEn =
-    process.env.NEXT_PUBLIC_PRESENTATION_VIDEO_URL ?? "/presentation/demo.mp4?v=0.4.8";
+    process.env.NEXT_PUBLIC_PRESENTATION_VIDEO_URL ?? "/presentation/demo.mp4?v=0.5.1";
   const defaultZh =
-    process.env.NEXT_PUBLIC_PRESENTATION_VIDEO_URL_ZH ?? "/presentation/demo-zh.mp4?v=0.4.8";
+    process.env.NEXT_PUBLIC_PRESENTATION_VIDEO_URL_ZH ?? "/presentation/demo-zh.mp4?v=0.5.1";
 
   const [lang, setLang] = useState<Lang>("en");
   const [urlEn, setUrlEn] = useState(defaultEn);

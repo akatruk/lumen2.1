@@ -1,0 +1,1 @@
+仪表盘侧栏分为 Core 与 More，登录放在页脚。模式徽章显示 Live，含 TikHub 与 LLM。两个主操作引导流程:扫描产品与 Discover 抖音。

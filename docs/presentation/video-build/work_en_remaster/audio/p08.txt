@@ -1,0 +1,1 @@
+Lumen remains the analysis engine. The marketplace owns brands, products, discovery, matching, and workflow. TikHub and OpenRouter are live today — reused from the existing Strom/lumen accounts, no new integrations. Phase three adds contracts and payments.

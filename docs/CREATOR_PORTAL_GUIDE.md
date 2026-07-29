@@ -16,7 +16,7 @@ This guide tells you exactly what to do in the **Creator portal**. You publish c
 | --- | --- |
 | Browser | Chrome or Safari; prefer **HTTPS** (link above) |
 | Douyin login (抖音登录) | **Not wired yet.** Douyin Open Platform OAuth is planned but not implemented — do not tell creators "Login with Douyin" today. |
-| Available login today | **International TikTok Login** at [Creator login](https://influencers.lumen.universalgravity.org/creator/login) → **Continue with intl TikTok**. This is a **leftover** OAuth flow reusing the shared Strom TikTok Developer App (`TIKTOK_CLIENT_KEY`/`TIKTOK_CLIENT_SECRET`, no new account) — it authenticates an international TikTok identity, it does **not** log a creator into Douyin. |
+| Available login today | **Act-as Douyin** at [Creator portal](https://influencers.lumen.universalgravity.org/creator) — pick a TikHub-discovered Douyin creator. International TikTok OAuth was **removed**. Douyin Open Platform OAuth is not built yet. |
 | Recommended fallback for Douyin creators | **Act as creator** in the portal sidebar — pick your profile manually until Douyin OAuth ships |
 | What you need ready | Draft video link (Drive / Frame.io / unlisted Douyin video), optional private review link, caption draft |
 | What you do **not** need | Brand console password, SSH, API keys |
@@ -161,4 +161,4 @@ For portal access, wrong profile, or invite issues, contact your **brand / agenc
 | [`MANUAL_QA_PHASE2.md`](./MANUAL_QA_PHASE2.md) | Operator QA for collaboration |
 | [`ROADMAP.md`](./ROADMAP.md) | Phase 2 / future creator login |
 
-**Note for operators:** the intl TikTok login (`tiktokOAuth: true` in `/api/health`) is a **leftover, not Douyin login** — it reuses the shared Strom TikTok Developer App (`TIKTOK_CLIENT_KEY`/`TIKTOK_CLIENT_SECRET`, redirect `https://influencers.lumen.universalgravity.org/api/auth/tiktok/callback`; no new account, never paste the secret values into docs/commits). Douyin Open Platform OAuth for creator login is **not built yet** — until it ships, Act-as is the correct path for Douyin creators and remains available whenever `CREATOR_AUTH_REQUIRED=false`.
+**Note for operators:** creator identity is **Act-as Douyin** (`/api/health` → `creatorAuth: "act-as"`). International TikTok OAuth routes and env (`TIKTOK_CLIENT_*`) were removed from the product. Douyin Open Platform OAuth is not built yet.

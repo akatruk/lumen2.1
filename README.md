@@ -2,7 +2,7 @@
 
 Lumen Influencer Marketplace is a **China-focused platform** (primary discovery platform: **Douyin / 中国抖音**, douyin.com) that helps brands discover, understand, and work with social media creators.
 
-> **Primary platform note (2026-07-29):** Product truth is China / Douyin / zh. The original Thailand F&B pilot and international TikTok discovery are **historical** — kept in `docs/phase0/` and QA history for record, not the current narrative. International TikTok OAuth still exists in the creator portal as a **leftover login option** (reusing the Strom TikTok Developer App); it is not Douyin login. See [`docs/DISCOVERY_AND_DOSSIER.md`](docs/DISCOVERY_AND_DOSSIER.md).
+> **Primary platform note (2026-07-29):** Product truth is China / Douyin / zh. The original Thailand F&B pilot and international TikTok discovery are **historical** — kept in `docs/phase0/` and QA history for record, not the current narrative. Creator identity is **Act-as Douyin** (intl TikTok OAuth removed in 0.5.1). See [`docs/DISCOVERY_AND_DOSSIER.md`](docs/DISCOVERY_AND_DOSSIER.md).
 
 The product uses the existing Lumen video-analysis pipeline to turn creator profiles and videos into structured insights. Brands can then match products with relevant influencers, build campaign shortlists, request content, review submissions, and measure results.
 

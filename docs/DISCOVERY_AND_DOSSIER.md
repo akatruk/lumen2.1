@@ -2,7 +2,7 @@
 
 **Status:** Product requirement — locked 2026-07-28, **primary platform updated to Douyin 2026-07-29** (owner direction)
 **Platform (primary):** **Douyin (中国抖音 / douyin.com)** — via TikHub, credentials reused from Strom/lumen (`TIKHUB_API_KEY`, no new account)
-**Platform (historical/leftover):** International TikTok — the original Thailand F&B pilot targeted TikTok first; that discovery path is now a **deprecated alias** (`/api/discovery/tiktok` → same Douyin implementation) kept only for backward compatibility. International TikTok OAuth (`open.tiktokapis.com`) for creator login is a **separate leftover** — it authenticates a creator's intl TikTok identity, it is **not** Douyin login (抖音登录). Do not conflate the two.
+**Platform (historical/leftover):** International TikTok — the original Thailand F&B pilot targeted TikTok first; that discovery path is now a **deprecated alias** (`/api/discovery/tiktok` → same Douyin implementation) kept only for backward compatibility. Creator identity is **Act-as Douyin**. International TikTok OAuth was removed in 0.5.1.
 **Principle:** The marketplace **finds** influencers itself. Manual CSV/URL is fallback, not the main path.
 
 ## 1. What the product must do

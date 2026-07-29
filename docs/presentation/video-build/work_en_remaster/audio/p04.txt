@@ -1,0 +1,1 @@
+On the dashboard, the sidebar shows Core and More — Login sits in the footer. The mode badge reads Live with TikHub and LLM. Two primary actions lead the way: Scan product and Discover Douyin.

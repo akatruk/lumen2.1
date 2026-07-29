@@ -88,3 +88,9 @@ Douyin Open Platform OAuth, Instagram/YouTube live discovery, mp4 remaster, topp
 | P1 summary | **PASS** (L2 = explicit TikHub Douyin 402; Doc3 mp4 stale flagged) |
 | Blockers | TikHub Douyin endpoint balance (`402`) — top up Douyin credits on same Strom key for live candidates |
 | Sign-off | **READY TO SHIP** Douyin primary `0.5.0` (live hits blocked on TikHub balance only) |
+
+## Follow-up 0.5.1 (2026-07-29)
+
+- Creator login: Act-as only — intl TikTok OAuth **removed** (`creatorAuth: act-as`).
+- Connectors renamed to `*-douyin.connector.ts`.
+- Presentation mp4 remastered Douyin VO `?v=0.5.1`.

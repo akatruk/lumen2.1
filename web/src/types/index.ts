@@ -1,4 +1,4 @@
-/** Primary discovery platform is Douyin (中国抖音). Intl TikTok is secondary leftover. */
+/** Primary discovery platform is Douyin (中国抖音). Platform "tiktok" remains only as optional secondary enum. */
 export type Platform = "douyin" | "tiktok" | "instagram" | "youtube";
 export type LanguageCode = "th" | "en" | "ru" | "zh";
 export type VerificationStatus = "verified" | "unverified" | "pending";

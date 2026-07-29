@@ -4,7 +4,6 @@ import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
 import { prisma } from "./db";
 import { authSecret } from "./env";
-import type { TikTokProfile } from "./tiktok-oauth";
 
 const COOKIE = "lumen_session";
 const encoder = new TextEncoder();
@@ -128,109 +127,12 @@ export async function loginBrand(email: string, password: string): Promise<Sessi
   };
 }
 
-/** Catalog-style ids brands use for Discover → invite. */
-export function influencerIdCandidatesFromTikTok(profile: TikTokProfile): string[] {
-  const out: string[] = [];
-  const handle = profile.username?.toLowerCase().replace(/^@/, "").replace(/[^a-z0-9._]/g, "");
-  if (handle) {
-    out.push(`inf-disc-tt-${handle}`);
-    out.push(`disc-tt-${handle}`);
-  }
-  out.push(`inf-tt-${profile.openId.slice(0, 16)}`);
-  return out;
-}
-
+/** Catalog-style ids brands use for Discover → invite (Douyin disc-dy-* + legacy). */
 export function influencerIdAliases(id: string): Set<string> {
   const out = new Set<string>([id]);
+  if (id.startsWith("inf-disc-dy-")) out.add(id.replace(/^inf-disc-dy-/, "disc-dy-"));
+  if (id.startsWith("disc-dy-")) out.add(id.replace(/^disc-dy-/, "inf-disc-dy-"));
   if (id.startsWith("inf-disc-tt-")) out.add(id.replace(/^inf-disc-tt-/, "disc-tt-"));
   if (id.startsWith("disc-tt-")) out.add(id.replace(/^disc-tt-/, "inf-disc-tt-"));
   return out;
-}
-
-async function resolveInfluencerId(profile: TikTokProfile, existing?: string | null): Promise<string> {
-  if (existing) return existing;
-  const candidates = influencerIdCandidatesFromTikTok(profile);
-  for (const cand of candidates) {
-    const aliases = [...influencerIdAliases(cand)];
-    const hit = await prisma.invitation.findFirst({
-      where: { influencerId: { in: aliases } },
-      select: { influencerId: true },
-    });
-    if (hit) return hit.influencerId.startsWith("disc-tt-")
-      ? hit.influencerId.replace(/^disc-tt-/, "inf-disc-tt-")
-      : hit.influencerId;
-  }
-  return candidates[0]!;
-}
-
-export async function loginOrRegisterCreatorFromTikTok(profile: TikTokProfile): Promise<SessionUser> {
-  const existingAccount = await prisma.tikTokAccount.findUnique({
-    where: { openId: profile.openId },
-    include: { user: true },
-  });
-
-  if (existingAccount) {
-    const influencerId = await resolveInfluencerId(profile, existingAccount.user.influencerId);
-    await prisma.tikTokAccount.update({
-      where: { id: existingAccount.id },
-      data: {
-        displayName: profile.displayName,
-        avatarUrl: profile.avatarUrl,
-        username: profile.username,
-        accessToken: profile.accessToken,
-        refreshToken: profile.refreshToken,
-        scope: profile.scope,
-        expiresAt: profile.expiresAt,
-        unionId: profile.unionId,
-      },
-    });
-    const user = await prisma.user.update({
-      where: { id: existingAccount.userId },
-      data: {
-        name: profile.displayName,
-        role: "creator",
-        influencerId,
-      },
-    });
-    return {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      role: user.role,
-      influencerId: user.influencerId,
-    };
-  }
-
-  const email = `tt_${profile.openId.slice(0, 24)}@tiktok.oauth.lumen`.toLowerCase();
-  const influencerId = await resolveInfluencerId(profile, null);
-  const user = await prisma.user.create({
-    data: {
-      email,
-      name: profile.displayName,
-      passwordHash: await hashPassword(`tt-oauth-${profile.openId}-${Date.now()}`),
-      role: "creator",
-      influencerId,
-      tiktokAccounts: {
-        create: {
-          openId: profile.openId,
-          unionId: profile.unionId,
-          displayName: profile.displayName,
-          avatarUrl: profile.avatarUrl,
-          username: profile.username,
-          accessToken: profile.accessToken,
-          refreshToken: profile.refreshToken,
-          scope: profile.scope,
-          expiresAt: profile.expiresAt,
-        },
-      },
-    },
-  });
-
-  return {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    role: user.role,
-    influencerId: user.influencerId,
-  };
 }
