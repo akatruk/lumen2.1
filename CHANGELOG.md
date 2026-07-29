@@ -13,6 +13,13 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 - Remastered `demo.mp4` / `demo-zh.mp4` (`?v=0.5.2`). Health `0.5.2`.
 - Manual QA: `docs/MANUAL_QA_CHINA.md`. Historical Thailand remains only under phase0/old reports banners.
 
+### QA
+
+- Target: https://influencers.lumen.universalgravity.org — health `0.5.2` / `creatorAuth=act-as` / Deploy [`30433415063`](https://github.com/akatruk/lumen2.1/actions/runs/30433415063) **success** (`d26f63f`).
+- Manual QA: `docs/MANUAL_QA_CHINA.md` — **P0 ALL PASS**; smoke `EXPECT_VERSION=0.5.2` **PASSED**.
+- Live Douyin POST still explicit TikHub **402** (Douyin balance) — no silent intl TikTok fallback.
+- Presentation mp4s remastered China/Douyin VO `?v=0.5.2` (EN+ZH HTTP 200).
+
 ## [0.5.1] — 2026-07-29
 
 ### Changed — Remove intl TikTok creator OAuth; remaster Douyin videos
