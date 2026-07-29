@@ -20,7 +20,7 @@ Create a practical marketplace where:
 
 - Geography: China (mainland)
 - Creator platforms: **Douyin (primary)**, with Instagram and YouTube as secondary/international; international TikTok discovery is a historical leftover from the Thailand pilot, not the current acquisition path
-- Languages: Chinese (zh) first; Thai and English remain from the historical Thailand pilot, Russian optional
+- Languages: Chinese (zh) primary; English optional for cross-border brands
 - Customer types: local and cross-border brands, agencies, hospitality businesses, real-estate companies, tourism businesses, restaurants, and e-commerce sellers
 
 ## Core Workflow

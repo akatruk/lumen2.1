@@ -18,7 +18,7 @@ import {
   formatPercent,
 } from "@/lib/utils";
 
-const cities = ["All", "Bangkok", "Phuket", "Chiang Mai", "Pattaya", "Koh Samui"];
+const cities = ["All", "Shanghai", "Beijing", "Guangzhou", "Shenzhen", "Hangzhou", "Chengdu"];
 const topics = [
   "All",
   "food",
@@ -88,7 +88,7 @@ export default function InfluencersPage() {
         <div>
           <h1 className="text-2xl font-semibold text-foreground">Influencers</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {filtered.length} creators · Bangkok, Phuket, Chiang Mai, Pattaya, Samui
+            {filtered.length} creators · Shanghai, Beijing, Guangzhou, Shenzhen, Hangzhou, Chengdu
           </p>
         </div>
         <div className="flex gap-2">

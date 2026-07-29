@@ -2,6 +2,17 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.5.2] — 2026-07-29
+
+### Changed — China market everywhere (not Thailand)
+
+- UI defaults/filters: CN cities (Shanghai…Chengdu); Discover/Influencers no longer Bangkok/Phuket lists.
+- Demo scan: **Load Shanghai sample** (沪上小馆) replaces Soi 11.
+- `mock.ts` + collaboration/marketplace/fixtures rewritten for China / Douyin / ¥ / zh.
+- `slides.html`, SHOT_LIST, prompts, presentation README → China first.
+- Remastered `demo.mp4` / `demo-zh.mp4` (`?v=0.5.2`). Health `0.5.2`.
+- Manual QA: `docs/MANUAL_QA_CHINA.md`. Historical Thailand remains only under phase0/old reports banners.
+
 ## [0.5.1] — 2026-07-29
 
 ### Changed — Remove intl TikTok creator OAuth; remaster Douyin videos

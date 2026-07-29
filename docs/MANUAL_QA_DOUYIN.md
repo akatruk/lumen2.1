@@ -94,3 +94,8 @@ Douyin Open Platform OAuth, Instagram/YouTube live discovery, mp4 remaster, topp
 - Creator login: Act-as only — intl TikTok OAuth **removed** (`creatorAuth: act-as`).
 - Connectors renamed to `*-douyin.connector.ts`.
 - Presentation mp4 remastered Douyin VO `?v=0.5.1`.
+
+## Follow-up 0.5.2 (2026-07-29)
+
+- Market truth: Thailand → **China** everywhere (cities, mocks, scan sample 沪上小馆, slides).
+- Presentation remastered again `?v=0.5.2` (China/Douyin VO). See `docs/MANUAL_QA_CHINA.md`.

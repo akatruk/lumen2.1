@@ -13,11 +13,11 @@ import { Button } from "@/components/ui/Button";
 import { Field, Input, Select, Textarea } from "@/components/ui/Field";
 import { useToast } from "@/components/Toast";
 
-const SOI11_SAMPLE = {
-  url: "https://maps.example.com/soi11-thai-kitchen",
+const SHANGHAI_SAMPLE = {
+  url: "https://maps.example.com/shanghai-east-bund-kitchen",
   briefText:
     "Shanghai Bistro by East Bund Kitchen. Modern Shanghainese restaurant near Lujiazui. Shareable plates, craft cocktails, late-night dining. Signature xiaolongbao. Targeting foodies and young professionals 22–40. Chinese. Soft opening barter OK. Want Douyin food creators in Shanghai.",
-  photoNames: ["pad-kra-pao.jpg", "open-kitchen.jpg", "soi11-storefront.jpg"],
+  photoNames: ["xiaolongbao.jpg", "open-kitchen.jpg", "lujiazui-storefront.jpg"],
 };
 
 export default function ProductScanPage() {
@@ -57,11 +57,11 @@ export default function ProductScanPage() {
     }
   }
 
-  function loadSoi11Sample() {
-    setUrl(SOI11_SAMPLE.url);
-    setBriefText(SOI11_SAMPLE.briefText);
-    setPhotoNames(SOI11_SAMPLE.photoNames.join(", "));
-    setNotes("Pilot F&B sample");
+  function loadShanghaiSample() {
+    setUrl(SHANGHAI_SAMPLE.url);
+    setBriefText(SHANGHAI_SAMPLE.briefText);
+    setPhotoNames(SHANGHAI_SAMPLE.photoNames.join(", "));
+    setNotes("China F&B pilot sample");
   }
 
   function updateCard<K extends keyof ProductResumeCard>(key: K, value: ProductResumeCard[K]) {
@@ -135,8 +135,8 @@ export default function ProductScanPage() {
             {scanning ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
             Scan → resume card
           </Button>
-          <Button variant="secondary" onClick={loadSoi11Sample}>
-            Load Soi 11 sample
+          <Button variant="secondary" onClick={loadShanghaiSample}>
+            Load Shanghai sample
           </Button>
           <Link href="/products">
             <Button variant="ghost">Back to products</Button>

@@ -19,15 +19,14 @@ function clipPitch(s: string, max = 240): string {
 function detectLangs(text: string): LanguageCode[] {
   const t = text.toLowerCase();
   const langs: LanguageCode[] = [];
-  if (/\bzh\b|中文|汉语|普通话|shanghai|beijing|中国/.test(t)) langs.push("zh");
+  if (/\bzh\b|chinese|中文|汉语|普通话|shanghai|beijing|中国/.test(t)) langs.push("zh");
+  // Legacy soft-match: Thai markers in free text still map to LanguageCode "th" (not default).
   if (/\bth(ai)?\b|ภาษาไทย|bangkok|phuket|soi\s*11/.test(t)) langs.push("th");
   if (/\ben(g(lish)?)?\b|expat|english/.test(t)) langs.push("en");
   if (/\bru(ssian)?\b|русский/.test(t)) langs.push("ru");
-  if (/\bzh|chinese|中文/.test(t)) langs.push("zh");
-  if (!langs.length) return ["en", "th"];
-  // th/en first
+  if (!langs.length) return ["zh"];
   const ordered: LanguageCode[] = [];
-  for (const l of ["th", "en", "ru", "zh"] as LanguageCode[]) {
+  for (const l of ["zh", "en", "th", "ru"] as LanguageCode[]) {
     if (langs.includes(l)) ordered.push(l);
   }
   return ordered;
@@ -38,6 +37,12 @@ function detectGeo(text: string): string[] {
   const geo: string[] = [];
   if (/shanghai|lujiazui|jingan|xuhui|浦东|静安/.test(t)) geo.push("Shanghai");
   if (/beijing|朝阳|海淀/.test(t)) geo.push("Beijing");
+  if (/guangzhou|广州|zhujiang/.test(t)) geo.push("Guangzhou");
+  if (/shenzhen|深圳|nanshan/.test(t)) geo.push("Shenzhen");
+  if (/hangzhou|杭州|xihu/.test(t)) geo.push("Hangzhou");
+  if (/chengdu|成都|jinjiang/.test(t)) geo.push("Chengdu");
+  if (/china|中国|mainland/.test(t) && !geo.includes("China")) geo.push("China");
+  // Legacy soft-match only — do not use as UI defaults.
   if (/bangkok|sukhumvit|soi\s*11|ari|thonglor/.test(t)) geo.push("Bangkok");
   if (/phuket|kata|patong/.test(t)) geo.push("Phuket");
   if (/chiang\s*mai/.test(t)) geo.push("Chiang Mai");
@@ -52,15 +57,18 @@ function detectTopics(text: string, photos: string[]): string[] {
   const blob = `${text} ${photos.join(" ")}`.toLowerCase();
   const topics: string[] = [];
   const map: [RegExp, string][] = [
-    [/food|restaurant|kitchen|menu|pad\s*kra|eats|dining|cuisine/, "food"],
-    [/nightlife|cocktail|bar|late[\s-]?night|club/, "nightlife"],
-    [/bangkok|sukhumvit|soi/, "bangkok"],
-    [/travel|tour|island|beach/, "travel"],
-    [/skincare|serum|beauty|glow/, "skincare"],
-    [/beauty|makeup|grwm/, "beauty"],
+    [/food|restaurant|kitchen|menu|xiaolongbao|eats|dining|cuisine|美食|探店/, "food"],
+    [/nightlife|cocktail|bar|late[\s-]?night|club|夜生活/, "nightlife"],
+    [/shanghai|lujiazui|浦东/, "shanghai"],
+    [/beijing|chaoyang|朝阳/, "beijing"],
+    // Legacy soft-match topic if old Thai paste still appears
+    [/bangkok|sukhumvit|soi\s*11/, "bangkok"],
+    [/travel|tour|island|beach|旅行/, "travel"],
+    [/skincare|serum|beauty|glow|护肤/, "skincare"],
+    [/beauty|makeup|grwm|美妆/, "beauty"],
     [/fitness|gym|yoga|hiit/, "fitness"],
     [/real\s*estate|condo|property|invest/, "real estate"],
-    [/lifestyle/, "lifestyle"],
+    [/lifestyle|生活方式/, "lifestyle"],
     [/wellness/, "wellness"],
   ];
   for (const [re, topic] of map) {
@@ -74,7 +82,8 @@ function detectOverclaims(text: string): string[] {
   return extractProhibitionsFromBrief(text);
 }
 
-function looksLikeSoi11(text: string): boolean {
+/** Legacy paste soft-match → China demo card (not a Thailand product path). */
+function looksLikeLegacyThaiPilotPaste(text: string): boolean {
   return /soi\s*11|bangkok\s*bites|pad\s*kra\s*pao|sukhumvit\s*soi\s*11/i.test(text);
 }
 
@@ -82,7 +91,7 @@ function looksLikeShanghaiDemo(text: string): boolean {
   return /沪上小馆|东岸厨房|lujiazui|xiaolongbao|上海探店|east\s*bund/i.test(text);
 }
 
-function soi11Card(extraNotes: string[]): ProductResumeCard {
+function shanghaiDemoCard(extraNotes: string[]): ProductResumeCard {
   return {
     name: "沪上小馆",
     brand: "东岸厨房",
@@ -90,7 +99,7 @@ function soi11Card(extraNotes: string[]): ProductResumeCard {
     pitch:
       "Modern Shanghainese shareable plates and craft cocktails near Lujiazui — walk-in friendly late-night dining for locals and young professionals.",
     geography: ["Shanghai", "China"],
-    audience: "Foodies, young professionals 22–40",
+    audience: "Chinese-speaking foodies & young professionals 22–40",
     languages: ["zh"],
     benefits: ["Signature xiaolongbao", "Open kitchen", "Walk-in friendly", "Late hours", "Shareable plates"],
     prohibited_claims: ["最健康中餐", "Michelin guaranteed"],
@@ -156,8 +165,8 @@ export const productScan = {
     if (brief) evidence.push(`Brief length: ${brief.length} chars`);
     if (photos.length) evidence.push(`Photos: ${photos.slice(0, 5).join(", ")}`);
 
-    if (looksLikeShanghaiDemo(blob) || looksLikeSoi11(blob)) {
-      return soi11Card(evidence);
+    if (looksLikeShanghaiDemo(blob) || looksLikeLegacyThaiPilotPaste(blob)) {
+      return shanghaiDemoCard(evidence);
     }
 
     const geography = detectGeo(blob);
@@ -191,8 +200,8 @@ export const productScan = {
 
     if (!name) {
       name =
-        desired_topics.includes("food") && geography.includes("Bangkok")
-          ? "Bangkok food offer"
+        desired_topics.includes("food") && (geography.includes("Shanghai") || geography.includes("China"))
+          ? "Shanghai food offer"
           : brand
             ? `${brand} offer`
             : "Untitled product";

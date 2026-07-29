@@ -1,6 +1,6 @@
 # Manual QA — Phase 1 Discovery MVP
 
-> **Current suite (2026-07-29):** Douyin primary — see [`MANUAL_QA_DOUYIN.md`](./MANUAL_QA_DOUYIN.md) (`0.5.0`).
+> **Current suite (2026-07-29):** China / Douyin — see [`MANUAL_QA_CHINA.md`](./MANUAL_QA_CHINA.md) (`0.5.2`) and [`MANUAL_QA_DOUYIN.md`](./MANUAL_QA_DOUYIN.md).
 >
 > **Historical (2026-07-29):** Recorded against the Thailand F&B / TikTok pilot build. Current product primary is **China / Douyin** — see [`DISCOVERY_AND_DOSSIER.md`](./DISCOVERY_AND_DOSSIER.md). Dates/PASS results below are preserved as an audit record.
 

@@ -102,7 +102,7 @@ P2 / DEBT — только в отчёт:
 
 ФАЗА B — VERIFY RUNTIME
 1. `cd web && npm run build` — TypeScript должен пройти.
-2. Логика: Soi 11 scan → card; sparse scan → missing_fields; rank food>beauty>RE.
+2. Логика: 沪上小馆 / Shanghai scan → card; sparse scan → missing_fields; rank food>beauty>RE.
 3. Smoke против live или local: routes core 200, health ok.
 4. Любой новый P0 из runtime → в список.
 

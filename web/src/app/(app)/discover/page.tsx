@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/Button";
 import { Field, Input, Select } from "@/components/ui/Field";
 import { formatNumber, formatPercent, LANGUAGE_LABELS } from "@/lib/utils";
 
-const CITIES = ["All", "Bangkok", "Phuket", "Chiang Mai", "Pattaya", "Koh Samui"];
+const CITIES = ["All", "Shanghai", "Beijing", "Guangzhou", "Shenzhen", "Hangzhou", "Chengdu"];
 const TOPICS = ["All", "food", "nightlife", "travel", "lifestyle", "skincare", "beauty", "fitness"];
 
 export default function DiscoverPage() {
@@ -29,7 +29,7 @@ export default function DiscoverPage() {
 
   const [productId, setProductId] = useState<string>("");
   const [query, setQuery] = useState("上海 美食");
-  const [city, setCity] = useState("Bangkok");
+  const [city, setCity] = useState("Shanghai");
   const [language, setLanguage] = useState<"all" | LanguageCode>("all");
   const [topic, setTopic] = useState("food");
   const [minFollowers, setMinFollowers] = useState(0);
@@ -59,15 +59,15 @@ export default function DiscoverPage() {
         setTopic(q.topic);
       } else if (p) {
         setQuery(`${p.desiredTopics[0] ?? "lifestyle"} ${p.geography[0] ?? ""}`.trim());
-        setCity(p.geography[0] ?? "Bangkok");
+        setCity(p.geography[0] ?? "Shanghai");
         setTopic(p.desiredTopics[0] ?? "All");
       }
       return;
     }
     if (!productId && products[0]) {
-      // prefer Soi 11 if present
-      const soi = products.find((p) => p.id === "prod-2") ?? products[0];
-      setProductId(soi.id);
+      // prefer Shanghai F&B demo product if present
+      const demo = products.find((p) => p.id === "prod-2") ?? products[0];
+      setProductId(demo.id);
     }
   }, [searchParams, products, productId]);
 
@@ -93,7 +93,7 @@ export default function DiscoverPage() {
       }
     } else {
       setQuery(`${p.desiredTopics[0] ?? "lifestyle"} ${p.geography[0] ?? ""}`.trim());
-      setCity(p.geography.find((g) => g !== "China" && g !== "Thailand") ?? p.geography[0] ?? "All");
+      setCity(p.geography.find((g) => g !== "China") ?? p.geography[0] ?? "All");
       setTopic(p.desiredTopics[0] ?? "All");
     }
   }

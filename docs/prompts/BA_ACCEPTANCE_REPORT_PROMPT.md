@@ -1,6 +1,6 @@
 # Промпт бизнес-аналитика — проверка демо и отчёт
 
-> **Обновлено (2026-07-29):** primary платформа — Китай / Douyin. "TikTok" ниже относится к историческому Таиланд-пилоту; текущая проверка должна идти по Douyin discovery (`/api/discovery/douyin`).
+> **Обновлено (2026-07-29):** primary платформа — Китай / Douyin. "TikTok" ниже относится к историческому Китай-пилоту; текущая проверка должна идти по Douyin discovery (`/api/discovery/douyin`).
 
 Скопируй блок ниже целиком в агента / BA. Цель: **не «пощупать UI»**, а **верифицировать end-to-end бизнес-ценность** live-демо и сдать структурированный отчёт.
 
@@ -53,9 +53,9 @@ NORTH STAR (эталон бизнес-флоу — сверяй с ним каж
 - [ ] Smoke ключевых маршрутов 200: /, /products/scan, /discover, /influencers, /creator, /presentation, /reviews
 
 1. PRODUCT SCAN → RESUME CARD  (ядро P1)
-Сценарий Soi 11:
+Сценарий 沪上小馆 / Shanghai:
 - [ ] /products/scan открывается
-- [ ] Load Soi 11 sample → Scan → resume card
+- [ ] Load 沪上小馆 / Shanghai sample → Scan → resume card
 - [ ] Карточка содержит: name, brand, category, pitch, geography, topics, languages, benefits, prohibited_claims, confidence
 - [ ] Можно отредактировать pitch и сохранить
 - [ ] Save product → карточка видна на product detail
@@ -65,7 +65,7 @@ NORTH STAR (эталон бизнес-флоу — сверяй с ним каж
 
 2. CARD-RANKED DISCOVER  (ядро P2)
 - [ ] Без выбранного продукта Search & rank недоступен / ошибка
-- [ ] С карточкой Soi 11: Search & rank → список со score + ≥2 reasons
+- [ ] С карточкой 沪上小馆 / Shanghai: Search & rank → список со score + ≥2 reasons
 - [ ] Food/bangkok креаторы выше beauty / real-estate (зафиксируй top-3 scores) — при live TikHub: зафиксируй top-3 и тематику выдачи
 - [ ] Открыть dossier: identity / reach / topics / style / audience / safety / evidence
 - [ ] Add to catalog → появляется в Influencers после reload (localStorage ok, но отметь)
@@ -121,7 +121,7 @@ ID | Severity (P0/P1/P2) | Где | Repro | Бизнес-импакт | Реко
 ## 6. Матрица «заявлено vs реальность»
 Фича из CHANGELOG/UI | Реально | Ограничение
 
-## 7. Готовность к пилоту (Таиланд F&B)
+## 7. Готовность к пилоту (Китай F&B)
 - Что можно обещать клиенту завтра
 - Что обещать нельзя
 - Минимальный набор до next client demo (топ-5, по приоритету ценности)
@@ -143,7 +143,7 @@ ID | Severity (P0/P1/P2) | Где | Repro | Бизнес-импакт | Реко
 
 НАЧНИ С
 1) health JSON
-2) полный проход Soi 11: scan → save → Discover → rank → dossier
+2) полный проход 沪上小馆 / Shanghai: scan → save → Discover → rank → dossier
 3) сразу черновик вердикта, потом таблицы.
 Сохрани отчёт в docs/reports/ и обнови этот промпт при смене ожиданий health/mode.
 ```

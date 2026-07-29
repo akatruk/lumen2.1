@@ -91,7 +91,7 @@ const SEED_INVITATIONS: Invitation[] = [
     influencerId: "inf-1",
     campaignId: "camp-2",
     status: "Accepted",
-    message: "Soft opening dinner feature for Soi 11 Thai Kitchen.",
+    message: "Soft opening dinner feature for 沪上小馆.",
     createdAt: "2026-07-12T09:00:00Z",
   },
 ];
@@ -129,19 +129,19 @@ function getActivity(): ActivityEvent[] {
     {
       id: "act-1",
       type: "analysis",
-      message: "Completed analysis for Narin Chaiyaphum (5 videos)",
+      message: "Completed analysis for Lin Xiaonan (5 videos)",
       createdAt: "2026-07-20T08:12:00Z",
     },
     {
       id: "act-2",
       type: "shortlist",
-      message: "Added Maya Riverton to Phuket Condo Finalists",
+      message: "Added Zhang Wei to Bund Condo Finalists",
       createdAt: "2026-07-02T10:00:00Z",
     },
     {
       id: "act-3",
       type: "invite",
-      message: "Invitation sent to Maya Riverton for Kata Condo Soft Launch Q3",
+      message: "Invitation sent to Zhang Wei for Bund Residences Soft Launch Q3",
       createdAt: "2026-07-18T10:00:00Z",
     },
   ] as ActivityEvent[]);
@@ -303,7 +303,7 @@ export const marketplace = {
         const topicHits = inf.topics.filter((t) => product.desiredTopics.includes(t)).length;
         const langHits = inf.languages.filter((l) => product.languages.includes(l)).length;
         const geoHit = product.geography.some(
-          (g) => inf.city === g || inf.country === g || g === "Thailand",
+          (g) => inf.city === g || inf.country === g || g === "China",
         )
           ? 8
           : 0;
@@ -800,7 +800,7 @@ export const marketplace = {
           url,
           handle,
           name: handle.replace("@", "").replace(/[._]/g, " "),
-          city: ["Bangkok", "Phuket", "Chiang Mai", "Pattaya", "Koh Samui"][
+          city: ["Shanghai", "Beijing", "Guangzhou", "Shenzhen", "Hangzhou", "Chengdu"][
             Math.floor(Math.random() * 5)
           ],
           videosToAnalyze,

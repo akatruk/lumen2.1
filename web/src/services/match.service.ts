@@ -303,7 +303,7 @@ export function buildSearchQueryFromCard(card: ProductResumeCard): {
 } {
   const geography = asStringArray(card?.geography);
   const topics = asStringArray(card?.desired_topics);
-  const city = geography.find((g) => !/^thailand$/i.test(g)) ?? geography[0] ?? "Bangkok";
+  const city = geography.find((g) => !/^(thailand|china)$/i.test(g)) ?? geography[0] ?? "Shanghai";
   const topic = topics[0] ?? "lifestyle";
   const query = [topic, city, ...topics.slice(1, 2), card?.category]
     .filter(Boolean)

@@ -61,13 +61,13 @@ const SEED_BRIEFS: CampaignBrief[] = [
     campaignId: "camp-2",
     invitationId: "inv-2",
     influencerId: "inf-1",
-    title: "Soi 11 Soft Opening — dinner feature",
+    title: "沪上小馆 Soft Opening — dinner feature",
     deliverables: [
       "1 Douyin (30–45s) tasting signature dishes",
       "1 Instagram Reel with booking CTA",
       "Disclose paid partnership",
     ],
-    messaging: "Late-night Thai kitchen energy, walk-in friendly, highlight pad kra pao and cocktails.",
+    messaging: "Late-night Shanghainese energy, walk-in friendly, highlight xiaolongbao and cocktails.",
     restrictions: ["No Michelin claims", "No competitor restaurant shoutouts"],
     deadline: "2026-07-28",
     approvalRules: "Brand must approve draft before public post.",
@@ -86,7 +86,7 @@ const SEED_SUBMISSIONS: Submission[] = [
     status: "Submitted",
     draftUrl: "https://example.com/demo-drafts/narin-soi11-v1.mp4",
     privateReviewLink: "https://example.com/reviews/narin-soi11",
-    caption: "Late-night pad kra pao run near Soi 11 — soft opening week.",
+    caption: "Late-night xiaolongbao run near Lujiazui — soft opening week.",
     feedback: [
       {
         id: "fb-1",
@@ -112,7 +112,7 @@ const SEED_PERFORMANCE: PerformanceSnapshot[] = [
     likes: 6400,
     comments: 290,
     clicks: 410,
-    notes: "Completed Samui tour campaign snapshot.",
+    notes: "Completed Hangzhou tour campaign snapshot.",
   },
 ];
 

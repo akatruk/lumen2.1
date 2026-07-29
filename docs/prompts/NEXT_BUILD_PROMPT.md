@@ -55,7 +55,7 @@
    - агрессивные обещания → prohibited_claims
    - не изобретай цены, ROI, medical claims, фейковые награды
 6. Acceptance:
-   - бизнес загрузил материалы Soi 11 / любой F&B пример → получил карточку за 1 проход
+   - бизнес загрузил материалы 沪上小馆 / Shanghai / любой F&B пример → получил карточку за 1 проход
    - можно отредактировать карточку руками и сохранить
    - карточка видна на product detail и готова к Discover match
 
@@ -85,7 +85,7 @@ Out of scope в этом приоритете: live TikHub, auth, payments, Nest
    - hard-fail brand-safety против prohibited_claims → не в топ (или явный risk)
    - missing data ↓ confidence, не «точный» фейковый score
 6. Acceptance:
-   - Soi 11 card → food/bangkok creators выше нерелевантных beauty/RE
+   - 沪上小馆 / Shanghai card → food/shanghai creators выше нерелевантных beauty/RE
    - reasons читаемые и привязаны к evidence/topics
    - shortlist из matched results работает
 
@@ -150,7 +150,7 @@ C) PHASE 3 — позже
 3. Держи контракты данных стабильными (Resume Card JSON, DiscoveryCandidate, Dossier, Match).
 4. Demo mode должен продолжать работать без ключей (STROM_MODE/DISCOVERY_MODE=demo).
 5. После slice: manual QA + smoke + changelog version bump.
-6. Язык продукта/UI: en ок для кода; бизнес-копирайт можно ru/en; primary zh (th/en остаются как исторический пилот Таиланд).
+6. Язык продукта/UI: en ок для кода; бизнес-копирайт можно ru/en; primary zh (th/en остаются как исторический пилот Китай).
 
 ════════════════════════════════════════
 DEFINITION OF DONE ДЛЯ БЛИЖАЙШЕГО РЕЛИЗА (P1+P2)
@@ -165,7 +165,7 @@ DEFINITION OF DONE ДЛЯ БЛИЖАЙШЕГО РЕЛИЗА (P1+P2)
 
 КОНТЕКСТ РЕПО
 - App: lumen2.1/web (Next), demo на http://167.71.206.43:3000
-- Docs: docs/DISCOVERY_AND_DOSSIER.md, docs/phase0/* (историческое, Таиланд/TikTok), docs/prompts/BUSINESS_FLOW_PROMPT.md
+- Docs: docs/DISCOVERY_AND_DOSSIER.md, docs/phase0/* (историческое, Китай/TikTok), docs/prompts/BUSINESS_FLOW_PROMPT.md
 - Live TikHub reference: lumen/BACKEND TikhubService (креды реюз, endpoint теперь Douyin)
 - Сейчас: Douyin discover connector уже есть (`/api/discovery/douyin`, `/api/discovery/tiktok` — deprecated alias); product scan + card-driven match — СЛЕДУЮЩИЕ.
 ```
@@ -181,7 +181,7 @@ DEFINITION OF DONE ДЛЯ БЛИЖАЙШЕГО РЕЛИЗА (P1+P2)
 Выход: редактируемая Product Resume Card (JSON-контракт из BUSINESS_FLOW_PROMPT шаг 2) + UI review/save.
 AI: extract-only, prohibited_claims, confidence, missing_fields.
 Не трогай TikHub/Douyin live, auth, payments.
-Acceptance: China product материалы (или историческое F&B/Soi 11 демо) → карточка за один проход, сохраняется, видна на product detail, готова стать контекстом Discover match.
+Acceptance: China product материалы (или историческое F&B/沪上小馆 / Shanghai демо) → карточка за один проход, сохраняется, видна на product detail, готова стать контекстом Discover match.
 Сначала схема+UI+mock LLM (или fixture), затем реальный LLM вызов за флагом.
 ```
 

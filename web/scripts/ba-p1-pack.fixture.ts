@@ -22,7 +22,7 @@ if (c < 0.7) throw new Error(`expected higher conf than raw 0.4, got ${c}`);
 
 const product = {
   id: "p1",
-  name: "Soi 11",
+  name: "沪上小馆",
   brand: "BBC",
   category: "Restaurant",
   description: "x",
@@ -37,7 +37,7 @@ const product = {
   platforms: ["douyin"],
   createdAt: new Date().toISOString(),
   resumeCard: {
-    name: "Soi 11",
+    name: "沪上小馆",
     brand: "BBC",
     category: "Restaurant",
     pitch: "x",

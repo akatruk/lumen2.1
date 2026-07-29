@@ -43,7 +43,7 @@ Lumen Influencer Marketplace connects three pieces:
 2. **Creator portal** — invitations, briefs, drafts, publication.
 3. **Lumen analysis** — transcription and content intelligence on recent videos (mock in the demo; real Lumen API next).
 
-**Primary market:** China. Platform: **Douyin first**, with Instagram and YouTube as secondary/international reach. Language: Chinese (zh) first; Thai and English remain available from the earlier pilot phase.
+**Primary market:** China. Platform: **Douyin first**, with Instagram and YouTube as secondary/international reach. Language: Chinese (zh) primary. English optional for cross-border brands.
 
 Customers: local and cross-border brands, agencies, hospitality, real estate, tourism, F&B, e-commerce.
 

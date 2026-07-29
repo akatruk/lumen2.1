@@ -1,6 +1,6 @@
 # Architecture
 
-> **Primary platform note (2026-07-29):** Primary discovery platform is **Douyin** (via TikHub, credentials reused from Strom/lumen). References to "TikTok Discovery Connector" below describe the original Thailand-pilot design; the live implementation is `web/src/server/tikhub.ts` → `fetchDouyinSearchVideos` behind `POST /api/discovery/douyin` (`/api/discovery/tiktok` kept only as a deprecated alias route). International TikTok OAuth (`open.tiktokapis.com`) is a **separate leftover** used only for optional creator login — it is not the discovery connector and not Douyin login.
+> **Primary platform note (2026-07-29):** Primary market/platform is **China / Douyin** (via TikHub, credentials reused from Strom/lumen). Live implementation: `web/src/server/tikhub.ts` → `fetchDouyinSearchVideos` behind `POST /api/discovery/douyin` (`/api/discovery/tiktok` = deprecated alias only). Creator identity is **Act-as Douyin**; international TikTok OAuth was removed in 0.5.1. Thailand F&B / TikTok-first wording below (if any) is historical.
 
 ## 1. Architecture Principle
 

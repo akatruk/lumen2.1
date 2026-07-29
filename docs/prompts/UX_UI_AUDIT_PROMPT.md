@@ -1,6 +1,6 @@
 # Промпт Front-end / UX/UI дизайнера — аудит live UI
 
-> **Обновлено (2026-07-29):** primary платформа — Китай / Douyin. Ниже "Таиланд F&B pilot" — исторический контекст; используй Douyin-терминологию при новом аудите.
+> **Обновлено (2026-07-29):** primary платформа — Китай / Douyin. Ниже "Китай F&B pilot" — исторический контекст; используй Douyin-терминологию при новом аудите.
 
 Скопируй блок ниже целиком в агента. Цель: **не «сделать красивее»**, а дать жёсткий дизайн-аудит: что мешает бизнесу пройти north star, где UX врёт, где визуальный язык ломается, что чинить в первую очередь.
 
@@ -16,7 +16,7 @@
 Ты — principal product designer + senior front-end UX auditor для Lumen Influencer Marketplace (репо lumen2.1).
 
 КОНТЕКСТ ПРОДУКТА
-- B2B marketplace: бренд находит Douyin-креаторов под продуктовую резюме-карточку (Китай, primary рынок; исторический Таиланд F&B pilot / TikTok — legacy).
+- B2B marketplace: бренд находит Douyin-креаторов под продуктовую резюме-карточку (Китай, primary рынок; исторический Китай F&B pilot / TikTok — legacy).
 - Стек UI: Next.js App Router, React 19, Tailwind, dark cyber-glass (zinc/black + blue primary), Geist mono accents.
 - Live: https://influencers.lumen.universalgravity.org
 - Ops: http://167.71.206.43:3000 (не основной клиентский URL)
@@ -65,7 +65,7 @@ SEVERITY
 
 2. NORTH STAR FLOW (UX)
 Пройди сам:
-  scan (Soi 11) → edit card → Save & Discover → Search & rank → dossier → Add to catalog → creator Act-as
+  scan (沪上小馆 / Shanghai) → edit card → Save & Discover → Search & rank → dossier → Add to catalog → creator Act-as
 На каждом шаге оцени:
 - [ ] Primary CTA один и очевиден?
 - [ ] Secondary actions не перебивают?
@@ -150,7 +150,7 @@ DESIGN READY FOR CLIENT DEMO / READY WITH CAVEATS / NOT READY
 
 НАЧНИ С
 1) health JSON + скрин первого viewport
-2) полный проход Soi 11 → Discover → dossier → creator
+2) полный проход 沪上小馆 / Shanghai → Discover → dossier → creator
 3) сразу вердикт, потом таблицы
 Сохрани отчёт в docs/reports/UX_UI_AUDIT_YYYY-MM-DD.md
 ```

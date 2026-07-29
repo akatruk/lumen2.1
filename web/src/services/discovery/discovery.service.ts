@@ -86,7 +86,7 @@ function buildMockAnalysis(dossier: InfluencerDossier): {
     ? dossier.topics
     : [
         { name: "food", confidence: 0.9 },
-        { name: "bangkok", confidence: 0.8 },
+        { name: "shanghai", confidence: 0.8 },
       ];
   const analysis: VideoAnalysis = {
     language: (dossier.identity.languages[0] ?? "th") as LanguageCode,
@@ -117,7 +117,7 @@ function buildMockAnalysis(dossier: InfluencerDossier): {
         evidence: "Geo cues in bio + recent captions",
       },
       {
-        label: dossier.identity.languages.includes("th") ? "Thai-speaking viewers" : "English-leaning viewers",
+        label: dossier.identity.languages.includes("zh") ? "Chinese-speaking viewers" : "International viewers",
         confidence: 0.74,
         evidence: "Detected delivery language",
       },
@@ -158,7 +158,7 @@ function influencerFromDossier(d: InfluencerDossier): Influencer {
     analyzedVideos: d.evidence.filter((e) => e.analysis).length,
     matchScore: Math.min(
       95,
-      55 + Math.round((d.topics[0]?.confidence ?? 0.5) * 30) + (d.identity.city === "Bangkok" ? 8 : 0),
+      55 + Math.round((d.topics[0]?.confidence ?? 0.5) * 30) + (d.identity.city === "Shanghai" ? 8 : 0),
     ),
     verificationStatus: "unverified",
     claimStatus: "Unclaimed",
