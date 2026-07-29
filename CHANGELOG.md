@@ -11,6 +11,14 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 - Login UI: **Continue with Google** when `googleOAuth=true` on health.
 - Secrets: GitHub Actions `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` → Deploy writes droplet `.env` (+ `GOOGLE_CALLBACK_URL`).
 - Health `0.5.3` + `googleOAuth` flag.
+- Manual QA: `docs/MANUAL_QA_GOOGLE_SSO.md`.
+
+### QA
+
+- Target: https://influencers.lumen.universalgravity.org — health `0.5.3` / `googleOAuth=true` / Deploy [`30451654311`](https://github.com/akatruk/lumen2.1/actions/runs/30451654311) **success** (`9b66287`).
+- Manual QA: `docs/MANUAL_QA_GOOGLE_SSO.md` — **P0 PASS** (G1/G2/G3a/G5/O*); **G3b/G4 BLOCKED** pending interactive Google test-user consent.
+- Smoke `EXPECT_VERSION=0.5.3` **PASSED**; `/api/auth/google/start` → 307 Google authorize with prod callback URI.
+- Email/password register+login still works alongside SSO.
 
 ## [0.5.2] — 2026-07-29
 
