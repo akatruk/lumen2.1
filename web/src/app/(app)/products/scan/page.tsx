@@ -130,16 +130,20 @@ export default function ProductScanPage() {
             <Input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Optional" />
           </Field>
         </div>
-        <div className="flex flex-wrap gap-2 border-t border-border/40 px-5 py-4">
-          <Button onClick={() => void runScan()} disabled={scanning || (!url && !briefText && !photoList.length)}>
+        <div className="flex flex-col gap-2 border-t border-border/40 px-5 py-4 sm:flex-row sm:flex-wrap">
+          <Button
+            className="min-h-11 w-full sm:min-h-0 sm:w-auto"
+            onClick={() => void runScan()}
+            disabled={scanning || (!url && !briefText && !photoList.length)}
+          >
             {scanning ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
             Scan → resume card
           </Button>
-          <Button variant="secondary" onClick={loadShanghaiSample}>
+          <Button variant="secondary" className="min-h-11 w-full sm:min-h-0 sm:w-auto" onClick={loadShanghaiSample}>
             Load Shanghai sample
           </Button>
-          <Link href="/products">
-            <Button variant="ghost">Back to products</Button>
+          <Link href="/products" className="w-full sm:w-auto">
+            <Button variant="ghost" className="min-h-11 w-full sm:min-h-0">Back to products</Button>
           </Link>
         </div>
       </Card>
@@ -151,11 +155,11 @@ export default function ProductScanPage() {
             monoLabel="02"
             subtitle={`${card.sourceMode ?? "demo-scan"}`}
             action={
-              <div className="flex gap-2">
-                <Button size="sm" variant="secondary" onClick={() => void saveNew()}>
+              <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+                <Button size="sm" variant="secondary" className="min-h-11 w-full sm:min-h-0 sm:w-auto" onClick={() => void saveNew()}>
                   Save product
                 </Button>
-                <Button size="sm" onClick={() => void saveAndDiscover()}>
+                <Button size="sm" className="min-h-11 w-full sm:min-h-0 sm:w-auto" onClick={() => void saveAndDiscover()}>
                   Save & Discover matches
                 </Button>
               </div>

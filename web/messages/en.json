@@ -21,7 +21,9 @@
     "analysisJobs": "Analysis Jobs",
     "settings": "Settings",
     "core": "Core",
-    "more": "More"
+    "more": "More",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "lang": {
     "en": "EN",

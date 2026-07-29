@@ -37,23 +37,27 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
+        <div className="min-w-0">
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t.dashboard.title}</h1>
           <p className="mt-1 text-sm text-muted-foreground">{t.dashboard.subtitle}</p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <Link href="/products/scan"><Button size="sm">{t.dashboard.scanProduct}</Button></Link>
-          <Link href="/discover"><Button size="sm" variant="secondary">{t.dashboard.discoverDouyin}</Button></Link>
+        <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
+          <Link href="/products/scan" className="min-w-0 flex-1 sm:flex-none">
+            <Button size="sm" className="w-full min-h-11 sm:min-h-0 sm:w-auto">{t.dashboard.scanProduct}</Button>
+          </Link>
+          <Link href="/discover" className="min-w-0 flex-1 sm:flex-none">
+            <Button size="sm" variant="secondary" className="w-full min-h-11 sm:min-h-0 sm:w-auto">{t.dashboard.discoverDouyin}</Button>
+          </Link>
           <details className="relative">
-            <summary className="cursor-pointer list-none rounded border border-border px-3 py-1.5 font-mono text-xs text-muted-foreground hover:bg-accent/40 hover:text-foreground [&::-webkit-details-marker]:hidden">
+            <summary className="flex min-h-11 cursor-pointer list-none items-center rounded border border-border px-3 py-1.5 font-mono text-xs text-muted-foreground hover:bg-accent/40 hover:text-foreground sm:min-h-0 [&::-webkit-details-marker]:hidden">
               {t.dashboard.moreActions}
             </summary>
             <div className="absolute right-0 z-20 mt-1 flex min-w-[11rem] flex-col gap-1 rounded border border-border bg-card p-2 shadow-lg">
-              <Link href="/products?new=1" className="rounded px-2 py-1.5 text-sm hover:bg-muted">{t.dashboard.addProduct}</Link>
-              <Link href="/campaigns?new=1" className="rounded px-2 py-1.5 text-sm hover:bg-muted">{t.dashboard.createCampaign}</Link>
-              <Link href="/import" className="rounded px-2 py-1.5 text-sm hover:bg-muted">{t.dashboard.importInfluencers}</Link>
-              <Link href="/analysis-jobs" className="rounded px-2 py-1.5 text-sm hover:bg-muted">{t.dashboard.startAnalysis}</Link>
+              <Link href="/products?new=1" className="rounded px-2 py-2.5 text-sm hover:bg-muted sm:py-1.5">{t.dashboard.addProduct}</Link>
+              <Link href="/campaigns?new=1" className="rounded px-2 py-2.5 text-sm hover:bg-muted sm:py-1.5">{t.dashboard.createCampaign}</Link>
+              <Link href="/import" className="rounded px-2 py-2.5 text-sm hover:bg-muted sm:py-1.5">{t.dashboard.importInfluencers}</Link>
+              <Link href="/analysis-jobs" className="rounded px-2 py-2.5 text-sm hover:bg-muted sm:py-1.5">{t.dashboard.startAnalysis}</Link>
             </div>
           </details>
         </div>
@@ -149,10 +153,10 @@ export default function DashboardPage() {
         <CardHeader title={t.dashboard.recentActivity} />
         <div className="divide-y divide-border/40">
           {activity.map((event) => (
-            <div key={event.id} className="flex items-start justify-between gap-4 px-5 py-3 text-sm">
-              <div>
+            <div key={event.id} className="flex flex-col gap-1 px-5 py-3 text-sm sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+              <div className="min-w-0">
                 <div className="capitalize text-xs font-medium text-primary">{event.type}</div>
-                <div className="mt-0.5 text-foreground">{event.message}</div>
+                <div className="mt-0.5 break-words text-foreground">{event.message}</div>
               </div>
               <div className="shrink-0 text-xs text-muted-foreground">{formatDateTime(event.createdAt)}</div>
             </div>

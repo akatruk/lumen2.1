@@ -43,20 +43,23 @@ export default function AnalysisJobsPage() {
 
       <Card>
         <CardHeader title="Start demo analysis" subtitle="Uses mock Lumen Analysis client" />
-        <div className="flex flex-wrap items-end gap-3 px-5 py-4">
-          <Field label="Influencer">
-            <Select className="min-w-56" value={influencerId} onChange={(e) => setInfluencerId(e.target.value)}>
-              {influencers.map((i) => (
-                <option key={i.id} value={i.id}>{i.name}</option>
-              ))}
-            </Select>
-          </Field>
+        <div className="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:flex-wrap sm:items-end">
+          <div className="w-full sm:w-auto sm:min-w-56">
+            <Field label="Influencer">
+              <Select className="w-full" value={influencerId} onChange={(e) => setInfluencerId(e.target.value)}>
+                {influencers.map((i) => (
+                  <option key={i.id} value={i.id}>{i.name}</option>
+                ))}
+              </Select>
+            </Field>
+          </div>
           <Field label="Videos">
-            <Select className="w-28" value={String(videoCount)} onChange={(e) => setVideoCount(Number(e.target.value))}>
+            <Select className="w-full sm:w-28" value={String(videoCount)} onChange={(e) => setVideoCount(Number(e.target.value))}>
               {[3, 5, 8, 10].map((n) => <option key={n} value={n}>{n}</option>)}
             </Select>
           </Field>
           <Button
+            className="min-h-11 w-full sm:min-h-0 sm:w-auto"
             onClick={async () => {
               if (!influencerId) return;
               await marketplace.startAnalysis(influencerId, videoCount);

@@ -225,17 +225,21 @@ export default function DiscoverPage() {
             </Select>
           </Field>
         </div>
-        <div className="mt-3 flex flex-wrap items-end gap-3">
+        <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
           <Field label="Min followers">
             <Input
               type="number"
-              className="w-40"
+              className="w-full sm:w-40"
               value={minFollowers || ""}
               onChange={(e) => setMinFollowers(Number(e.target.value) || 0)}
               placeholder="0"
             />
           </Field>
-          <Button onClick={() => void runSearch()} disabled={loading || !productId}>
+          <Button
+            className="min-h-11 w-full sm:min-h-0 sm:w-auto"
+            onClick={() => void runSearch()}
+            disabled={loading || !productId}
+          >
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
             Search & rank
           </Button>

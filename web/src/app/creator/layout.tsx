@@ -14,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useMobileNav } from "@/hooks/useMobileNav";
 import { collaboration } from "@/services/collaboration";
 import { marketplace } from "@/services/marketplace";
 import type { Influencer } from "@/types";
@@ -52,7 +53,7 @@ function sortActAs(list: Influencer[]): Influencer[] {
 export default function CreatorLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const { open, toggle, close } = useMobileNav();
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [influencers, setInfluencers] = useState<Influencer[]>([]);
 
@@ -129,9 +130,9 @@ export default function CreatorLayout({ children }: { children: React.ReactNode 
             <Link
               key={item.href}
               href={item.href}
-              onClick={() => setOpen(false)}
+              onClick={close}
               className={cn(
-                "group relative flex items-center justify-between overflow-hidden rounded border border-transparent px-3 py-2.5 text-sm font-medium transition-all duration-200",
+                "group relative flex min-h-11 items-center justify-between overflow-hidden rounded border border-transparent px-3 py-2.5 text-sm font-medium transition-all duration-200",
                 active
                   ? "border-primary/25 bg-primary/10 text-primary shadow-[0_0_15px_rgba(59,130,246,0.06)]"
                   : "text-muted-foreground hover:bg-accent/30 hover:text-foreground",
@@ -178,7 +179,7 @@ export default function CreatorLayout({ children }: { children: React.ReactNode 
 
   return (
     <ToastProvider>
-      <div className="relative flex h-screen w-screen overflow-hidden bg-background text-foreground transition-colors duration-300">
+      <div className="relative flex h-dvh w-screen flex-col overflow-hidden bg-background text-foreground transition-colors duration-300 lg:flex-row">
         <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden select-none">
           <div className="absolute inset-0 grid-pattern opacity-[0.4] dark:opacity-[0.25]" />
           <div className="absolute inset-0 bg-noise opacity-[0.02]" />
@@ -186,38 +187,66 @@ export default function CreatorLayout({ children }: { children: React.ReactNode 
           <div className="ambient-glow -right-40 -bottom-60 bg-blue-500/8 dark:bg-indigo-500/8" />
         </div>
 
-        <div className="sticky top-0 z-30 flex items-center justify-between border-b border-border/40 bg-card/50 px-4 py-3 backdrop-blur-md lg:hidden">
-          <div>
+        <header
+          className="sticky top-0 z-30 flex shrink-0 items-center justify-between gap-3 border-b border-border/40 bg-card/50 px-4 py-3 backdrop-blur-md lg:hidden"
+          style={{
+            paddingTop: "max(0.75rem, env(safe-area-inset-top))",
+            paddingLeft: "max(1rem, env(safe-area-inset-left))",
+            paddingRight: "max(1rem, env(safe-area-inset-right))",
+          }}
+        >
+          <div className="min-w-0">
             <div className="font-mono text-xs font-semibold uppercase tracking-wider text-primary">Creator</div>
-            <div className="text-sm font-semibold">{me?.name ?? "Portal"}</div>
+            <div className="truncate text-sm font-semibold">{me?.name ?? "Portal"}</div>
           </div>
-          <button
-            type="button"
-            className="rounded border border-border p-2"
-            onClick={() => setOpen((v) => !v)}
-          >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
-
-        {open ? (
-          <div className="fixed inset-0 z-40 bg-black/60 lg:hidden" onClick={() => setOpen(false)}>
-            <aside
-              className="h-full w-72 border-r border-border/40 bg-card/95 backdrop-blur-md"
-              onClick={(e) => e.stopPropagation()}
+          <div className="flex shrink-0 items-center gap-2">
+            <LanguageToggle />
+            <ThemeToggle />
+            <button
+              type="button"
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              className="inline-flex min-h-11 min-w-11 items-center justify-center rounded border border-border"
+              onClick={toggle}
             >
-              {shell}
-            </aside>
+              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
           </div>
-        ) : null}
+        </header>
 
-        <aside className="relative z-20 hidden h-full w-64 shrink-0 border-r border-border/40 bg-card/50 backdrop-blur-md lg:flex lg:flex-col">
-          {shell}
-        </aside>
+        <div className="relative z-10 flex min-h-0 flex-1 overflow-hidden">
+          {open ? (
+            <div className="fixed inset-0 z-40 bg-black/60 lg:hidden" onClick={close} role="presentation">
+              <aside
+                role="dialog"
+                aria-modal="true"
+                aria-label="Open menu"
+                className="flex h-full w-[min(18rem,85vw)] flex-col border-r border-border/40 bg-card/95 backdrop-blur-md"
+                style={{
+                  paddingTop: "env(safe-area-inset-top)",
+                  paddingBottom: "env(safe-area-inset-bottom)",
+                  paddingLeft: "env(safe-area-inset-left)",
+                }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {shell}
+              </aside>
+            </div>
+          ) : null}
 
-        <main className="relative z-10 min-w-0 flex-1 overflow-y-auto">
-          <div className="relative mx-auto w-full max-w-5xl animate-fade-scale-in p-6 md:p-8">{children}</div>
-        </main>
+          <aside className="relative z-20 hidden h-full w-64 shrink-0 border-r border-border/40 bg-card/50 backdrop-blur-md lg:flex lg:flex-col">
+            {shell}
+          </aside>
+
+          <main className="relative z-10 min-w-0 flex-1 overflow-x-hidden overflow-y-auto">
+            <div
+              className="relative mx-auto w-full max-w-5xl animate-fade-scale-in p-4 md:p-8"
+              style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
+            >
+              {children}
+            </div>
+          </main>
+        </div>
       </div>
     </ToastProvider>
   );

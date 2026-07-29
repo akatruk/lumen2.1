@@ -52,7 +52,7 @@ export default function ShortlistsPage() {
 
       <Card className="p-5">
         <div className="flex flex-wrap gap-3">
-          <Input className="max-w-xs" placeholder="New shortlist name" value={name} onChange={(e) => setName(e.target.value)} />
+          <Input className="w-full max-w-xs" placeholder="New shortlist name" value={name} onChange={(e) => setName(e.target.value)} />
           <Button
             size="sm"
             onClick={() => {

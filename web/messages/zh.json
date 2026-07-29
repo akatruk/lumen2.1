@@ -21,7 +21,9 @@
     "analysisJobs": "分析任务",
     "settings": "设置",
     "core": "核心",
-    "more": "更多"
+    "more": "更多",
+    "openMenu": "打开菜单",
+    "closeMenu": "关闭菜单"
   },
   "lang": {
     "en": "EN",

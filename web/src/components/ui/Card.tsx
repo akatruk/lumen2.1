@@ -31,8 +31,8 @@ export function CardHeader({
   monoLabel?: string;
 }) {
   return (
-    <div className="flex items-start justify-between gap-3 border-b border-border/40 px-5 py-4">
-      <div>
+    <div className="flex flex-col gap-3 border-b border-border/40 px-5 py-4 sm:flex-row sm:items-start sm:justify-between">
+      <div className="min-w-0">
         <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
           {monoLabel ? (
             <span className="select-none rounded border border-primary/10 bg-primary/5 px-1 py-0.5 font-mono text-[10px] text-primary">
@@ -43,7 +43,7 @@ export function CardHeader({
         </h2>
         {subtitle ? <p className="mt-0.5 font-mono text-xs text-muted-foreground">{subtitle}</p> : null}
       </div>
-      {action}
+      {action ? <div className="w-full shrink-0 sm:w-auto">{action}</div> : null}
     </div>
   );
 }
