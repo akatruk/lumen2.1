@@ -56,7 +56,7 @@ Do **not** paste client secrets into git, chat logs, or commits.
 | Feature / UX commits | `f81c366` · `9b66287` · `a01a1c9` (error banner + land `/products/scan`) |
 | Ops | GH secrets rotated → Deploy [`30455885662`](https://github.com/akatruk/lumen2.1/actions/runs/30455885662) **success** |
 | Docs / QA commits | `72b4776` · `7d23352` |
-| Docs Deploy | [`30456364265`](https://github.com/akatruk/lumen2.1/actions/runs/30456364265) **success** (`7d23352`) |
+| Docs Deploy | [`30456474566`](https://github.com/akatruk/lumen2.1/actions/runs/30456474566) **success** (`7dee1fa`; also `30456364265`) |
 | Environment | https://influencers.lumen.universalgravity.org |
 | P0 summary | **PASS** automated (G1/G3a/G5/G6/O*); **G3b/G4 BLOCKED** pending interactive Google sign-in after rotation |
 | Smoke | `EXPECT_VERSION=0.5.4` **PASSED** (pre + post docs Deploy) |

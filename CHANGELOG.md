@@ -25,7 +25,7 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 - Target: https://influencers.lumen.universalgravity.org — health `0.5.4` / Deploy [`30453651901`](https://github.com/akatruk/lumen2.1/actions/runs/30453651901) **success** (`ecc8e3b`; initial feature Deploy [`30453204280`](https://github.com/akatruk/lumen2.1/actions/runs/30453204280)).
 - Manual QA: `docs/MANUAL_QA_MOBILE.md` — **P0 ALL PASS**; Chrome headless 375×812 drawer/nav/pages **25/25**; 1280 desktop sidebar unchanged.
 - Smoke `EXPECT_VERSION=0.5.4` **PASSED**.
-- Google SSO secret rotation: Deploy [`30455885662`](https://github.com/akatruk/lumen2.1/actions/runs/30455885662) **success**; docs QA Deploy [`30456364265`](https://github.com/akatruk/lumen2.1/actions/runs/30456364265) (`7d23352`); `googleOAuth=true`; G1/G3a/O* **PASS**; **G3b/G4 BLOCKED** pending human Google test-user login after rotation.
+- Google SSO secret rotation: Deploy [`30455885662`](https://github.com/akatruk/lumen2.1/actions/runs/30455885662) **success**; docs QA Deploy [`30456474566`](https://github.com/akatruk/lumen2.1/actions/runs/30456474566) (`7dee1fa`); `googleOAuth=true`; G1/G3a/O* **PASS**; **G3b/G4 BLOCKED** pending human Google test-user login after rotation.
 
 ## [0.5.3] — 2026-07-29
 
