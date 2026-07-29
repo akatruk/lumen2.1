@@ -198,7 +198,7 @@ export function BrandShell({ children }: { children: React.ReactNode }) {
   const { open, toggle, close } = useMobileNav();
 
   return (
-    <div className="relative flex h-dvh w-screen flex-col overflow-hidden bg-background text-foreground transition-colors duration-300 lg:flex-row">
+    <div className="relative flex h-dvh w-full max-w-full flex-col overflow-x-hidden overflow-y-hidden bg-background text-foreground transition-colors duration-300 lg:flex-row">
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden select-none">
         <div className="absolute inset-0 grid-pattern opacity-[0.4] dark:opacity-[0.25]" />
         <div className="absolute inset-0 bg-noise opacity-[0.02]" />
