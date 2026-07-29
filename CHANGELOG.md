@@ -2,6 +2,22 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.5.4] — 2026-07-29
+
+### Fixed — Mobile shell (brand + creator)
+
+- Brand console: `BrandShell` stacks mobile top bar above content (`flex-col` → `lg:flex-row`); permanent `w-64` sidebar only ≥`lg`.
+- Shared `useMobileNav`: close on route change / Esc / backdrop; body scroll lock while open; safe-area insets; 44px menu hit target; lang/theme on mobile top bar.
+- Creator portal shell matched to the same pattern.
+- Page sweeps: dashboard CTAs, Discover search, product scan actions, analysis-jobs selects, `CardHeader` stacks on narrow viewports; shell `w-full` + `overflow-x-hidden` (no phantom page sideways scroll).
+- Health `0.5.4`. Manual QA: `docs/MANUAL_QA_MOBILE.md`.
+
+### QA
+
+- Target: https://influencers.lumen.universalgravity.org — health `0.5.4` / Deploy [`30453651901`](https://github.com/akatruk/lumen2.1/actions/runs/30453651901) **success** (`ecc8e3b`; initial feature Deploy [`30453204280`](https://github.com/akatruk/lumen2.1/actions/runs/30453204280)).
+- Manual QA: `docs/MANUAL_QA_MOBILE.md` — **P0 ALL PASS**; Chrome headless 375×812 drawer/nav/pages **25/25**; 1280 desktop sidebar unchanged.
+- Smoke `EXPECT_VERSION=0.5.4` **PASSED**.
+
 ## [0.5.3] — 2026-07-29
 
 ### Added — Google SSO for brand login
