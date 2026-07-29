@@ -119,13 +119,13 @@ export default function CreatorLayout({ children }: { children: React.ReactNode 
         {tiktokSession ? (
           <div className="mt-3 space-y-2">
             <div className="rounded border border-primary/25 bg-primary/10 px-3 py-2 font-mono text-xs text-primary">
-              TikTok · {authUser?.name}
+              Intl TT · {authUser?.name}
               {authUser?.influencerId ? (
                 <div className="mt-1 text-[10px] text-muted-foreground">{authUser.influencerId}</div>
               ) : null}
             </div>
             <Button size="sm" variant="ghost" className="w-full justify-start" onClick={() => void logoutTikTok()}>
-              <LogOut className="h-4 w-4" /> Log out TikTok
+              <LogOut className="h-4 w-4" /> Log out intl TikTok
             </Button>
           </div>
         ) : (
@@ -161,7 +161,7 @@ export default function CreatorLayout({ children }: { children: React.ReactNode 
               href="/creator/login"
               className="mt-2 block font-mono text-[11px] text-primary hover:underline"
             >
-              Login with TikTok →
+              Intl TikTok login (not Douyin) →
             </Link>
           </>
         )}

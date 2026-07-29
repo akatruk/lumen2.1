@@ -16,7 +16,7 @@ const emptyForm = {
   description: "",
   imageEmoji: "📦",
   priceLabel: "",
-  geography: "Thailand",
+  geography: "China",
   audience: "",
   languages: "en,th" as string,
   benefits: "",
@@ -75,7 +75,7 @@ export default function ProductsPage() {
       benefits: form.benefits.split(",").map((s) => s.trim()).filter(Boolean),
       prohibitedClaims: form.prohibitedClaims.split(",").map((s) => s.trim()).filter(Boolean),
       desiredTopics: form.desiredTopics.split(",").map((s) => s.trim()).filter(Boolean),
-      platforms: ["tiktok" as const],
+      platforms: ["douyin" as const],
     };
     if (!payload.name || !payload.brand) return;
     if (editingId) await marketplace.updateProductAsync(editingId, payload);

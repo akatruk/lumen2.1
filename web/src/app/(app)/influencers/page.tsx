@@ -119,7 +119,8 @@ export default function InfluencersPage() {
           <Input placeholder="Search name or handle" value={query} onChange={(e) => setQuery(e.target.value)} />
           <Select value={platform} onChange={(e) => setPlatform(e.target.value as "all" | Platform)}>
             <option value="all">All platforms</option>
-            <option value="tiktok">TikTok</option>
+            <option value="douyin">Douyin</option>
+            <option value="tiktok">TikTok (intl)</option>
             <option value="instagram">Instagram</option>
             <option value="youtube">YouTube</option>
           </Select>

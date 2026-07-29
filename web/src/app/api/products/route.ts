@@ -21,7 +21,7 @@ const ProductBody = z.object({
   benefits: z.array(z.string()).default([]),
   prohibitedClaims: z.array(z.string()).default([]),
   desiredTopics: z.array(z.string()).default([]),
-  platforms: z.array(z.enum(["tiktok", "instagram", "youtube"])).optional(),
+  platforms: z.array(z.enum(["douyin", "tiktok", "instagram", "youtube"])).optional(),
   resumeCard: z.record(z.string(), z.unknown()).optional(),
 });
 

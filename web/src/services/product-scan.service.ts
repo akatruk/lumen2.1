@@ -19,6 +19,7 @@ function clipPitch(s: string, max = 240): string {
 function detectLangs(text: string): LanguageCode[] {
   const t = text.toLowerCase();
   const langs: LanguageCode[] = [];
+  if (/\bzh\b|中文|汉语|普通话|shanghai|beijing|中国/.test(t)) langs.push("zh");
   if (/\bth(ai)?\b|ภาษาไทย|bangkok|phuket|soi\s*11/.test(t)) langs.push("th");
   if (/\ben(g(lish)?)?\b|expat|english/.test(t)) langs.push("en");
   if (/\bru(ssian)?\b|русский/.test(t)) langs.push("ru");
@@ -35,13 +36,15 @@ function detectLangs(text: string): LanguageCode[] {
 function detectGeo(text: string): string[] {
   const t = text.toLowerCase();
   const geo: string[] = [];
+  if (/shanghai|lujiazui|jingan|xuhui|浦东|静安/.test(t)) geo.push("Shanghai");
+  if (/beijing|朝阳|海淀/.test(t)) geo.push("Beijing");
   if (/bangkok|sukhumvit|soi\s*11|ari|thonglor/.test(t)) geo.push("Bangkok");
   if (/phuket|kata|patong/.test(t)) geo.push("Phuket");
   if (/chiang\s*mai/.test(t)) geo.push("Chiang Mai");
   if (/pattaya/.test(t)) geo.push("Pattaya");
   if (/samui/.test(t)) geo.push("Koh Samui");
   if (/thailand|thai\b/.test(t) && !geo.includes("Thailand")) geo.push("Thailand");
-  if (!geo.length) geo.push("Thailand");
+  if (!geo.length) geo.push("China");
   return uniq(geo);
 }
 
@@ -75,26 +78,30 @@ function looksLikeSoi11(text: string): boolean {
   return /soi\s*11|bangkok\s*bites|pad\s*kra\s*pao|sukhumvit\s*soi\s*11/i.test(text);
 }
 
+function looksLikeShanghaiDemo(text: string): boolean {
+  return /沪上小馆|东岸厨房|lujiazui|xiaolongbao|上海探店|east\s*bund/i.test(text);
+}
+
 function soi11Card(extraNotes: string[]): ProductResumeCard {
   return {
-    name: "Soi 11 Thai Kitchen",
-    brand: "Bangkok Bites Co.",
+    name: "沪上小馆",
+    brand: "东岸厨房",
     category: "Restaurant",
     pitch:
-      "Modern Thai shareable plates and craft cocktails on Sukhumvit Soi 11 — walk-in friendly late-night dining for locals, expats, and tourists.",
-    geography: ["Bangkok"],
-    audience: "Foodies, expats, young professionals, tourists 22–40",
-    languages: ["th", "en"],
-    benefits: ["Signature pad kra pao", "Open kitchen", "Walk-in friendly", "Late hours", "Shareable plates"],
-    prohibited_claims: ["Healthiest Thai food", "Michelin guaranteed"],
-    desired_topics: ["food", "nightlife", "bangkok", "lifestyle"],
+      "Modern Shanghainese shareable plates and craft cocktails near Lujiazui — walk-in friendly late-night dining for locals and young professionals.",
+    geography: ["Shanghai", "China"],
+    audience: "Foodies, young professionals 22–40",
+    languages: ["zh"],
+    benefits: ["Signature xiaolongbao", "Open kitchen", "Walk-in friendly", "Late hours", "Shareable plates"],
+    prohibited_claims: ["最健康中餐", "Michelin guaranteed"],
+    desired_topics: ["food", "nightlife", "shanghai", "lifestyle"],
     tone: ["authentic", "energetic", "local"],
-    platforms: ["tiktok"],
+    platforms: ["douyin"],
     budget: { type: "barter", notes: "Soft-opening hospitality / TBD fee" },
     success_metrics: ["views", "likes", "comments", "foot traffic", "promo redemptions"],
     confidence: 0.92,
     missing_fields: [],
-    evidence_notes: ["Matched known Soi 11 / Bangkok Bites pilot materials", ...extraNotes],
+    evidence_notes: ["Matched known Shanghai / East Bund pilot materials", ...extraNotes],
     scannedAt: new Date().toISOString(),
     sourceMode: "demo-scan",
   };
@@ -149,7 +156,7 @@ export const productScan = {
     if (brief) evidence.push(`Brief length: ${brief.length} chars`);
     if (photos.length) evidence.push(`Photos: ${photos.slice(0, 5).join(", ")}`);
 
-    if (looksLikeSoi11(blob)) {
+    if (looksLikeShanghaiDemo(blob) || looksLikeSoi11(blob)) {
       return soi11Card(evidence);
     }
 
@@ -205,7 +212,7 @@ export const productScan = {
         `${name} by ${brand} — ${category.toLowerCase()} focused on ${desired_topics.slice(0, 2).join(" & ") || "lifestyle"} in ${geography.join(", ")}.`,
     );
 
-    const platforms: Platform[] = ["tiktok"];
+    const platforms: Platform[] = ["douyin"];
     if (/instagram/i.test(blob)) platforms.push("instagram");
     if (/youtube/i.test(blob)) platforms.push("youtube");
 

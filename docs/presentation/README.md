@@ -1,10 +1,12 @@
 # Lumen Influencer Marketplace — Video Presentation Pack
 
+> **Primary platform note (2026-07-29):** Scripts (`SCRIPT.md`, `SCRIPT_4MIN.md`, `SCRIPT_4MIN_ZH.md`) are updated for the current primary platform, **China / Douyin**. `demo.mp4` / `demo-zh.mp4` below have **not been rebuilt** since this narrative change — the videos still show the earlier Thailand F&B / TikTok walkthrough and screen recordings, and the on-screen product mock data may not yet reflect the current Douyin/China copy either. Treat the mp4s as **stale** until a new video build/remaster ships. **TODO:** re-record the video-build screenshots and re-render `demo.mp4` / `demo-zh.mp4` against the Douyin narrative before showing externally.
+
 **Length:** ~2:21 EN / ~2:15 ZH (dense live walkthrough)  
 **Audience:** stakeholders / investors / agency partners  
 **Demo URL:** https://influencers.lumen.universalgravity.org  
 
-## Generated walkthrough videos (0.4.8 remaster)
+## Generated walkthrough videos (0.4.8 remaster — STALE, pre-Douyin narrative)
 
 Live TikHub + live OpenRouter scan + UX honesty pack (Live badge, Decision/Details, PENDING ANALYSIS, Act-as sync, Core/More):
 
@@ -15,7 +17,7 @@ Live TikHub + live OpenRouter scan + UX honesty pack (Live badge, Decision/Detai
 
 Closing slide has **no demo URL**.
 
-Source assets: `docs/presentation/video-build/` · scripts: `SCRIPT_4MIN.md` / `SCRIPT_4MIN_ZH.md` · deck: `slides.html`
+Source assets: `docs/presentation/video-build/` · scripts (Douyin narrative, current): `SCRIPT_4MIN.md` / `SCRIPT_4MIN_ZH.md` · deck: `slides.html` (also not yet re-themed for Douyin)
 
 ## Files
 

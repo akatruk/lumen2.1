@@ -4,10 +4,6 @@ import { discoveryMode, tikhubConfig } from "@/server/env";
 import { fetchDouyinSearchVideos, videosToCandidates, videosToEvidence } from "@/server/tikhub";
 import type { DiscoverySearchParams, LanguageCode } from "@/types";
 
-/**
- * @deprecated Alias — discovery primary is Douyin.
- * Prefer POST/GET /api/discovery/douyin
- */
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -28,15 +24,14 @@ export async function POST(req: Request) {
         {
           error: "DISCOVERY_MODE is not live",
           mode: "demo",
-          hint: "Set DISCOVERY_MODE=live and TIKHUB_API_KEY (reuse from Strom/lumen). Prefer /api/discovery/douyin",
-          deprecatedAlias: true,
+          hint: "Set DISCOVERY_MODE=live and TIKHUB_API_KEY on the server (reuse from Strom/lumen)",
         },
         { status: 400 },
       );
     }
     if (!tikhubConfig().apiKey) {
       return NextResponse.json(
-        { error: "TIKHUB_API_KEY is not configured", mode: "live", deprecatedAlias: true },
+        { error: "TIKHUB_API_KEY is not configured", mode: "live" },
         { status: 503 },
       );
     }
@@ -66,7 +61,6 @@ export async function POST(req: Request) {
         mode: "live",
         source: "tikhub",
         platform: "douyin",
-        deprecatedAlias: true,
         evidence: videosToEvidence(videos, uniqueId),
       });
     }
@@ -75,16 +69,12 @@ export async function POST(req: Request) {
       mode: "live",
       source: "tikhub",
       platform: "douyin",
-      deprecatedAlias: true,
       count: candidates.length,
       candidates,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "TikHub Douyin search failed";
-    return NextResponse.json(
-      { error: message, mode: "live", deprecatedAlias: true },
-      { status: 502 },
-    );
+    return NextResponse.json({ error: message, mode: "live" }, { status: 502 });
   }
 }
 
@@ -93,9 +83,7 @@ export async function GET() {
     mode: discoveryMode(),
     configured: Boolean(tikhubConfig().apiKey),
     platform: "douyin",
-    endpoint: "/api/discovery/tiktok",
-    deprecatedAlias: true,
-    prefer: "/api/discovery/douyin",
+    endpoint: "/api/discovery/douyin",
     tikhubPath: "/api/v1/douyin/search/fetch_general_search_v1",
   });
 }

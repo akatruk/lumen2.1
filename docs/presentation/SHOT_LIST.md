@@ -1,3 +1,5 @@
+> **Note (2026-07-29):** Product primary is **Douyin / China**. Shots below may still show Thailand/TikTok UI chrome — treat as stale until reshot.
+
 # Screen Recording Shot List
 
 Sync with [SCRIPT.md](./SCRIPT.md). Record 1080p. Cursor highlights help.

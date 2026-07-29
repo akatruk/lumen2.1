@@ -16,7 +16,7 @@ import { useToast } from "@/components/Toast";
 const SOI11_SAMPLE = {
   url: "https://maps.example.com/soi11-thai-kitchen",
   briefText:
-    "Soi 11 Thai Kitchen by Bangkok Bites Co. Modern Thai restaurant in Sukhumvit Soi 11. Shareable plates, craft cocktails, late-night dining. Signature pad kra pao. Targeting foodies, expats, tourists 22–40. Thai and English. Soft opening barter OK. Want TikTok food creators in Bangkok.",
+    "Shanghai Bistro by East Bund Kitchen. Modern Shanghainese restaurant near Lujiazui. Shareable plates, craft cocktails, late-night dining. Signature xiaolongbao. Targeting foodies and young professionals 22–40. Chinese. Soft opening barter OK. Want Douyin food creators in Shanghai.",
   photoNames: ["pad-kra-pao.jpg", "open-kitchen.jpg", "soi11-storefront.jpg"],
 };
 
@@ -298,10 +298,11 @@ export default function ProductScanPage() {
                 </Field>
                 <Field label="Platforms">
                   <Select
-                    value={card.platforms[0] ?? "tiktok"}
+                    value={card.platforms[0] ?? "douyin"}
                     onChange={(e) => updateCard("platforms", [e.target.value as Platform])}
                   >
-                    <option value="tiktok">TikTok</option>
+                    <option value="douyin">Douyin</option>
+                    <option value="tiktok">TikTok (intl)</option>
                     <option value="instagram">Instagram</option>
                     <option value="youtube">YouTube</option>
                   </Select>

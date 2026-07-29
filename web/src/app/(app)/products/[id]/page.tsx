@@ -130,7 +130,7 @@ export default function ProductDetailPage() {
           </div>
           <div className="border-t border-border/40 px-5 py-3">
             <Link href={`/discover?productId=${product.id}`} className="text-xs text-primary hover:underline">
-              Run TikTok Discover for this card →
+              Run Douyin Discover for this card →
             </Link>
           </div>
         </Card>

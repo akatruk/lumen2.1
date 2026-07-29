@@ -40,7 +40,8 @@ export const LANGUAGE_LABELS: Record<string, string> = {
 };
 
 export const PLATFORM_LABELS: Record<string, string> = {
-  tiktok: "TikTok",
+  douyin: "Douyin",
+  tiktok: "TikTok (intl)",
   instagram: "Instagram",
   youtube: "YouTube",
 };

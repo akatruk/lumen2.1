@@ -1,8 +1,10 @@
 # Product Requirements
 
+> **Primary platform note (2026-07-29):** Product truth is **China / Douyin (中国抖音) / zh**. The Thailand F&B pilot referenced below (Soi 11, Bangkok, TikTok-first) is **historical** context from Phase 0 — see [`docs/phase0/`](./phase0/README.md) — and is not the current go-to-market. Current discovery is Douyin via TikHub; see [`DISCOVERY_AND_DOSSIER.md`](./DISCOVERY_AND_DOSSIER.md).
+
 ## 1. Overview
 
-Lumen Influencer Marketplace connects brands with influencers in Thailand. It analyzes creator videos using the existing Lumen pipeline and recommends creators whose content, audience, and style match a product or campaign.
+Lumen Influencer Marketplace connects brands with influencers in China, primarily through Douyin. It analyzes creator videos using the existing Lumen pipeline and recommends creators whose content, audience, and style match a product or campaign. (Earlier iterations targeted Thailand with TikTok as the primary platform — that pilot is preserved as historical reference, not current scope.)
 
 ## 2. Problem
 
@@ -74,8 +76,8 @@ The user can:
 
 The system can:
 
-- **discover TikTok influencers from inside the product** (internal search: keywords, topics, geo, language, reach band);
-- ingest candidates through an **approved connector** (platform API and/or contracted provider — not uncontrolled scraping);
+- **discover Douyin influencers from inside the product** (internal search: keywords, topics, geo, language, reach band); international TikTok discovery is kept only as a deprecated/historical alias route, not the primary path;
+- ingest candidates through an **approved connector** (TikHub — same provider reused from Strom/lumen — and/or platform API; not uncontrolled scraping);
 - build and refresh an **influencer dossier** (brand/topics, style, audience signals, safety, evidence from recent videos);
 - import influencer profile URLs manually or by CSV as a **fallback**;
 - avoid duplicate profiles;
@@ -182,7 +184,7 @@ Weights can be changed per campaign. Missing data must reduce confidence rather 
 
 ## 9. MVP Success Criteria
 
-- an operator can **discover** a creator on TikTok from the app, open a dossier, and analyze recent videos;
+- an operator can **discover** a creator on Douyin from the app, open a dossier, and analyze recent videos;
 - a brand can create a product and receive explainable creator recommendations;
 - a campaign can progress from shortlist to accepted invitation;
 - a creator can submit content for review;
@@ -191,14 +193,14 @@ Weights can be changed per campaign. Missing data must reduce confidence rather 
 
 ## 10. Decisions Required Before Implementation
 
-**Resolved in Phase 0 (2026-07-28).** Canonical record: [`docs/phase0/PHASE0_DECISIONS.md`](./phase0/PHASE0_DECISIONS.md).
+**Resolved in Phase 0 (2026-07-28, Thailand pilot — historical).** Canonical record: [`docs/phase0/PHASE0_DECISIONS.md`](./phase0/PHASE0_DECISIONS.md). **Superseded (2026-07-29):** current primary market/platform is **China / Douyin**; rows below are preserved as the original Phase 0 record.
 
 | # | Question | Decision |
 | --- | --- | --- |
-| 1 | Which influencer data sources are approved for the MVP? | **Primary: in-app TikTok discovery** via approved API/provider connector → Lumen analysis → dossier. Fallback: manual URL + CSV + creator claim. No uncontrolled DIY scraping. |
+| 1 | Which influencer data sources are approved for the MVP? | **Primary: in-app discovery** (originally TikTok, now **Douyin**) via approved API/provider connector (TikHub) → Lumen analysis → dossier. Fallback: manual URL + CSV + creator claim. No uncontrolled DIY scraping. |
 | 2 | Will creators publish only to their own social accounts, or will Lumen also host public videos? | **Own social accounts only.** No public consumer feed / auto-publish in MVP. |
-| 3 | Which product category will be used for the pilot? | **Restaurant / F&B (Bangkok)** — brand: Bangkok Bites Co., product: Soi 11 Thai Kitchen. |
-| 4 | Which languages are required at launch? | **Thai + English** for pilot KPIs. RU/ZH optional in analysis, not launch gates. |
+| 3 | Which product category will be used for the pilot? | Historical: **Restaurant / F&B (Bangkok)** — brand: Bangkok Bites Co., product: Soi 11 Thai Kitchen. Current primary market is China. |
+| 4 | Which languages are required at launch? | Historical pilot: **Thai + English**. Current primary: **zh (Chinese)**. |
 | 5 | Will the MVP support direct creator contact or agency-managed outreach only? | **Brand/agency-managed outreach** plus creator portal for accept / brief / submit. |
 | 6 | Which campaign metrics are required for the pilot? | Views, likes, comments, saves (if available), posts published, invite→publish cycle time; optional foot-traffic / promo redemptions (manual). |
 

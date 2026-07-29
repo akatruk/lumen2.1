@@ -6,6 +6,8 @@
 **Scope:** Product scan → resume card → Discover ranked vs card  
 **Mode:** Demo scan + demo TikTok connector
 
+> **Historical (2026-07-29):** Recorded against the Thailand F&B / TikTok pilot build. Current product primary is **China / Douyin**; the demo connector referenced below has been superseded by the Douyin/TikHub connector — see [`DISCOVERY_AND_DOSSIER.md`](./DISCOVERY_AND_DOSSIER.md). Dates/PASS results below are preserved as an audit record.
+
 ## How to run
 
 1. Hard refresh after deploy.

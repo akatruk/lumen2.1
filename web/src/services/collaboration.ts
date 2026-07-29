@@ -63,7 +63,7 @@ const SEED_BRIEFS: CampaignBrief[] = [
     influencerId: "inf-1",
     title: "Soi 11 Soft Opening — dinner feature",
     deliverables: [
-      "1 TikTok (30–45s) tasting signature dishes",
+      "1 Douyin (30–45s) tasting signature dishes",
       "1 Instagram Reel with booking CTA",
       "Disclose paid partnership",
     ],

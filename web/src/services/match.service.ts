@@ -41,7 +41,7 @@ function cardOf(product: Product): ProductResumeCard | null {
         ? asStringArray(c.desired_topics)
         : asStringArray(product.desiredTopics),
       tone: asStringArray(c.tone),
-      platforms: c.platforms?.length ? c.platforms : product.platforms?.length ? product.platforms : ["tiktok"],
+      platforms: c.platforms?.length ? c.platforms : product.platforms?.length ? product.platforms : ["douyin"],
       budget: c.budget ?? { type: "unknown", notes: product.priceLabel ?? "" },
       success_metrics: asStringArray(c.success_metrics),
       confidence: Number.isFinite(c.confidence) ? c.confidence : 0.7,
@@ -62,7 +62,7 @@ function cardOf(product: Product): ProductResumeCard | null {
     prohibited_claims: asStringArray(product.prohibitedClaims),
     desired_topics: asStringArray(product.desiredTopics),
     tone: [],
-    platforms: product.platforms?.length ? product.platforms : ["tiktok"],
+    platforms: product.platforms?.length ? product.platforms : ["douyin"],
     budget: { type: "unknown", notes: product.priceLabel ?? "" },
     success_metrics: [],
     confidence: 0.7,
@@ -78,7 +78,7 @@ function clamp(n: number, lo = 0, hi = 100) {
 
 /**
  * Rank discovery candidates against a Product Resume Card.
- * Demo connector is TikTok-only — candidates are skipped when card platforms exclude tiktok.
+ * Primary connector is Douyin — candidates are skipped when card platforms exclude douyin (and tiktok alias).
  */
 export function rankCandidatesForCard(
   candidates: DiscoveryCandidate[],
@@ -88,10 +88,10 @@ export function rankCandidatesForCard(
   if (!card) return [];
 
   const allowed = new Set(
-    (card.platforms?.length ? card.platforms : ["tiktok"]).map((p) => String(p).toLowerCase()),
+    (card.platforms?.length ? card.platforms : ["douyin"]).map((p) => String(p).toLowerCase()),
   );
-  // Demo candidates are TikTok. If card does not allow tiktok, return no matches.
-  if (!allowed.has("tiktok")) return [];
+  // Primary candidates are Douyin. Accept legacy "tiktok" on card as alias for CN short-video.
+  if (!allowed.has("douyin") && !allowed.has("tiktok")) return [];
 
   const topicSet = new Set(card.desired_topics.map((t) => t.toLowerCase()));
   const geoSet = new Set(card.geography.map((g) => g.toLowerCase()));
@@ -109,7 +109,7 @@ export function rankCandidatesForCard(
     const topicScore = clamp((topicHits.length / Math.max(1, Math.min(3, Math.max(topicSet.size, 1)))) * 100);
 
     const city = String(c.city ?? "").toLowerCase();
-    const cityHit = (city && geoSet.has(city)) || geoSet.has("thailand");
+    const cityHit = (city && geoSet.has(city)) || geoSet.has("china") || geoSet.has("thailand");
     const followers = Number(c.followers);
     const engagementRate = Number(c.engagementRate);
     const avgViews = Number(c.avgViews);
@@ -243,7 +243,7 @@ function buildMatchReasons(input: {
   if (Number.isFinite(input.followers) && input.followers > 0) {
     pool.push({
       priority: 92,
-      text: `Reach ${formatCompact(input.followers)} followers on TikTok`,
+      text: `Reach ${formatCompact(input.followers)} followers on Douyin`,
     });
   }
   if (Number.isFinite(input.engagementRate) && input.engagementRate > 0) {

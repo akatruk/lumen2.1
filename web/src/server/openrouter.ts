@@ -7,7 +7,7 @@ import {
   uniqStrings,
 } from "@/lib/product-claims";
 
-const SYSTEM = `You extract a Product Resume Card for an influencer marketplace (Thailand pilot).
+const SYSTEM = `You extract a Product Resume Card for an influencer marketplace (China / Douyin primary).
 Return ONLY valid JSON matching this schema:
 {
   "name": string,
@@ -21,14 +21,14 @@ Return ONLY valid JSON matching this schema:
   "prohibited_claims": string[],
   "desired_topics": string[],
   "tone": string[],
-  "platforms": ("tiktok"|"instagram"|"youtube")[],
+  "platforms": ("douyin"|"tiktok"|"instagram"|"youtube")[],
   "budget": { "type": "unknown"|"barter"|"fixed"|"range", "notes": string },
   "success_metrics": string[],
   "confidence": number (0-1),
   "missing_fields": string[],
   "evidence_notes": string[]
 }
-Rules: extract, do not invent prices/ROI/medical/Michelin guarantees. Prefer th+en languages. Default platform tiktok.
+Rules: extract, do not invent prices/ROI/medical guarantees. Prefer zh language. Default platform douyin (中国抖音). Intl tiktok only if explicitly requested.
 Always copy explicit prohibitions from the brief (e.g. "Prohibitions:", "no medical claims", "no competitor…") into prohibited_claims — never drop them.
 Unknown → missing_fields + lower confidence. Confidence must reflect completeness (rich brief with name/brand/geo/topics/prohibitions → typically 0.75–0.9).`;
 
@@ -49,7 +49,7 @@ function normalizeCard(raw: Record<string, unknown>, materials: ProductScanMater
     ["th", "en", "ru", "zh"].includes(l),
   );
   const platforms = asStringArray(raw.platforms).filter((p): p is Platform =>
-    ["tiktok", "instagram", "youtube"].includes(p),
+    ["douyin", "tiktok", "instagram", "youtube"].includes(p),
   );
   const budgetRaw = (raw.budget ?? {}) as Record<string, unknown>;
   const budgetType = String(budgetRaw.type ?? "unknown");
@@ -64,16 +64,16 @@ function normalizeCard(raw: Record<string, unknown>, materials: ProductScanMater
     brand: String(raw.brand ?? "").trim() || "Unknown brand",
     category: String(raw.category ?? "").trim() || "Product",
     pitch: clipPitch(String(raw.pitch ?? materials.briefText ?? "")),
-    geography: asStringArray(raw.geography).length ? asStringArray(raw.geography) : ["Thailand"],
+    geography: asStringArray(raw.geography).length ? asStringArray(raw.geography) : ["China"],
     audience: String(raw.audience ?? "").trim(),
-    languages: langs.length ? langs : ["en", "th"],
+    languages: langs.length ? langs : ["zh"],
     benefits: asStringArray(raw.benefits).slice(0, 5),
     prohibited_claims: prohibited,
     desired_topics: asStringArray(raw.desired_topics).length
       ? asStringArray(raw.desired_topics)
       : ["lifestyle"],
     tone: asStringArray(raw.tone),
-    platforms: platforms.length ? platforms : ["tiktok"],
+    platforms: platforms.length ? platforms : ["douyin"],
     budget: {
       type: ["unknown", "barter", "fixed", "range"].includes(budgetType)
         ? (budgetType as ProductResumeCard["budget"]["type"])

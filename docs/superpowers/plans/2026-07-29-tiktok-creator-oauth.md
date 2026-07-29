@@ -1,5 +1,7 @@
 # TikTok Creator OAuth Implementation Plan
 
+> **Superseded note (2026-07-29):** Product primary platform is now **China / Douyin (中国抖音)** — see `docs/DISCOVERY_AND_DOSSIER.md`. This plan implements **international TikTok OAuth for creator login only** — a **leftover**, not Douyin login, and unrelated to Douyin discovery. Credentials reuse Strom's existing TikTok Developer App (no new account); never paste secret values. Kept for historical/implementation reference.
+
 > **For agentic workers:** Implement task-by-task. Spec: `docs/superpowers/specs/2026-07-29-tiktok-creator-oauth-design.md`
 
 **Goal:** Creators log in via TikTok OAuth; session cookie `role=creator` + `influencerId`; Act-as remains fallback.

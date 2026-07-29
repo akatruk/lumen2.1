@@ -1,6 +1,8 @@
 # Lumen Influencer Marketplace
 
-Lumen Influencer Marketplace is a Thailand-focused platform that helps brands discover, understand, and work with social media creators.
+Lumen Influencer Marketplace is a **China-focused platform** (primary discovery platform: **Douyin / 中国抖音**, douyin.com) that helps brands discover, understand, and work with social media creators.
+
+> **Primary platform note (2026-07-29):** Product truth is China / Douyin / zh. The original Thailand F&B pilot and international TikTok discovery are **historical** — kept in `docs/phase0/` and QA history for record, not the current narrative. International TikTok OAuth still exists in the creator portal as a **leftover login option** (reusing the Strom TikTok Developer App); it is not Douyin login. See [`docs/DISCOVERY_AND_DOSSIER.md`](docs/DISCOVERY_AND_DOSSIER.md).
 
 The product uses the existing Lumen video-analysis pipeline to turn creator profiles and videos into structured insights. Brands can then match products with relevant influencers, build campaign shortlists, request content, review submissions, and measure results.
 
@@ -16,10 +18,10 @@ Create a practical marketplace where:
 
 ## Initial Market
 
-- Geography: Thailand
-- Creator platforms: TikTok, Instagram, and YouTube
-- Languages: Thai and English first; Russian and Chinese can be added for Thailand-focused audiences
-- Customer types: local brands, agencies, hospitality businesses, real-estate companies, tourism businesses, restaurants, and e-commerce sellers
+- Geography: China (mainland)
+- Creator platforms: **Douyin (primary)**, with Instagram and YouTube as secondary/international; international TikTok discovery is a historical leftover from the Thailand pilot, not the current acquisition path
+- Languages: Chinese (zh) first; Thai and English remain from the historical Thailand pilot, Russian optional
+- Customer types: local and cross-border brands, agencies, hospitality businesses, real-estate companies, tourism businesses, restaurants, and e-commerce sellers
 
 ## Core Workflow
 
@@ -91,7 +93,7 @@ Only the minimum required public or authorized data should be stored. Influencer
 ### Phase 1: Discovery MVP
 
 - product and campaign setup;
-- **in-app TikTok discovery** and influencer **dossiers**;
+- **in-app Douyin discovery** and influencer **dossiers** (international TikTok discovery kept only as a historical/leftover alias);
 - manual/CSV influencer import (fallback);
 - video analysis via Lumen;
 - filters, scoring, and shortlists;
@@ -114,9 +116,9 @@ Only the minimum required public or authorized data should be stored. Influencer
 
 ## Project Status
 
-**Phase 0 Product Validation: complete** — see [`docs/phase0/`](docs/phase0/README.md) (F&B / Soi 11 pilot). Discovery model: **app finds TikTok creators and builds dossiers** — [`docs/DISCOVERY_AND_DOSSIER.md`](docs/DISCOVERY_AND_DOSSIER.md).
+**Phase 0 Product Validation: complete (historical)** — see [`docs/phase0/`](docs/phase0/README.md) (Thailand F&B / Soi 11 pilot — superseded by China / Douyin as the current primary market). Discovery model: **app finds Douyin creators and builds dossiers** — [`docs/DISCOVERY_AND_DOSSIER.md`](docs/DISCOVERY_AND_DOSSIER.md).
 
-Phase 1–2 Discovery + Collaboration **demo UI** lives in `web/` (Next.js + TypeScript + Tailwind). It uses mock Thailand data and a mock Lumen Analysis client (catalog is fixture-based today; live TikTok discovery is the next production build). Shortlists, products, campaigns, and settings persist in browser `localStorage`.
+Phase 1–2 Discovery + Collaboration **demo UI** lives in `web/` (Next.js + TypeScript + Tailwind). It uses mock China/Douyin data (migrated from the earlier Thailand mock set) and a mock Lumen Analysis client (catalog is fixture-based today; live Douyin discovery via TikHub is the current production build). Shortlists, products, campaigns, and settings persist in browser `localStorage`.
 
 ### Local development
 

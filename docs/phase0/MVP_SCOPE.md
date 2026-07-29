@@ -1,6 +1,8 @@
 # Phase 0 — Approved MVP Scope (Pilot)
 
-**Pilot:** Bangkok F&B · Soi 11 Thai Kitchen  
+> **Historical (2026-07-29):** This scope documents the original Thailand F&B / TikTok pilot. Current product primary is **China / Douyin** — see [`../DISCOVERY_AND_DOSSIER.md`](../DISCOVERY_AND_DOSSIER.md). Preserved as-is for record.
+
+**Pilot:** Bangkok F&B · Soi 11 Thai Kitchen (historical)  
 **Horizon:** validate video-based matching + collaboration workflow before contracts/payments  
 **Status:** APPROVED (2026-07-28)
 

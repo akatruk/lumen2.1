@@ -1,5 +1,7 @@
 # Architecture
 
+> **Primary platform note (2026-07-29):** Primary discovery platform is **Douyin** (via TikHub, credentials reused from Strom/lumen). References to "TikTok Discovery Connector" below describe the original Thailand-pilot design; the live implementation is `web/src/server/tikhub.ts` → `fetchDouyinSearchVideos` behind `POST /api/discovery/douyin` (`/api/discovery/tiktok` kept only as a deprecated alias route). International TikTok OAuth (`open.tiktokapis.com`) is a **separate leftover** used only for optional creator login — it is not the discovery connector and not Douyin login.
+
 ## 1. Architecture Principle
 
 The marketplace should be a separate application connected to the existing Lumen platform. It should reuse Lumen's video ingestion, transcription, semantic analysis, and content-processing capabilities instead of duplicating them.
@@ -12,7 +14,7 @@ Brand Console ───────┐
 Creator Portal ──────┘          │
                                 ├── Redis / BullMQ
                                 ├── Object Storage
-                                ├── TikTok Discovery Connector (approved API/provider)
+                                ├── Douyin Discovery Connector (TikHub — primary)
                                 ├── Data Source Connectors (CSV/URL fallback, claim)
                                 └── Lumen Analysis API
                                          │
@@ -21,7 +23,7 @@ Creator Portal ──────┘          │
 
 ### Brand Console
 
-Supports product setup, **in-app TikTok discovery**, influencer **dossiers**, filters, match comparison, shortlists, campaign creation, invitations, content review, and reporting.
+Supports product setup, **in-app Douyin discovery**, influencer **dossiers**, filters, match comparison, shortlists, campaign creation, invitations, content review, and reporting.
 
 ### Creator Portal
 
@@ -35,9 +37,9 @@ Owns marketplace users, brands, products, influencer records, **dossiers**, camp
 
 Accepts an authorized video reference or media object and returns a normalized analysis result. The marketplace should treat Lumen as an asynchronous service.
 
-### TikTok Discovery Connector
+### Douyin Discovery Connector
 
-Searches and fetches public TikTok creator/video metadata through an **approved** platform API or contracted provider (same integration class as Lumen’s TikHub usage). Normalizes results into influencer + video snapshots for dossier build. Uncontrolled scraping is out of scope.
+Searches and fetches public Douyin creator/video metadata through **TikHub** (the same provider and credentials reused from Strom/lumen — `TIKHUB_API_KEY`/`TIKHUB_BASE_URL`, no new account). Normalizes results into influencer + video snapshots for dossier build. Uncontrolled scraping is out of scope. International TikTok discovery is kept only as a deprecated alias endpoint for backward compatibility, not an active acquisition path.
 
 ### Data Source Connectors
 
@@ -49,7 +51,7 @@ Canonical product spec: [`DISCOVERY_AND_DOSSIER.md`](./DISCOVERY_AND_DOSSIER.md)
 
 The marketplace owns:
 
-- influencer **discovery** (TikTok in-app), dossier management, and profile management;
+- influencer **discovery** (Douyin in-app, primary), dossier management, and profile management;
 - brands, products, and campaigns;
 - matching and ranking;
 - invitations and collaboration;
@@ -92,7 +94,7 @@ The initial integration can use REST endpoints and asynchronous job polling. Eve
 {
   "jobId": "analysis-job-id",
   "status": "completed",
-  "language": "th",
+  "language": "zh",
   "transcript": "...",
   "topics": [
     {
@@ -104,7 +106,7 @@ The initial integration can use REST endpoints and asynchronous job polling. Eve
     "formats": ["short_review"],
     "tone": ["informal", "energetic"]
   },
-  "entities": ["Phuket"],
+  "entities": ["Shanghai"],
   "brandSafety": {
     "status": "review",
     "flags": []

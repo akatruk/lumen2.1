@@ -1,8 +1,8 @@
 import type { DiscoveryCandidate, DiscoverySearchParams, InfluencerDossier } from "@/types";
-import type { TikTokDiscoveryConnector } from "./types";
+import type { DouyinDiscoveryConnector } from "./types";
 
-async function postTikTok(body: Record<string, unknown>) {
-  const res = await fetch("/api/discovery/tiktok", {
+async function postDouyin(body: Record<string, unknown>) {
+  const res = await fetch("/api/discovery/douyin", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
@@ -16,12 +16,12 @@ async function postTikTok(body: Record<string, unknown>) {
   return data;
 }
 
-export const liveTikTokConnector: TikTokDiscoveryConnector = {
-  id: "tiktok-tikhub-live",
-  label: "TikHub live",
+export const liveDouyinConnector: DouyinDiscoveryConnector = {
+  id: "douyin-tikhub-live",
+  label: "TikHub Douyin live",
 
   async search(params: DiscoverySearchParams): Promise<DiscoveryCandidate[]> {
-    const data = await postTikTok({
+    const data = await postDouyin({
       query: params.query,
       city: params.city,
       language: params.language,
@@ -33,8 +33,8 @@ export const liveTikTokConnector: TikTokDiscoveryConnector = {
   },
 
   async fetchRecentVideos(candidateId: string): Promise<InfluencerDossier["evidence"]> {
-    const uniqueId = candidateId.replace(/^disc-tt-/, "");
-    const data = await postTikTok({
+    const uniqueId = candidateId.replace(/^disc-(dy|tt)-/, "");
+    const data = await postDouyin({
       query: uniqueId,
       limit: 8,
       candidateId,
@@ -42,3 +42,6 @@ export const liveTikTokConnector: TikTokDiscoveryConnector = {
     return data.evidence ?? [];
   },
 };
+
+/** @deprecated use liveDouyinConnector */
+export const liveTikTokConnector = liveDouyinConnector;

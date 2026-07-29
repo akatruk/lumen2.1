@@ -1,5 +1,7 @@
 # Промпт бизнес-аналитика — проверка демо и отчёт
 
+> **Обновлено (2026-07-29):** primary платформа — Китай / Douyin. "TikTok" ниже относится к историческому Таиланд-пилоту; текущая проверка должна идти по Douyin discovery (`/api/discovery/douyin`).
+
 Скопируй блок ниже целиком в агента / BA. Цель: **не «пощупать UI»**, а **верифицировать end-to-end бизнес-ценность** live-демо и сдать структурированный отчёт.
 
 Связанные файлы: `BUSINESS_FLOW_PROMPT.md`, `NEXT_BUILD_PROMPT.md`, `CHANGELOG.md`, отчёты в `docs/reports/BA_ACCEPTANCE_*.md`.
@@ -86,7 +88,7 @@ NORTH STAR (эталон бизнес-флоу — сверяй с ним каж
 6. ЧЕСТНОСТЬ ПРОДУКТА (обязательный раздел отчёта)
 Явно классифицируй:
 - Demo scan (heuristic / не live LLM+OCR) — да/нет
-- Demo TikTok connector (не live TikHub) — да/нет
+- Demo Douyin connector (не live TikHub) — да/нет
 - Persistence = localStorage — да/нет / partial
 - Auth / multi-tenant — есть/нет
 - Payments / escrow / юр. контракт — есть/нет

@@ -1,5 +1,7 @@
 # Live TikHub + LLM Scan + Auth/Persistence — Implementation Plan
 
+> **Superseded note (2026-07-29):** Discovery primary is now **Douyin** (`POST /api/discovery/douyin`, `fetchDouyinSearchVideos` in `web/src/server/tikhub.ts`). File paths below (`api/discovery/tiktok/route.ts`, `live-tiktok.connector.ts`) reflect the original names at implementation time and are now either renamed or kept as deprecated aliases — see `docs/DISCOVERY_AND_DOSSIER.md`. TikHub credentials are reused from Strom/lumen, not a new account.
+
 > **For agentic workers:** execute task-by-task; ship demo-safe defaults.
 
 **Goal:** Replace demo-only discovery/scan with optional live TikHub + OpenRouter, add brand auth and server persistence for products/cards — without Nest rewrite.

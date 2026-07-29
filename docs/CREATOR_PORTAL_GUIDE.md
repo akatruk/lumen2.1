@@ -1,22 +1,24 @@
 # Creator Portal Guide
 
-**Audience:** Creators invited to a Lumen Influencer Marketplace pilot campaign  
-**Portal:** https://influencers.lumen.universalgravity.org/creator  
-**Language:** English  
-**Product version:** 0.4.8+
+**Audience:** Creators invited to a Lumen Influencer Marketplace campaign
+**Portal:** https://influencers.lumen.universalgravity.org/creator
+**Language:** English
+**Product version:** 0.4.9+
+**Primary platform:** China / **Douyin (中国抖音)**. See the honest login note below — creator login OAuth is currently international TikTok only, a leftover from the pre-Douyin pilot, **not** 抖音登录 (Douyin login).
 
-This guide tells you exactly what to do in the **Creator portal**. You publish content on **your own** social accounts (TikTok / Instagram / etc.). Lumen is the collaboration workspace with the brand — not a posting tool.
+This guide tells you exactly what to do in the **Creator portal**. You publish content on **your own** social account (primarily **Douyin**; Instagram etc. as secondary). Lumen is the collaboration workspace with the brand — not a posting tool.
 
 ---
 
-## Before you start
+## Before you start — honest login status
 
 | Item | Detail |
 | --- | --- |
 | Browser | Chrome or Safari; prefer **HTTPS** (link above) |
-| Access | **Preferred:** [Creator login](https://influencers.lumen.universalgravity.org/creator/login) → **Continue with TikTok** |
-| Fallback | If OAuth is not configured yet, the brand/operator may ask you to use **Act as creator** and select your profile |
-| What you need ready | Draft video link (Drive / Frame.io / unlisted TikTok), optional private review link, caption draft |
+| Douyin login (抖音登录) | **Not wired yet.** Douyin Open Platform OAuth is planned but not implemented — do not tell creators "Login with Douyin" today. |
+| Available login today | **International TikTok Login** at [Creator login](https://influencers.lumen.universalgravity.org/creator/login) → **Continue with intl TikTok**. This is a **leftover** OAuth flow reusing the shared Strom TikTok Developer App (`TIKTOK_CLIENT_KEY`/`TIKTOK_CLIENT_SECRET`, no new account) — it authenticates an international TikTok identity, it does **not** log a creator into Douyin. |
+| Recommended fallback for Douyin creators | **Act as creator** in the portal sidebar — pick your profile manually until Douyin OAuth ships |
+| What you need ready | Draft video link (Drive / Frame.io / unlisted Douyin video), optional private review link, caption draft |
 | What you do **not** need | Brand console password, SSH, API keys |
 
 If your profile is missing from the Act-as list, ask the brand to **Add to catalog** from Discover first, or submit a **Claim profile** request (see below).
@@ -41,10 +43,14 @@ Left sidebar **Act as creator** must show **your** name / `@handle`. If it shows
 
 ### 1. Sign in
 
-1. Go to https://influencers.lumen.universalgravity.org/creator/login  
-2. Click **Continue with TikTok** and approve access.  
-3. You land on Creator home signed in as your TikTok display name.  
-4. **Fallback (ops only):** open `/creator`, pick yourself in **Act as creator**, then continue.
+**If you are a Douyin creator (most creators today):** Douyin login is not wired yet. Skip to the fallback — open `/creator`, pick yourself in **Act as creator**, then continue.
+
+**If you happen to have an international TikTok account and want to try the leftover OAuth:**
+
+1. Go to https://influencers.lumen.universalgravity.org/creator/login
+2. Click **Continue with intl TikTok** and approve access. (This is explicitly the international TikTok app, not Douyin.)
+3. You land on Creator home signed in as your intl TikTok display name.
+4. **Fallback (works for everyone, incl. Douyin creators):** open `/creator`, pick yourself in **Act as creator**, then continue.
 
 ### 2. Review invitations
 
@@ -85,7 +91,7 @@ If the brand requests changes, update the URLs/caption and submit again.
 ### 5. After brand approval — publish on your account
 
 1. Wait until submission status is **Approved**.  
-2. Post the video on **your** TikTok (or agreed platform), following the brief.  
+2. Post the video on **your** Douyin (or agreed platform), following the brief.  
 3. Back in **Submissions**, paste the **public post URL**.  
 4. Record / confirm publication so the brand can track performance.
 
@@ -114,7 +120,7 @@ If this is your first time and the catalog row is not yet “yours”:
 - Switch Act-as to another creator and accept their invites  
 - Post guaranteed ROI / medical / whitening claims if the brief forbids them  
 - Share `.env`, passwords, or internal brand tools  
-- Expect Lumen to upload the video to TikTok for you — it does not  
+- Expect Lumen to upload the video to Douyin (or any platform) for you — it does not  
 
 ---
 
@@ -128,7 +134,7 @@ If this is your first time and the catalog row is not yet “yours”:
 | Accept did nothing | Hard refresh; stay on HTTPS; ask brand if they are logged in (server invites) |
 | Brief missing after Accept | Open **Briefs** and refresh; ask brand to click **Issue brief** |
 | Draft submit disabled | Select a brief first; acknowledge brief if required |
-| Cookie / login confusion | Creators use **/creator/login** (TikTok). Brand **Login** is for brands only. Act-as is ops fallback. |
+| Cookie / login confusion | Creators use **/creator/login** (intl TikTok leftover login — not Douyin). Brand **Login** is for brands only. **Act-as is the recommended path for Douyin creators** until Douyin OAuth ships. |
 
 ---
 
@@ -136,7 +142,7 @@ If this is your first time and the catalog row is not yet “yours”:
 
 - Use public or shared links you are comfortable showing the brand.  
 - Do not upload government IDs into the claim form.  
-- Thailand F&B pilots: follow the brand’s claim guidelines; Lumen may flag risky wording later — the brief restrictions still win.  
+- Follow the brand’s claim guidelines for your market (current primary: China / Douyin campaigns; Thailand F&B pilot guidance is historical); Lumen may flag risky wording later — the brief restrictions still win.  
 - You can ask the brand to delete pilot data after the campaign under their retention policy.
 
 ---
@@ -151,8 +157,8 @@ For portal access, wrong profile, or invite issues, contact your **brand / agenc
 
 | Doc | Audience |
 | --- | --- |
-| [`phase0/SAMPLE_CAMPAIGN_BRIEF.md`](./phase0/SAMPLE_CAMPAIGN_BRIEF.md) | Example F&B brief (Soi 11) |
+| [`phase0/SAMPLE_CAMPAIGN_BRIEF.md`](./phase0/SAMPLE_CAMPAIGN_BRIEF.md) | Example F&B brief (Soi 11, historical Thailand pilot — structural template only) |
 | [`MANUAL_QA_PHASE2.md`](./MANUAL_QA_PHASE2.md) | Operator QA for collaboration |
 | [`ROADMAP.md`](./ROADMAP.md) | Phase 2 / future creator login |
 
-**Note for operators:** TikTok OAuth is live when health `tiktokOAuth: true`. Add redirect URI `https://influencers.lumen.universalgravity.org/api/auth/tiktok/callback` on the Strom TikTok app and set `TIKTOK_CLIENT_KEY` / `SECRET` on lumen2.1 deploy. Act-as remains available when `CREATOR_AUTH_REQUIRED=false`.
+**Note for operators:** the intl TikTok login (`tiktokOAuth: true` in `/api/health`) is a **leftover, not Douyin login** — it reuses the shared Strom TikTok Developer App (`TIKTOK_CLIENT_KEY`/`TIKTOK_CLIENT_SECRET`, redirect `https://influencers.lumen.universalgravity.org/api/auth/tiktok/callback`; no new account, never paste the secret values into docs/commits). Douyin Open Platform OAuth for creator login is **not built yet** — until it ships, Act-as is the correct path for Douyin creators and remains available whenever `CREATOR_AUTH_REQUIRED=false`.

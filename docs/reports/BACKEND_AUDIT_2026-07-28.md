@@ -1,5 +1,7 @@
 # Backend audit — 2026-07-28
 
+> **Historical (2026-07-29):** Audited against the Thailand F&B / TikTok pilot build. Current product primary is **China / Douyin** — see `docs/DISCOVERY_AND_DOSSIER.md`. Findings/fixes below are preserved as an audit record.
+
 **Scope:** `web/src/services/**`, `storage.ts`, types, mock, `/api/health`, core pages  
 **Protocol:** `docs/prompts/BACKEND_AUDIT_FIX_PROMPT.md`  
 **Health after fixes:** `0.3.6`

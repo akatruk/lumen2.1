@@ -1,5 +1,7 @@
 # Phase 0 — Validated Lumen Analysis Output
 
+> **Historical (2026-07-29):** Written against Thailand F&B / TikTok demo fixtures. Current product primary is **China / Douyin**; the analysis contract itself (job lifecycle, payload shape, match explanation) is unchanged and still applies — only the sample data below (Bangkok/Thai) is historical.
+
 **Purpose:** freeze the analysis contract the marketplace expects from Lumen before real wiring.  
 **Validation basis:** demo fixtures in `web/src/data/mock.ts` + architecture contract in `docs/ARCHITECTURE.md`.  
 **Date:** 2026-07-28

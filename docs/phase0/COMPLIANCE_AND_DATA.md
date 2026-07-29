@@ -1,6 +1,8 @@
 # Phase 0 — Data & Compliance Review
 
-**Scope:** Thailand F&B pilot · Lumen Influencer Marketplace  
+> **Historical (2026-07-29):** Written for the Thailand F&B pilot with a PDPA (Thailand) lens. Current product primary is **China / Douyin** — a China-specific compliance pass (PIPL / cybersecurity law / cross-border data rules, not PDPA) is required before production go-live and is **not yet written**. The general principles (approved connector only, no uncontrolled scraping, creator rights, retention defaults) still apply; jurisdiction-specific sections below are historical.
+
+**Scope:** Thailand F&B pilot (historical) · Lumen Influencer Marketplace  
 **Date:** 2026-07-28  
 **Classification:** Working review (not legal advice)
 

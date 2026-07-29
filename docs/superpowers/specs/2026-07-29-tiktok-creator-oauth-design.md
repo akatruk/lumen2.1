@@ -1,10 +1,12 @@
 # Design: Creator login via TikTok OAuth
 
+> **Superseded note (2026-07-29):** Product primary platform is now **China / Douyin (中国抖音)** — see `docs/DISCOVERY_AND_DOSSIER.md`. Everything in this spec is about **international TikTok OAuth for creator login only**; it is a **leftover**, not Douyin login (抖音登录), and is unrelated to the Douyin discovery connector (`web/src/server/tikhub.ts` / `POST /api/discovery/douyin`). Douyin Open Platform OAuth for creator login is a separate, not-yet-built feature. Credentials here reuse Strom's existing TikTok Developer App — do **not** create a new TikTok/TikHub/OpenRouter account, and never paste secret values into docs or commits. Kept for historical/implementation reference.
+
 **Date:** 2026-07-29  
 **Status:** approved — implementing 0.4.9  
 **App version target:** 0.4.9  
 **Repo:** lumen2.1 (Influencer Marketplace)  
-**Decision:** Login-only OAuth; reuse Strom TikTok Developer App + new redirect URI
+**Decision:** Login-only OAuth; reuse Strom TikTok Developer App + new redirect URI (intl TikTok identity only — not Douyin)
 
 ## Goal
 

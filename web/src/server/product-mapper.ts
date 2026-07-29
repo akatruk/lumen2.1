@@ -34,7 +34,7 @@ export function serializeProductFields(input: {
     benefitsJson: JSON.stringify(input.benefits ?? []),
     prohibitedJson: JSON.stringify(input.prohibitedClaims ?? []),
     desiredTopicsJson: JSON.stringify(input.desiredTopics ?? []),
-    platformsJson: JSON.stringify(input.platforms ?? ["tiktok"]),
+    platformsJson: JSON.stringify(input.platforms ?? ["douyin"]),
     resumeCardJson: input.resumeCard ? JSON.stringify(input.resumeCard) : null,
   };
 }
@@ -78,7 +78,7 @@ export function dbProductToProduct(row: {
     benefits: parse(row.benefitsJson, [] as string[]),
     prohibitedClaims: parse(row.prohibitedJson, [] as string[]),
     desiredTopics: parse(row.desiredTopicsJson, [] as string[]),
-    platforms: parse(row.platformsJson, ["tiktok"] as Platform[]),
+    platforms: parse(row.platformsJson, ["douyin"] as Platform[]),
     resumeCard: row.resumeCardJson
       ? parse<ProductResumeCard | undefined>(row.resumeCardJson, undefined)
       : undefined,

@@ -1,6 +1,8 @@
 # Phase 0 — Locked Product Decisions
 
-**Status:** APPROVED for pilot planning (agent-authored 2026-07-28; product owner may override)  
+> **Historical (2026-07-29):** These decisions describe the original Thailand F&B / TikTok pilot. Current product primary is **China / Douyin** — see [`../DISCOVERY_AND_DOSSIER.md`](../DISCOVERY_AND_DOSSIER.md). Decisions below are preserved as-is for record.
+
+**Status:** APPROVED for pilot planning (agent-authored 2026-07-28; product owner may override) — **superseded for platform/geography by the 2026-07-29 Douyin/China pivot**  
 **Demo reference:** http://167.71.206.43:3000  
 **Related:** [MVP_SCOPE.md](./MVP_SCOPE.md) · [SAMPLE_CAMPAIGN_BRIEF.md](./SAMPLE_CAMPAIGN_BRIEF.md) · [COMPLIANCE_AND_DATA.md](./COMPLIANCE_AND_DATA.md)
 

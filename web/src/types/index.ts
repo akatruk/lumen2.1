@@ -1,4 +1,5 @@
-export type Platform = "tiktok" | "instagram" | "youtube";
+/** Primary discovery platform is Douyin (中国抖音). Intl TikTok is secondary leftover. */
+export type Platform = "douyin" | "tiktok" | "instagram" | "youtube";
 export type LanguageCode = "th" | "en" | "ru" | "zh";
 export type VerificationStatus = "verified" | "unverified" | "pending";
 export type CampaignStatus = "Draft" | "Active" | "Reviewing" | "Completed";
@@ -113,7 +114,7 @@ export interface Product {
   prohibitedClaims: string[];
   desiredTopics: string[];
   createdAt: string;
-  /** Preferred discovery platforms (default tiktok) */
+  /** Preferred discovery platforms (default douyin) */
   platforms?: Platform[];
   /** AI/manual Product Resume Card used for Discover match */
   resumeCard?: ProductResumeCard;
@@ -343,7 +344,7 @@ export interface AppSettings {
   matchWeights: MatchBreakdown;
 }
 
-/** In-app TikTok discovery (see docs/DISCOVERY_AND_DOSSIER.md) */
+/** In-app Douyin discovery (see docs/DISCOVERY_AND_DOSSIER.md) */
 export interface DiscoverySearchParams {
   query: string;
   city?: string;

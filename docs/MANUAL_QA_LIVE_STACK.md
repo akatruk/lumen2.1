@@ -3,6 +3,8 @@
 **Target:** https://influencers.lumen.universalgravity.org (also http://167.71.206.43:3000)  
 **Health:** https://influencers.lumen.universalgravity.org/api/health  
 **Expected version:** `0.4.1`  
+> **Historical (2026-07-29):** Recorded against the Thailand F&B / TikTok pilot build. Current product primary is **China / Douyin**; discovery now runs through `/api/discovery/douyin` (TikTok route kept only as a deprecated alias) — see [`DISCOVERY_AND_DOSSIER.md`](./DISCOVERY_AND_DOSSIER.md). Dates/PASS results below are preserved as an audit record.
+
 **Scope:** Prisma boot, HTTP session cookies, brand auth, product persistence, demo discovery/scan gates, live-mode wiring  
 **Mode this run:** Demo (no TikHub/OpenRouter keys on droplet). Live API cases marked **BLOCKED** until secrets set.
 **TLS:** nginx + Let's Encrypt — see `docs/DEPLOY_NGINX.md`. With HTTPS use `COOKIE_SECURE=true`.

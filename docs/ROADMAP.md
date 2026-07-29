@@ -1,16 +1,18 @@
 # Delivery Roadmap
 
-## Phase 0: Product Validation
+> **Primary platform note (2026-07-29):** Product truth is **China / Douyin / zh**. Phase 0 below documents the original Thailand F&B / TikTok pilot and is kept as **historical** record; it is superseded as the current narrative by Douyin-first discovery — see [`DISCOVERY_AND_DOSSIER.md`](./DISCOVERY_AND_DOSSIER.md).
+
+## Phase 0: Product Validation (historical — Thailand pilot)
 
 **Status: COMPLETE (2026-07-28)** — package in [`docs/phase0/`](./phase0/README.md).  
 Open for production: external PDPA/legal sign-off (does not block backend specs).
 
 Goals:
 
-- [x] select one pilot product category → **Restaurant / F&B (Bangkok)**;
-- [x] identify the first brand or agency users → **Bangkok Bites Co. / Soi 11 Thai Kitchen**;
-- [x] confirm the initial influencer data source → **in-app TikTok discovery** (approved connector) + dossier; CSV/URL fallback;
-- [x] define launch languages and campaign metrics → **th/en**; views/likes/comments/saves + cycle time;
+- [x] select one pilot product category → **Restaurant / F&B (Bangkok)** *(historical; current primary market is China)*;
+- [x] identify the first brand or agency users → **Bangkok Bites Co. / Soi 11 Thai Kitchen** *(historical)*;
+- [x] confirm the initial influencer data source → in-app discovery (approved connector) + dossier; CSV/URL fallback — **originally TikTok, now Douyin** as primary;
+- [x] define launch languages and campaign metrics → historical **th/en**; current primary **zh**; views/likes/comments/saves + cycle time;
 - [x] confirm that creators publish to their own social accounts → **yes**.
 
 Deliverables:
@@ -27,7 +29,7 @@ Capabilities:
 
 - authentication and roles;
 - brand, product, and campaign records;
-- **in-app TikTok discovery** + influencer **dossier** (topics/brand, style, audience, safety);
+- **in-app Douyin discovery** + influencer **dossier** (topics/brand, style, audience, safety); international TikTok discovery kept only as a deprecated alias route;
 - influencer import by profile URL and CSV (fallback);
 - influencer catalog and filters;
 - Lumen video-analysis integration;
@@ -37,7 +39,7 @@ Capabilities:
 
 Exit criteria:
 
-- operators can discover TikTok creators in-app, open dossiers, and analyze videos;
+- operators can discover Douyin creators in-app, open dossiers, and analyze videos;
 - recommendations can be reviewed with source evidence;
 - brands can produce a usable shortlist.
 
@@ -86,13 +88,11 @@ Capabilities:
 
 ## Recommended First Build
 
-Start with a narrow pilot:
+Historical note: the original narrow pilot targeted F&B / Bangkok with TikTok as the first discovery surface. The current build targets:
 
-- one product category (**F&B / Bangkok**);
-- TikTok as the first discovery surface (**in-app search → dossier**);
-- Thailand-based creators;
-- Thai and English analysis;
-- approved TikTok connector (+ CSV/URL fallback);
+- China-based creators, product categories to be selected per brand;
+- Douyin as the primary discovery surface (**in-app search → dossier**), via the reused TikHub connector;
+- Chinese (zh) analysis primary; Thai/English retained from the historical pilot;
 - brand-managed outreach;
 - no payments in the application.
 

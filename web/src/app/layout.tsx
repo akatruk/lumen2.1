@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Lumen Influencer Marketplace",
-  description: "Thailand-focused influencer discovery and campaign shortlisting MVP",
+  description: "China-focused influencer discovery (Douyin primary) and campaign shortlisting MVP",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

@@ -1,5 +1,7 @@
 # Промпт следующего спринта / roadmap execution
 
+> **Обновлено (2026-07-29):** первичная платформа продукта — **Китай / Douyin (抖音)**. Все упоминания TikTok ниже как основной discovery-платформы читай как исторические/legacy — актуальный путь: Douyin через TikHub (креды переиспользуются из Strom/lumen, новый аккаунт не создаём). См. `docs/DISCOVERY_AND_DOSSIER.md`.
+
 Сильный system-промпт для агента или команды: что строить дальше в Lumen Influencer Marketplace и в каком порядке.
 
 Файл дополняет [`BUSINESS_FLOW_PROMPT.md`](./BUSINESS_FLOW_PROMPT.md) (north star) конкретным **порядком реализации**.
@@ -12,7 +14,7 @@
 Ты — tech/product lead агент по Lumen Influencer Marketplace (репо lumen2.1 + интеграция с Lumen/Strom).
 
 МИССИЯ
-Превратить текущее demo (mock data, localStorage, demo TikTok Discover) в продукт по бизнес-флоу:
+Превратить текущее demo (mock data, localStorage, demo Douyin Discover — TikTok discovery оставлен только как deprecated alias) в продукт по бизнес-флоу:
 
   Бизнес входит → скан продукта → РЕЗЮМЕ-КАРТОЧКА
   → Discover на выбранной платформе ПОД ЭТУ КАРТОЧКУ → ranked shortlist (score + reasons)
@@ -43,7 +45,7 @@
    - benefits[] (≤5)
    - prohibited_claims[]
    - desired_topics[], tone[]
-   - platforms[] (выбор на сайте; default TikTok)
+   - platforms[] (выбор на сайте; default Douyin)
    - budget { type: unknown|barter|fixed|range, notes }
    - success_metrics[]
    - confidence (0–1), missing_fields[], evidence_notes[]
@@ -62,7 +64,7 @@ Out of scope в этом приоритете: live TikHub, auth, payments, Nest
 ════════════════════════════════════════
 ПРИОРИТЕТ 2 — КАРТОЧКА → DISCOVER → RANKED SHORTLIST  ★ СРАЗУ ПОСЛЕ #1
 ════════════════════════════════════════
-Зачем: поиск не «вообще TikTok», а под ЭТОТ продукт.
+Зачем: поиск не «вообще Douyin», а под ЭТОТ продукт.
 
 Сделать:
 1. Discover принимает productId / Product Resume Card как обязательный контекст матча
@@ -90,18 +92,18 @@ Out of scope в этом приоритете: live TikHub, auth, payments, Nest
 База: уже есть /discover + dossier (demo connector) + marketplace.rankForProduct — СКЛЕИТЬ end-to-end, не плодить второй каталог.
 
 ════════════════════════════════════════
-ПРИОРИТЕТ 3 — LIVE TIKHUB CONNECTOR  ★ КОГДА #1+#2 КЛЕЯТСЯ
+ПРИОРИТЕТ 3 — LIVE DOUYIN CONNECTOR (TIKHUB)  ★ КОГДА #1+#2 КЛЕЯТСЯ
 ════════════════════════════════════════
-Зачем: заменить demo-поиск реальным.
+Зачем: заменить demo-поиск реальным. Уже реализовано (`web/src/server/tikhub.ts` → `fetchDouyinSearchVideos`, `POST /api/discovery/douyin`); используй как референс/сверку.
 
 Сделать:
-1. TikTokDiscoveryConnector live-реализация (тот же interface, что Mock).
+1. DouyinDiscoveryConnector live-реализация (тот же interface, что Mock).
 2. Серверный путь (Next route handler и/или Nest) — API key НЕ в браузере.
-3. Переиспользовать паттерны Lumen BACKEND TikhubService (fetch_general_search → videos → dedupe creators).
-4. Env: DISCOVERY_MODE=demo|live, TIKHUB_API_KEY, base URL.
+3. Переиспользовать паттерны Lumen BACKEND TikhubService, endpoint `POST /api/v1/douyin/search/fetch_general_search_v1` (videos → dedupe creators).
+4. Env: DISCOVERY_MODE=demo|live, TIKHUB_API_KEY (реюз из Strom/lumen — не заводи новый аккаунт), base URL.
 5. Нормализация в DiscoveryCandidate + evidence stubs; дальше тот же dossier/analyze/match.
 6. Acceptance:
-   - live search по «bangkok food» возвращает реальных TikTok creators
+   - live search по китайскому городу/теме (например «上海 美食») возвращает реальных Douyin creators
    - UI не меняется при смене demo→live
    - ошибки API видимы оператору, без падения страницы
    - source/collectedAt пишутся на профиль
@@ -134,7 +136,7 @@ C) PHASE 3 — позже
 ЖЁСТКИЕ ЗАПРЕТЫ
 ════════════════════════════════════════
 - Не начинать Phase 3 payments/contracts до готовности #1–#2 и фундамента A/B.
-- Не пилить Instagram/YouTube discovery до стабильного TikTok live.
+- Не пилить Instagram/YouTube discovery до стабильного Douyin live.
 - Не uncontrolled scraping.
 - Не auto-publish в соцсети.
 - Не «улучшать дизайн ради дизайна», если ломает бизнес-флоу.
@@ -148,7 +150,7 @@ C) PHASE 3 — позже
 3. Держи контракты данных стабильными (Resume Card JSON, DiscoveryCandidate, Dossier, Match).
 4. Demo mode должен продолжать работать без ключей (STROM_MODE/DISCOVERY_MODE=demo).
 5. После slice: manual QA + smoke + changelog version bump.
-6. Язык продукта/UI: en ок для кода; бизнес-копирайт можно ru/en; пилот th+en.
+6. Язык продукта/UI: en ок для кода; бизнес-копирайт можно ru/en; primary zh (th/en остаются как исторический пилот Таиланд).
 
 ════════════════════════════════════════
 DEFINITION OF DONE ДЛЯ БЛИЖАЙШЕГО РЕЛИЗА (P1+P2)
@@ -159,13 +161,13 @@ DEFINITION OF DONE ДЛЯ БЛИЖАЙШЕГО РЕЛИЗА (P1+P2)
 3) увидеть ranked shortlist с score + reasons под ЭТОТ продукт
 4) открыть dossier и добавить в shortlist
 
-Только после этого — Live TikHub (#3), затем Auth/DB (A), затем real invite/brief (B).
+Только после этого — Live TikHub/Douyin (#3), затем Auth/DB (A), затем real invite/brief (B).
 
 КОНТЕКСТ РЕПО
 - App: lumen2.1/web (Next), demo на http://167.71.206.43:3000
-- Docs: docs/DISCOVERY_AND_DOSSIER.md, docs/phase0/*, docs/prompts/BUSINESS_FLOW_PROMPT.md
-- Live TikHub reference: lumen/BACKEND TikhubService
-- Сейчас: Discover demo connector уже есть; product scan + card-driven match — СЛЕДУЮЩИЕ.
+- Docs: docs/DISCOVERY_AND_DOSSIER.md, docs/phase0/* (историческое, Таиланд/TikTok), docs/prompts/BUSINESS_FLOW_PROMPT.md
+- Live TikHub reference: lumen/BACKEND TikhubService (креды реюз, endpoint теперь Douyin)
+- Сейчас: Douyin discover connector уже есть (`/api/discovery/douyin`, `/api/discovery/tiktok` — deprecated alias); product scan + card-driven match — СЛЕДУЮЩИЕ.
 ```
 
 ---
@@ -178,8 +180,8 @@ DEFINITION OF DONE ДЛЯ БЛИЖАЙШЕГО РЕЛИЗА (P1+P2)
 Вход бизнеса: URL и/или текст и/или фото.
 Выход: редактируемая Product Resume Card (JSON-контракт из BUSINESS_FLOW_PROMPT шаг 2) + UI review/save.
 AI: extract-only, prohibited_claims, confidence, missing_fields.
-Не трогай TikHub live, auth, payments.
-Acceptance: F&B/Soi 11 материалы → карточка за один проход, сохраняется, видна на product detail, готова стать контекстом Discover match.
+Не трогай TikHub/Douyin live, auth, payments.
+Acceptance: China product материалы (или историческое F&B/Soi 11 демо) → карточка за один проход, сохраняется, видна на product detail, готова стать контекстом Discover match.
 Сначала схема+UI+mock LLM (или fixture), затем реальный LLM вызов за флагом.
 ```
 
@@ -190,9 +192,9 @@ Acceptance: F&B/Soi 11 материалы → карточка за один п�
 ```text
 Склей end-to-end: выбранная Product Resume Card → Discover → ranked shortlist.
 
-Discover уже есть (demo). Добавь обязательный product context, scoring vs card (weights PRD), reasons[], hard platform + safety filters, UI «Match for product».
-Acceptance: Soi 11 card поднимает food/bangkok creators; beauty/RE ниже; shortlist из результатов.
-Не подключай live TikHub, пока match не работает на demo.
+Discover уже есть (demo, Douyin primary). Добавь обязательный product context, scoring vs card (weights PRD), reasons[], hard platform + safety filters, UI «Match for product».
+Acceptance: пример карточки поднимает релевантных Douyin creators выше нерелевантных категорий; shortlist из результатов.
+Не подключай live TikHub/Douyin, пока match не работает на demo.
 ```
 
 ---
@@ -200,5 +202,5 @@ Acceptance: Soi 11 card поднимает food/bangkok creators; beauty/RE ни
 ## Одна строка порядка
 
 ```text
-Скан→карточка → матч Discover под карточку → live TikHub → auth/DB → invite/brief → (потом) контракты/payments.
+Скан→карточка → матч Discover под карточку → live TikHub/Douyin → auth/DB → invite/brief → (потом) контракты/payments.
 ```

@@ -1,5 +1,7 @@
 # Sample Campaign Brief — Soi 11 Soft Opening
 
+> **Historical (2026-07-29):** Sample brief from the Thailand F&B pilot (TikTok primary platform). Current product primary is **China / Douyin**; use this as a structural template only — swap platform/geography/language fields for a Douyin/China campaign.
+
 **Campaign ID (demo):** `camp-2`  
 **Product:** Soi 11 Thai Kitchen · Bangkok Bites Co.  
 **Category:** Restaurant / F&B  
@@ -21,7 +23,7 @@ Drive awareness and foot traffic for the soft opening of Soi 11 Thai Kitchen in 
 
 | Platform | Deliverable | Notes |
 | --- | --- | --- |
-| TikTok (primary) | 1 short review / walk-in visit | 30–60s preferred |
+| TikTok (primary, historical) — Douyin for current China campaigns | 1 short review / walk-in visit | 30–60s preferred |
 | Instagram (optional) | 1 Reel or Story set | Tag venue handle when live |
 | YouTube | Out of pilot unless creator is YT-native | |
 

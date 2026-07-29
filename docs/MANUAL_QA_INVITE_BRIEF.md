@@ -1,5 +1,7 @@
 # Manual QA — Invite + Brief persistence (0.4.4)
 
+> **Historical (2026-07-29):** Recorded against the Thailand F&B / TikTok pilot build. Current product primary is **China / Douyin** — see [`DISCOVERY_AND_DOSSIER.md`](./DISCOVERY_AND_DOSSIER.md). Dates/PASS results below are preserved as an audit record.
+
 **Target:** https://influencers.lumen.universalgravity.org  
 **Ops fallback:** http://167.71.206.43:3000  
 **Health:** `/api/health`  

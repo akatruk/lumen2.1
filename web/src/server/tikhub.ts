@@ -5,6 +5,7 @@ import { tikhubConfig } from "./env";
 type RawAuthor = {
   uniqueId?: string;
   unique_id?: string;
+  short_id?: string;
   nickname?: string;
   uid?: string;
   id?: string;
@@ -13,7 +14,7 @@ type RawAuthor = {
   follower_count?: number;
 };
 
-/** TikTok web search puts reach on the item, not on `author`. */
+/** Douyin/TikHub may put reach on author or item-level author_stats. */
 type RawAuthorStats = {
   followerCount?: number | string;
   follower_count?: number | string;
@@ -61,24 +62,41 @@ export type TikHubVideoHit = {
 
 const COLORS = ["#0F766E", "#1D4ED8", "#BE185D", "#7C3AED", "#B45309", "#0369A1", "#15803D"];
 
-async function tikhubGet(path: string, params: Record<string, string | number>): Promise<unknown> {
+async function tikhubRequest(
+  method: "GET" | "POST",
+  path: string,
+  payload: Record<string, string | number>,
+): Promise<unknown> {
   const { apiKey, baseUrl } = tikhubConfig();
   if (!apiKey) throw new Error("TIKHUB_API_KEY is not configured");
-
-  const qs = new URLSearchParams();
-  for (const [k, v] of Object.entries(params)) qs.set(k, String(v));
-  const url = `${baseUrl}${path}?${qs.toString()}`;
 
   let lastErr: unknown;
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
+      const url =
+        method === "GET"
+          ? `${baseUrl}${path}?${new URLSearchParams(
+              Object.fromEntries(Object.entries(payload).map(([k, v]) => [k, String(v)])),
+            ).toString()}`
+          : `${baseUrl}${path}`;
       const res = await fetch(url, {
-        headers: { Authorization: `Bearer ${apiKey}`, Accept: "application/json" },
+        method,
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          Accept: "application/json",
+          ...(method === "POST" ? { "Content-Type": "application/json" } : {}),
+        },
+        body: method === "POST" ? JSON.stringify(payload) : undefined,
         signal: AbortSignal.timeout(30_000),
         cache: "no-store",
       });
       if (res.status >= 400 && res.status < 500) {
         const body = await res.text().catch(() => "");
+        if (res.status === 402) {
+          throw new Error(
+            "TikHub Douyin endpoint returned 402 (insufficient balance for /douyin/*). Same Strom key works for intl TikTok; top up Douyin credits on TikHub or use a key with Douyin access.",
+          );
+        }
         throw new Error(`TikHub ${res.status}: ${body.slice(0, 200) || res.statusText}`);
       }
       if (!res.ok) throw new Error(`TikHub ${res.status}`);
@@ -107,8 +125,6 @@ function coverOf(v: RawItem): string {
 }
 
 function followersOf(v: RawItem, author: RawAuthor): number {
-  // Live TikHub `fetch_general_search` / web search: authorStats.followerCount
-  // (author itself has no follower fields — that was why Discover showed 0).
   return num(
     v.authorStats?.followerCount,
     v.authorStatsV2?.followerCount,
@@ -119,23 +135,27 @@ function followersOf(v: RawItem, author: RawAuthor): number {
   );
 }
 
-/** Exported for fixture checks — maps one TikHub video item → hit or null. */
+function authorHandle(author: RawAuthor): string {
+  return String(author.unique_id ?? author.uniqueId ?? author.short_id ?? "")
+    .replace(/^@/, "")
+    .trim();
+}
+
+/** Exported for fixture checks — maps one Douyin/TikHub aweme item → hit or null. */
 export function normalizeTikHubItem(v: RawItem): TikHubVideoHit | null {
   const author = v.author ?? {};
-  const uniqueId = String(author.uniqueId ?? author.unique_id ?? "").replace(/^@/, "");
-  const id = String(v.id ?? v.aweme_id ?? "");
+  const uniqueId = authorHandle(author);
+  const id = String(v.aweme_id ?? v.id ?? "");
   if (!uniqueId || !id) return null;
   return {
     id,
     title: String(v.desc ?? ""),
-    url:
-      v.share_url ??
-      `https://www.tiktok.com/@${uniqueId}/video/${id}`,
+    url: v.share_url ?? `https://www.douyin.com/video/${id}`,
     coverUrl: coverOf(v),
-    views: num(v.stats?.playCount, v.statistics?.play_count),
-    likes: num(v.stats?.diggCount, v.statistics?.digg_count),
-    comments: num(v.stats?.commentCount, v.statistics?.comment_count),
-    shares: num(v.stats?.shareCount, v.statistics?.share_count),
+    views: num(v.statistics?.play_count, v.stats?.playCount),
+    likes: num(v.statistics?.digg_count, v.stats?.diggCount),
+    comments: num(v.statistics?.comment_count, v.stats?.commentCount),
+    shares: num(v.statistics?.share_count, v.stats?.shareCount),
     authorUniqueId: uniqueId,
     authorNickname: String(author.nickname ?? uniqueId),
     authorUid: String(author.uid ?? author.id ?? uniqueId),
@@ -148,41 +168,70 @@ function normalizeItem(v: RawItem): TikHubVideoHit | null {
   return normalizeTikHubItem(v);
 }
 
-export async function fetchTikTokSearchVideos(keyword: string, count = 20): Promise<TikHubVideoHit[]> {
-  let rawItems: RawItem[] = [];
-  try {
-    const data = (await tikhubGet("/api/v1/tiktok/web/fetch_general_search", {
-      keyword,
-      search_type: 1,
-      count: Math.max(count, 20),
-      offset: 0,
-    })) as { data?: { data?: Array<{ type?: number; item?: RawItem }> } };
-    const entries = data?.data?.data ?? [];
-    rawItems = entries.filter((r) => r?.type === 1 && r?.item).map((r) => r.item!);
-  } catch (err) {
-    const data = (await tikhubGet("/api/v1/tiktok/web/fetch_search_video", {
-      keyword,
-      count: Math.max(count, 20),
-      offset: 0,
-    })) as { data?: { item_list?: RawItem[] }; item_list?: RawItem[] };
-    rawItems = data?.data?.item_list ?? data?.item_list ?? [];
-  }
-  return rawItems.map(normalizeItem).filter((x): x is TikHubVideoHit => Boolean(x));
+/**
+ * Primary discovery: Douyin via TikHub (same path as Strom lumen fetchDouyin).
+ * @deprecated name kept as alias — use fetchDouyinSearchVideos.
+ */
+export async function fetchTikTokSearchVideos(
+  keyword: string,
+  count = 20,
+): Promise<TikHubVideoHit[]> {
+  return fetchDouyinSearchVideos(keyword, count);
+}
+
+export async function fetchDouyinSearchVideos(
+  keyword: string,
+  count = 20,
+): Promise<TikHubVideoHit[]> {
+  const data = (await tikhubRequest("POST", "/api/v1/douyin/search/fetch_general_search_v1", {
+    keyword,
+    cursor: 0,
+    sort_type: "0",
+    publish_time: "0",
+    filter_duration: "0",
+    content_type: "1",
+    search_id: "",
+    backtrace: "",
+  })) as { data?: { data?: unknown[] } | unknown[] };
+
+  const rawItems: unknown[] = Array.isArray(data?.data)
+    ? data.data
+    : Array.isArray((data?.data as { data?: unknown[] })?.data)
+      ? ((data.data as { data: unknown[] }).data)
+      : [];
+
+  const awemes = rawItems
+    .map((item) => {
+      const row = item as { type?: number; aweme_info?: RawItem } & RawItem;
+      if (row?.type !== undefined && row.type !== 1) return null;
+      return (row.aweme_info ?? row) as RawItem;
+    })
+    .filter((aweme): aweme is RawItem => {
+      if (!aweme) return false;
+      const t = (aweme as { aweme_type?: number }).aweme_type;
+      return t === undefined || t === 0;
+    });
+
+  return awemes
+    .slice(0, Math.max(count, 20))
+    .map(normalizeItem)
+    .filter((x): x is TikHubVideoHit => Boolean(x));
 }
 
 function inferTopics(params: DiscoverySearchParams): string[] {
   const blob = `${params.query} ${params.topic ?? ""}`.toLowerCase();
   const topics: string[] = [];
   const map: [RegExp, string][] = [
-    [/food|eat|restaurant|pad|thai/, "food"],
-    [/nightlife|bar|cocktail/, "nightlife"],
-    [/bangkok|sukhumvit|soi/, "bangkok"],
-    [/travel|beach|island/, "travel"],
-    [/beauty|makeup/, "beauty"],
-    [/skincare|serum/, "skincare"],
-    [/fitness|gym/, "fitness"],
-    [/condo|property|real.?estate/, "real estate"],
-    [/lifestyle/, "lifestyle"],
+    [/food|eat|restaurant|美食|吃饭|探店/, "food"],
+    [/nightlife|bar|cocktail|夜店|酒吧/, "nightlife"],
+    [/shanghai|上海|beijing|北京|guangzhou|广州|shenzhen|深圳|hangzhou|杭州/, "city"],
+    [/travel|beach|island|旅行|旅游/, "travel"],
+    [/beauty|makeup|美妆|化妆/, "beauty"],
+    [/skincare|serum|护肤/, "skincare"],
+    [/fitness|gym|健身/, "fitness"],
+    [/condo|property|real.?estate|房产|楼盘/, "real estate"],
+    [/跨境|出海|电商|commerce/, "commerce"],
+    [/lifestyle|生活/, "lifestyle"],
   ];
   for (const [re, t] of map) if (re.test(blob)) topics.push(t);
   if (params.topic && params.topic !== "All") topics.unshift(params.topic.toLowerCase());
@@ -191,14 +240,25 @@ function inferTopics(params: DiscoverySearchParams): string[] {
 
 function inferLangs(params: DiscoverySearchParams): LanguageCode[] {
   if (params.language && params.language !== "all") return [params.language];
-  return ["th", "en"];
+  return ["zh"];
 }
 
 function initials(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (!parts.length) return "TK";
+  if (!parts.length) return "DY";
   if (parts.length === 1) return parts[0]!.slice(0, 2).toUpperCase();
   return `${parts[0]![0] ?? ""}${parts[1]![0] ?? ""}`.toUpperCase();
+}
+
+function inferCity(params: DiscoverySearchParams): string {
+  if (params.city && params.city !== "All") return params.city;
+  const q = params.query;
+  if (/北京|beijing/i.test(q)) return "Beijing";
+  if (/广州|guangzhou/i.test(q)) return "Guangzhou";
+  if (/深圳|shenzhen/i.test(q)) return "Shenzhen";
+  if (/杭州|hangzhou/i.test(q)) return "Hangzhou";
+  if (/成都|chengdu/i.test(q)) return "Chengdu";
+  return "Shanghai";
 }
 
 /** Dedupe videos → unique creators as DiscoveryCandidate */
@@ -209,14 +269,7 @@ export function videosToCandidates(
   const collectedAt = new Date().toISOString();
   const topics = inferTopics(params);
   const languages = inferLangs(params);
-  const city =
-    params.city && params.city !== "All"
-      ? params.city
-      : /phuket/i.test(params.query)
-        ? "Phuket"
-        : /chiang/i.test(params.query)
-          ? "Chiang Mai"
-          : "Bangkok";
+  const city = inferCity(params);
 
   type Agg = {
     hit: TikHubVideoHit;
@@ -257,25 +310,24 @@ export function videosToCandidates(
       (((agg.likes + agg.comments + agg.shares) / totalViews) * 100).toFixed(2),
     );
     const followers = agg.hit.followers;
-    // Prefer real counts: skip when known-below threshold; keep unknown (0) only if min=0.
     if (minFollowers > 0 && (followers <= 0 || followers < minFollowers)) continue;
 
     const color = COLORS[Math.abs(hash(uniqueId)) % COLORS.length]!;
     candidates.push({
-      id: `disc-tt-${uniqueId}`,
+      id: `disc-dy-${uniqueId}`,
       name: agg.hit.authorNickname,
       handle: `@${uniqueId}`,
-      profileUrl: `https://www.tiktok.com/@${uniqueId}`,
+      profileUrl: `https://www.douyin.com/user/${uniqueId}`,
       avatarInitials: initials(agg.hit.authorNickname),
       avatarColor: color,
       city,
-      country: "TH",
+      country: "CN",
       languages,
       topics: topics.length ? topics : ["lifestyle"],
       followers,
       avgViews,
       engagementRate: Number.isFinite(engagementRate) ? engagementRate : 0,
-      bio: agg.hit.bio || `${agg.hit.authorNickname} on TikTok`,
+      bio: agg.hit.bio || `${agg.hit.authorNickname} on Douyin`,
       source: "tikhub",
       collectedAt,
     });
@@ -298,7 +350,7 @@ export function videosToEvidence(videos: TikHubVideoHit[], authorUniqueId: strin
     .slice(0, 5)
     .map((v) => ({
       videoId: v.id,
-      title: v.title || `TikTok video ${v.id}`,
+      title: v.title || `Douyin video ${v.id}`,
       url: v.url,
       publishedAt: new Date().toISOString(),
       views: v.views,

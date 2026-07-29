@@ -309,8 +309,8 @@ export default function DiscoverDossierPage() {
           monoLabel="07"
           subtitle={
             d.source === "tikhub"
-              ? "Recent TikTok evidence (TikHub live)"
-              : "Recent TikTok stubs (demo connector)"
+              ? "Recent Douyin evidence (TikHub live)"
+              : "Recent Douyin stubs (demo connector)"
           }
         />
         <div className="divide-y divide-border/40">

@@ -1,5 +1,7 @@
 # Manual QA — TikTok Discover (first slice)
 
+> **Historical (2026-07-29):** Recorded against the Thailand F&B / TikTok pilot build. Current product primary is **China / Douyin**; discovery now runs through `/api/discovery/douyin` (TikTok route kept only as a deprecated alias) — see [`DISCOVERY_AND_DOSSIER.md`](./DISCOVERY_AND_DOSSIER.md). Dates/PASS results below are preserved as an audit record.
+
 **Target:** http://167.71.206.43:3000  
 **Health:** http://167.71.206.43:3000/api/health  
 **Expected version:** `0.3.3`  

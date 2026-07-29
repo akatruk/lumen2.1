@@ -123,7 +123,7 @@ export default function CreatorSubmissionsPage() {
                     try {
                       collaboration.publishSubmission(
                         s.id,
-                        pubUrl || "https://tiktok.com/@demo/video/published",
+                        pubUrl || "https://www.douyin.com/@demo/video/published",
                       );
                       push("Publication recorded");
                       setPubUrl("");

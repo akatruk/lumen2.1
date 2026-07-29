@@ -4,28 +4,28 @@ import type {
   InfluencerDossier,
   LanguageCode,
 } from "@/types";
-import type { TikTokDiscoveryConnector } from "./types";
+import type { DouyinDiscoveryConnector } from "./types";
 import { MOCK_INFLUENCERS } from "@/data/mock";
 
 const COLORS = ["#0F766E", "#1D4ED8", "#BE185D", "#7C3AED", "#B45309", "#0369A1", "#15803D"];
 
 const SYNTH_FIRST = [
-  "Ploy",
-  "Beam",
-  "Mint",
-  "Gun",
-  "Fah",
-  "Ohm",
-  "June",
-  "Bam",
-  "Tawan",
-  "Mook",
-  "Krit",
-  "Sea",
-  "Sky",
-  "Jade",
+  "小美",
+  "阿杰",
+  "婷婷",
+  "浩然",
+  "思雨",
+  "子墨",
+  "晓雯",
+  "宇轩",
+  "诗涵",
+  "一诺",
+  "梓萱",
+  "俊杰",
+  "雨桐",
+  "明轩",
 ];
-const SYNTH_LAST = ["Saetang", "Wong", "Srisuk", "Lim", "Chai", "Anan", "Wattana", "Meesuk"];
+const SYNTH_LAST = ["王", "李", "张", "刘", "陈", "杨", "赵", "黄"];
 
 function hash(s: string): number {
   let h = 0;
@@ -43,38 +43,43 @@ function tokensFromQuery(query: string): string[] {
     .toLowerCase()
     .split(/[\s,+/|]+/)
     .map((t) => t.trim())
-    .filter((t) => t.length >= 2);
+    .filter((t) => t.length >= 1);
 }
 
 function inferTopics(tokens: string[], fallback: string[]): string[] {
   const topicMap: Record<string, string> = {
     food: "food",
+    美食: "food",
+    探店: "food",
     eat: "food",
-    eats: "food",
     restaurant: "food",
-    pad: "food",
-    kra: "food",
-    pao: "food",
-    thai: "food",
     nightlife: "nightlife",
-    bar: "nightlife",
-    cocktail: "nightlife",
+    夜店: "nightlife",
     travel: "travel",
-    island: "island",
-    beach: "travel",
+    旅行: "travel",
     skincare: "skincare",
+    护肤: "skincare",
     beauty: "beauty",
+    美妆: "beauty",
     fitness: "fitness",
+    健身: "fitness",
     condo: "real estate",
-    property: "real estate",
+    房产: "real estate",
     lifestyle: "lifestyle",
-    bangkok: "bangkok",
+    生活: "lifestyle",
+    跨境: "commerce",
+    电商: "commerce",
+    shanghai: "shanghai",
+    上海: "shanghai",
+    beijing: "beijing",
+    北京: "beijing",
   };
   const found = new Set<string>();
+  const blob = tokens.join(" ");
   for (const t of tokens) {
     if (topicMap[t]) found.add(topicMap[t]);
     for (const [k, v] of Object.entries(topicMap)) {
-      if (t.includes(k)) found.add(v);
+      if (t.includes(k) || blob.includes(k)) found.add(v);
     }
   }
   if (found.size === 0) fallback.forEach((t) => found.add(t));
@@ -83,21 +88,17 @@ function inferTopics(tokens: string[], fallback: string[]): string[] {
 
 function inferCity(tokens: string[], paramCity?: string): string {
   if (paramCity && paramCity !== "All") return paramCity;
-  const cities = ["bangkok", "phuket", "chiang", "pattaya", "samui", "hua"];
-  const map: Record<string, string> = {
-    bangkok: "Bangkok",
-    phuket: "Phuket",
-    chiang: "Chiang Mai",
-    pattaya: "Pattaya",
-    samui: "Koh Samui",
-    hua: "Hua Hin",
-  };
-  for (const t of tokens) {
-    for (const c of cities) {
-      if (t.includes(c)) return map[c];
-    }
-  }
-  return "Bangkok";
+  const blob = tokens.join(" ");
+  const map: [RegExp, string][] = [
+    [/上海|shanghai/, "Shanghai"],
+    [/北京|beijing/, "Beijing"],
+    [/广州|guangzhou/, "Guangzhou"],
+    [/深圳|shenzhen/, "Shenzhen"],
+    [/杭州|hangzhou/, "Hangzhou"],
+    [/成都|chengdu/, "Chengdu"],
+  ];
+  for (const [re, city] of map) if (re.test(blob)) return city;
+  return "Shanghai";
 }
 
 function scoreCandidate(
@@ -110,9 +111,6 @@ function scoreCandidate(
 ): number {
   if (inf.followers < minFollowers) return -1;
   if (language && language !== "all" && !inf.languages.includes(language)) return -1;
-  if (topic && topic !== "All" && topic !== "all" && !inf.topics.includes(topic)) {
-    // soft miss — still allow if query tokens match
-  }
   let score = 0;
   if (inf.city === city) score += 40;
   for (const t of tokens) {
@@ -129,12 +127,15 @@ function toCandidateFromMock(
   inf: (typeof MOCK_INFLUENCERS)[0],
   collectedAt: string,
 ): DiscoveryCandidate {
-  const tt = inf.platforms.find((p) => p.platform === "tiktok") ?? inf.platforms[0];
+  const dy =
+    inf.platforms.find((p) => p.platform === "douyin") ??
+    inf.platforms.find((p) => p.platform === "tiktok") ??
+    inf.platforms[0];
   return {
     id: `disc-${inf.id}`,
     name: inf.name,
-    handle: tt.handle,
-    profileUrl: tt.url,
+    handle: dy.handle,
+    profileUrl: dy.url,
     avatarInitials: inf.avatarInitials,
     avatarColor: inf.avatarColor,
     city: inf.city,
@@ -145,7 +146,7 @@ function toCandidateFromMock(
     avgViews: inf.avgViews,
     engagementRate: inf.engagementRate,
     bio: inf.bio,
-    source: "tiktok-demo-connector",
+    source: "douyin-demo-connector",
     collectedAt,
   };
 }
@@ -161,42 +162,44 @@ function makeSynthetic(
   const seed = hash(`${query}|${city}|${index}`);
   const first = pick(SYNTH_FIRST, seed);
   const last = pick(SYNTH_LAST, seed >> 3);
-  const name = `${first} ${last}`;
-  const handle = `@${first.toLowerCase()}${topics[0]?.replace(/\s/g, "").slice(0, 4) ?? "eats"}${seed % 97}`;
+  const name = `${last}${first}`;
+  const handle = `@dy_${seed.toString(36).slice(0, 8)}`;
   const followers = 12_000 + (seed % 380_000);
-  const initials = `${first[0]}${last[0]}`.toUpperCase();
+  const initials = first.slice(0, 2);
   return {
     id: `disc-synth-${seed.toString(36)}`,
     name,
     handle,
-    profileUrl: `https://tiktok.com/${handle}`,
+    profileUrl: `https://www.douyin.com/user/${handle.replace(/^@/, "")}`,
     avatarInitials: initials,
     avatarColor: pick(COLORS, seed),
     city,
-    country: "Thailand",
-    languages: language === "th" ? ["th", "en"] : ["en", "th"],
+    country: "CN",
+    languages: language === "zh" ? ["zh"] : [language, "zh"],
     topics: topics.length ? topics : ["food", "lifestyle"],
     followers,
     avgViews: Math.round(followers * (0.12 + (seed % 20) / 100)),
     engagementRate: Number((2.5 + (seed % 50) / 10).toFixed(1)),
-    bio: `${city} creator covering ${topics.slice(0, 2).join(" & ") || "lifestyle"} for TikTok.`,
-    source: "tiktok-demo-connector",
+    bio: `${city} 创作者 · ${topics.slice(0, 2).join(" / ") || "lifestyle"} · 抖音`,
+    source: "douyin-demo-connector",
     collectedAt,
   };
 }
 
-export const mockTikTokConnector: TikTokDiscoveryConnector = {
-  id: "tiktok-demo-connector",
-  label: "Demo connector",
+export const mockDouyinConnector: DouyinDiscoveryConnector = {
+  id: "douyin-demo-connector",
+  label: "Demo Douyin connector",
 
   async search(params: DiscoverySearchParams): Promise<DiscoveryCandidate[]> {
-    // Simulate network latency
     await new Promise((r) => setTimeout(r, 420 + (hash(params.query) % 280)));
 
     const collectedAt = new Date().toISOString();
-    const tokens = tokensFromQuery(params.query || "food bangkok");
+    const tokens = tokensFromQuery(params.query || "上海 美食");
     const city = inferCity(tokens, params.city);
-    const topics = inferTopics(tokens, params.topic && params.topic !== "All" ? [params.topic] : ["food", "bangkok"]);
+    const topics = inferTopics(
+      tokens,
+      params.topic && params.topic !== "All" ? [params.topic] : ["food", "shanghai"],
+    );
     const minFollowers = params.minFollowers ?? 0;
     const limit = params.limit ?? 12;
     const language = params.language ?? "all";
@@ -215,12 +218,12 @@ export const mockTikTokConnector: TikTokDiscoveryConnector = {
 
     const seen = new Set(fromCatalog.map((c) => c.handle.toLowerCase()));
     const synthLang: LanguageCode =
-      language && language !== "all" ? language : tokens.includes("th") ? "th" : "en";
+      language && language !== "all" ? language : "zh";
 
     const synthetic: DiscoveryCandidate[] = [];
     let i = 0;
     while (fromCatalog.length + synthetic.length < limit && i < 20) {
-      const c = makeSynthetic(params.query || "food", city, topics, i, collectedAt, synthLang);
+      const c = makeSynthetic(params.query || "美食", city, topics, i, collectedAt, synthLang);
       i += 1;
       if (c.followers < minFollowers) continue;
       if (seen.has(c.handle.toLowerCase())) continue;
@@ -228,29 +231,31 @@ export const mockTikTokConnector: TikTokDiscoveryConnector = {
       synthetic.push(c);
     }
 
-    // Deduplicate creators (video-search → unique creators)
     return [...fromCatalog, ...synthetic].slice(0, limit);
   },
 
   async fetchRecentVideos(candidateId: string): Promise<InfluencerDossier["evidence"]> {
     const seed = hash(candidateId);
     const titles = [
-      "Soft opening walk-in · pad kra pao",
-      "Late-night Soi 11 bites",
-      "Bangkok food crawl highlight",
-      "Cocktail + share plates review",
+      "上海探店 · 本帮菜软开",
+      "深夜食堂打卡",
+      "周末美食打卡合集",
+      "美妆+生活 Vlog",
     ];
     return [0, 1, 2].map((i) => {
       const s = seed + i * 17;
       return {
         videoId: `${candidateId}-vid-${i}`,
         title: pick(titles, s),
-        url: `https://tiktok.com/@demo/video/${s}`,
+        url: `https://www.douyin.com/video/${s}`,
         publishedAt: new Date(Date.now() - (i + 1) * 86400000 * 3).toISOString(),
         views: 8_000 + (s % 120_000),
-        quote: i === 0 ? "…pad kra pao hits hard on Soi 11…" : undefined,
+        quote: i === 0 ? "…这家本帮菜真的绝…" : undefined,
         timestamp: i === 0 ? "00:18" : undefined,
       };
     });
   },
 };
+
+/** @deprecated use mockDouyinConnector */
+export const mockTikTokConnector = mockDouyinConnector;

@@ -1,5 +1,7 @@
 # Narration Script — ~7:30 (EN)
 
+> **Note (2026-07-29):** Rewritten for the current primary platform, **Douyin (China)**. The Thailand F&B / TikTok pilot referenced in earlier drafts of this script is historical — see `docs/DISCOVERY_AND_DOSSIER.md` and `docs/phase0/`.
+
 Speak naturally. Bracketed text = on-screen action, not spoken.
 
 ---
@@ -8,7 +10,7 @@ Speak naturally. Bracketed text = on-screen action, not spoken.
 
 **Slide: Title**
 
-Today I want to show **Lumen Influencer Marketplace** — a Thailand-focused platform that helps brands discover creators, understand their content with Lumen video analysis, and collaborate from invitation all the way to a published post.
+Today I want to show **Lumen Influencer Marketplace** — a China-focused platform that helps brands discover Douyin creators, understand their content with Lumen video analysis, and collaborate from invitation all the way to a published post.
 
 This is not another follower-count directory. We score fit using topics, language, geography, style, engagement quality, and brand safety — with explanations humans can trust.
 
@@ -18,14 +20,14 @@ This is not another follower-count directory. We score fit using topics, languag
 
 **Slide: The problem**
 
-Agency and brand teams in Thailand still do this manually:
+Agency and brand teams targeting China still do this manually:
 
-- hunting creators across TikTok, Instagram, YouTube;
+- hunting creators across Douyin, and secondarily Instagram, YouTube;
 - watching dozens of videos;
-- guessing whether the audience and messaging fit a condo, a restaurant, skincare, a tour, or a gym;
+- guessing whether the audience and messaging fit a restaurant, skincare, a lifestyle brand, or a cross-border product;
 - chasing briefs and drafts in chat threads.
 
-Follower count does not answer: *Does this creator’s recent content match this product?*
+Follower count does not answer: *Does this creator's recent content match this product?*
 
 That gap costs time, budget, and brand risk.
 
@@ -41,25 +43,25 @@ Lumen Influencer Marketplace connects three pieces:
 2. **Creator portal** — invitations, briefs, drafts, publication.
 3. **Lumen analysis** — transcription and content intelligence on recent videos (mock in the demo; real Lumen API next).
 
-**Initial market:** Thailand. Platforms: TikTok, Instagram, YouTube. Languages: Thai and English first; Russian and Chinese ready for later.
+**Primary market:** China. Platform: **Douyin first**, with Instagram and YouTube as secondary/international reach. Language: Chinese (zh) first; Thai and English remain available from the earlier pilot phase.
 
-Customers: local brands, agencies, hospitality, real estate, tourism, F&B, e-commerce.
+Customers: local and cross-border brands, agencies, hospitality, real estate, tourism, F&B, e-commerce.
 
 ---
 
 ## 2:40–4:40 — Live demo: Discovery (Phase 1)
 
-**[Switch to browser: http://167.71.206.43:3000]**
+**[Switch to browser: https://influencers.lumen.universalgravity.org]**
 
 ### Dashboard (~20s)
-Here is the brand console dashboard — Thailand pilot metrics, recommended creators, topics, analysis jobs, and activity.
+Here is the brand console dashboard — China market metrics, recommended creators, topics, analysis jobs, and activity.
 
 ### Influencers (~50s)
-Open **Influencers**. We have a catalog of Thailand creators — Bangkok, Phuket, Chiang Mai, Pattaya, Samui.
+Open **Influencers**. We have a catalog of China-based creators — Shanghai, Beijing, Guangzhou, Shenzhen, Hangzhou, Chengdu.
 
 Filter by platform, city, language, topic. Sort by match score. Switch card and table views.
 
-Select **Match for product** — for example the Phuket condo — and scores re-rank for that offer.
+Select **Match for product** — for example a skincare launch — and scores re-rank for that offer.
 
 ### Profile (~40s)
 Open a creator. You see audience metrics, topics, style, brand-safety signals, recent videos with transcripts and analysis, and an **explainable match score**: topic relevance, audience and geography, language, content style, engagement, posting consistency, brand safety, commercial fit.
@@ -67,7 +69,7 @@ Open a creator. You see audience metrics, topics, style, brand-safety signals, r
 Add to shortlist. Invite to campaign.
 
 ### Products & campaigns (~30s)
-Products and campaigns are first-class objects — condo, restaurant, skincare, island tour, fitness membership — with geography, languages, benefits, and prohibited claims.
+Products and campaigns are first-class objects — restaurant, skincare, lifestyle brand, cross-border product — with geography, languages, benefits, and prohibited claims.
 
 ---
 
@@ -81,7 +83,9 @@ This is the collaboration loop we just shipped.
 From the brand side: invitations, then **Reviews**. Drafts arrive with private review links. Approve or request changes. After publish, record performance snapshots.
 
 ### Creator portal (~60s)
-In the **Creator portal**, a creator — here Narin in Bangkok — accepts an invitation, acknowledges the brief, submits a draft URL and private review link, and after approval records the publication URL on their own social account.
+In the **Creator portal**, a creator accepts an invitation, acknowledges the brief, submits a draft URL and private review link, and after approval records the publication URL on their own Douyin account.
+
+Honest note: creator login today is an **international TikTok OAuth leftover** (reusing the shared Strom TikTok Developer App) — it is **not** Douyin login. Until Douyin Open Platform OAuth is wired, **Act-as** is the correct path for Douyin creators.
 
 We also support **profile claim** — creators request ownership; brand operators verify or reject.
 
@@ -98,7 +102,7 @@ No payments or contracts yet — that is Phase 3. First we prove matching and wo
 
 **Slide: Architecture / Roadmap**
 
-Today the demo runs as a Next.js app with a service layer and mock Lumen client — ready to swap for NestJS, PostgreSQL, and the real Lumen Analysis API.
+Today the demo runs as a Next.js app with a service layer and mock Lumen client, backed by a live Douyin discovery connector through TikHub — ready to swap for NestJS, PostgreSQL, and the real Lumen Analysis API.
 
 Roadmap:
 
@@ -107,7 +111,7 @@ Roadmap:
 - **Phase 3** — Commercial marketplace — contracts, payments, payouts.
 - **Phase 4** — Scale — more data sources, learning from campaign outcomes, multi-market.
 
-Responsible data: official APIs and approved providers — no uncontrolled scraping.
+Responsible data: TikHub (reused from Strom/lumen, no new account) and approved providers — no uncontrolled scraping.
 
 ---
 
@@ -115,9 +119,9 @@ Responsible data: official APIs and approved providers — no uncontrolled scrap
 
 **Slide: Close / CTA**
 
-Lumen Influencer Marketplace turns video understanding into campaign decisions — for Thailand brands that need creators who actually fit.
+Lumen Influencer Marketplace turns video understanding into campaign decisions — for China brands that need Douyin creators who actually fit.
 
-Demo is live. Happy to walk through a pilot category next — real estate, F&B, beauty, or tourism.
+Demo is live. Happy to walk through a pilot category next — F&B, beauty, lifestyle, or cross-border e-commerce.
 
 Thank you.
 

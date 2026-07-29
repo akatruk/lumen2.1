@@ -28,7 +28,7 @@ export default function DiscoverPage() {
   const [products, setProducts] = useState<Product[]>([]);
 
   const [productId, setProductId] = useState<string>("");
-  const [query, setQuery] = useState("food bangkok");
+  const [query, setQuery] = useState("上海 美食");
   const [city, setCity] = useState("Bangkok");
   const [language, setLanguage] = useState<"all" | LanguageCode>("all");
   const [topic, setTopic] = useState("food");
@@ -93,7 +93,7 @@ export default function DiscoverPage() {
       }
     } else {
       setQuery(`${p.desiredTopics[0] ?? "lifestyle"} ${p.geography[0] ?? ""}`.trim());
-      setCity(p.geography.find((g) => g !== "Thailand") ?? p.geography[0] ?? "All");
+      setCity(p.geography.find((g) => g !== "China" && g !== "Thailand") ?? p.geography[0] ?? "All");
       setTopic(p.desiredTopics[0] ?? "All");
     }
   }
@@ -113,7 +113,7 @@ export default function DiscoverPage() {
     setError(null);
     try {
       const params: DiscoverySearchParams = {
-        query: query.trim() || "food bangkok",
+        query: query.trim() || "上海 美食",
         city,
         language,
         topic,
@@ -138,7 +138,7 @@ export default function DiscoverPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">Discover</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            TikTok search ranked against a product resume card (score + reasons).
+            Douyin search ranked against a product resume card (score + reasons).
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -182,11 +182,11 @@ export default function DiscoverPage() {
 
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
           <div className="xl:col-span-2">
-            <Field label="Search TikTok">
+            <Field label="Search Douyin">
               <Input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="e.g. pad kra pao bangkok nightlife"
+                placeholder="e.g. 上海 美食 探店"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") void runSearch();
                 }}
@@ -247,7 +247,7 @@ export default function DiscoverPage() {
         <Card className="px-5 py-10 text-center">
           <Sparkles className="mx-auto h-8 w-8 text-primary/70" />
           <p className="mt-3 text-sm text-muted-foreground">
-            Select a product card, then search. Results are ranked for that product — not generic TikTok noise.
+            Select a product card, then search. Results are ranked for that product — not generic Douyin noise.
           </p>
         </Card>
       ) : null}

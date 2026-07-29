@@ -10,16 +10,16 @@ import { loadJson, saveJson } from "@/lib/storage";
 import { marketplace } from "@/services/marketplace";
 import { mockTikTokConnector } from "./mock-tiktok.connector";
 import { liveTikTokConnector } from "./live-tiktok.connector";
-import type { TikTokDiscoveryConnector } from "./types";
+import type { DouyinDiscoveryConnector } from "./types";
 
 const KEYS = {
   dossiers: "lumen.discovery.dossiers",
   lastSearch: "lumen.discovery.lastSearch",
 } as const;
 
-function getConnector(): TikTokDiscoveryConnector {
-  // Client hint: NEXT_PUBLIC_DISCOVERY_MODE=live → call server TikHub route.
-  // Server still requires DISCOVERY_MODE=live + TIKHUB_API_KEY.
+function getConnector(): DouyinDiscoveryConnector {
+  // Client hint: NEXT_PUBLIC_DISCOVERY_MODE=live → call server Douyin TikHub route.
+  // Server still requires DISCOVERY_MODE=live + TIKHUB_API_KEY (reuse from Strom/lumen).
   const mode = (process.env.NEXT_PUBLIC_DISCOVERY_MODE ?? "demo").toLowerCase();
   return mode === "live" ? liveTikTokConnector : mockTikTokConnector;
 }
@@ -144,7 +144,7 @@ function influencerFromDossier(d: InfluencerDossier): Influencer {
     topics: d.topics.map((t) => t.name),
     platforms: [
       {
-        platform: "tiktok",
+        platform: "douyin",
         handle: d.identity.handle,
         url: d.identity.profileUrl,
         followers: d.reach.followers,

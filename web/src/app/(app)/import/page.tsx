@@ -9,8 +9,8 @@ import { Field, Select, Textarea } from "@/components/ui/Field";
 import { PLATFORM_LABELS } from "@/lib/utils";
 
 export default function ImportPage() {
-  const [platform, setPlatform] = useState<Platform>("tiktok");
-  const [urls, setUrls] = useState("https://tiktok.com/@demo.bangkok\nhttps://tiktok.com/@demo.phuket");
+  const [platform, setPlatform] = useState<Platform>("douyin");
+  const [urls, setUrls] = useState("https://www.douyin.com/user/demo_shanghai\nhttps://www.douyin.com/user/demo_beijing");
   const [csv, setCsv] = useState("url\nhttps://instagram.com/demo.chiangmai\nhttps://instagram.com/demo.samui");
   const [videoCount, setVideoCount] = useState(5);
   const [preview, setPreview] = useState<ImportPreviewRow[]>([]);
@@ -31,7 +31,8 @@ export default function ImportPage() {
           <div className="space-y-4 px-5 py-4">
             <Field label="Platform">
               <Select value={platform} onChange={(e) => setPlatform(e.target.value as Platform)}>
-                <option value="tiktok">TikTok</option>
+                <option value="douyin">Douyin</option>
+                <option value="tiktok">TikTok (intl)</option>
                 <option value="instagram">Instagram</option>
                 <option value="youtube">YouTube</option>
               </Select>

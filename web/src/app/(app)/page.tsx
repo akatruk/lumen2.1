@@ -39,12 +39,12 @@ export default function DashboardPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">Dashboard</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Thailand discovery workspace for brands and agencies.
+            China discovery workspace for brands and agencies — Douyin primary.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Link href="/products/scan"><Button size="sm">Scan product</Button></Link>
-          <Link href="/discover"><Button size="sm" variant="secondary">Discover TikTok</Button></Link>
+          <Link href="/discover"><Button size="sm" variant="secondary">Discover Douyin</Button></Link>
           <details className="relative">
             <summary className="cursor-pointer list-none rounded border border-border px-3 py-1.5 font-mono text-xs text-muted-foreground hover:bg-accent/40 hover:text-foreground [&::-webkit-details-marker]:hidden">
               More actions ▾

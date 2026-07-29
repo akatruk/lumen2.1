@@ -16,10 +16,10 @@ type SessionUser = {
 };
 
 const ERRORS: Record<string, string> = {
-  denied: "TikTok authorization was denied.",
+  denied: "International TikTok authorization was denied (not Douyin).",
   state: "OAuth state mismatch — try again.",
-  oauth: "TikTok login failed — try again.",
-  config: "TikTok OAuth is not configured on this server yet.",
+  oauth: "Intl TikTok login failed — try again (this is not Douyin OAuth).",
+  config: "Intl TikTok OAuth is not configured (Douyin login not available yet).",
 };
 
 function CreatorLoginInner() {
@@ -55,7 +55,7 @@ function CreatorLoginInner() {
       <div>
         <h1 className="text-2xl font-semibold text-foreground">Creator login</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Sign in with TikTok to open invitations and briefs for your profile.
+          Optional international TikTok Login (not Douyin). Prefer Act-as for Douyin creators until Douyin Open Platform OAuth is wired.
         </p>
       </div>
 
@@ -67,7 +67,7 @@ function CreatorLoginInner() {
 
       {user?.role === "creator" ? (
         <Card className="space-y-4 p-5">
-          <CardHeader title="Signed in with TikTok" monoLabel="01" subtitle={user.name} />
+          <CardHeader title="Signed in (intl TikTok Login)" monoLabel="01" subtitle={user.name} />
           <p className="text-sm text-muted-foreground">
             Influencer id: <span className="font-mono text-xs">{user.influencerId ?? "—"}</span>
           </p>
@@ -83,15 +83,15 @@ function CreatorLoginInner() {
       ) : (
         <Card className="space-y-4 p-5">
           <CardHeader
-            title="Login with TikTok"
+            title="Intl TikTok Login (not Douyin)"
             monoLabel="01"
-            subtitle="Reuses the Strom TikTok app · user.info.basic"
+            subtitle="Leftover intl OAuth · reuses Strom TikTok app · not 抖音登录"
           />
           {configured === false ? (
             <Badge tone="review">OAuth keys not set on server</Badge>
           ) : null}
           <a href="/api/auth/tiktok/start">
-            <Button className="w-full">Continue with TikTok</Button>
+            <Button className="w-full">Continue with intl TikTok</Button>
           </a>
           <p className="text-xs text-muted-foreground">
             Ops fallback: open{" "}

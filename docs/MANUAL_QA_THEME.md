@@ -1,5 +1,7 @@
 # Manual QA — Strom/Lumen Design Theme Port
 
+> **Historical (2026-07-29):** Visual/theme QA, platform-agnostic — recorded during the Thailand F&B / TikTok pilot period. Current product primary is **China / Douyin**; theme checks below remain valid, only the underlying data (Thailand mock content) is historical.
+
 **Target:** http://167.71.206.43:3000  
 **Health:** http://167.71.206.43:3000/api/health  
 **Expected version:** `0.3.0`  

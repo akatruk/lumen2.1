@@ -1,5 +1,7 @@
 # Промпт backend-разработчика — аудит + фикс критичного
 
+> **Обновлено (2026-07-29):** primary discovery платформа — Douyin (TikHub, креды реюз из Strom/lumen). "tiktok" в чеклисте ниже читай как "платформа" в общем смысле (Douyin сегодня) — не заводи новые TikHub/OpenRouter/TikTok аккаунты и не публикуй секреты.
+
 Сильный system-промпт: найти **все** недочёты/ошибки в app-логике (service layer / API / data contracts) и **применить фиксы только к критически важным**.
 
 Контекст: в `lumen2.1` сейчас **нет полноценного Nest backend** — «бэкенд» = `web/src/services/*`, `web/src/lib/storage.ts`, `web/src/app/api/*`, типы, connectors. Референс live TikHub/Analysis — `lumen/BACKEND`.
@@ -63,7 +65,7 @@ P0 / CRITICAL — фиксить СЕЙЧАС:
 - data loss / overwrite чужих ключей localStorage; JSON.parse без try → white screen
 - SSR/hydration break из-за window/localStorage без guard
 - ID collision, дубликаты creators ломают catalog
-- platform filter игнорируется (карточка не-tiktok, а выдаём tiktok без warning)
+- platform filter игнорируется (карточка не-douyin, а выдаём douyin без warning)
 - security: API keys / secrets в клиенте; XSS через unsanitized stored HTML если есть
 - regression: /products/scan, /discover, Save & Discover, Find matches перестают работать
 - ложь пользователю: UI говорит «live», а это mock без badge (если badge пропал)

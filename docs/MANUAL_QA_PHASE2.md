@@ -1,5 +1,7 @@
 # Manual QA — Phase 2 Collaboration
 
+> **Historical (2026-07-29):** Recorded against the Thailand F&B pilot build (seed creator "Narin", Bangkok). Current product primary is **China / Douyin** — see [`DISCOVERY_AND_DOSSIER.md`](./DISCOVERY_AND_DOSSIER.md). Dates/PASS results below are preserved as an audit record.
+
 **Target:** http://167.71.206.43:3000  
 **Creator portal:** http://167.71.206.43:3000/creator  
 **Health:** http://167.71.206.43:3000/api/health  

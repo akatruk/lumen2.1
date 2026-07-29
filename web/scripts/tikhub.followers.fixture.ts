@@ -1,5 +1,5 @@
 /**
- * Fixture: TikHub web search puts followers on item.authorStats, not author.
+ * Fixture: Douyin/TikHub may put followers on author or author_stats.
  * Kept outside `src/` so Next.js production typecheck ignores it.
  * Run: cd web && npx --yes tsx scripts/tikhub.followers.fixture.ts
  */
@@ -18,19 +18,15 @@ async function main() {
   const { normalizeTikHubItem, videosToCandidates } = await import("../src/server/tikhub");
 
   const sample = {
-    id: "712345",
-    desc: "pad thai bangkok",
+    aweme_id: "712345",
+    desc: "上海探店 本帮菜",
     author: {
-      uniqueId: "karissaeats",
-      nickname: "Karissa",
-      signature: "food in bkk",
+      unique_id: "shanghai_eats",
+      nickname: "沪上探店",
+      signature: "上海美食",
+      follower_count: 5_000_000,
     },
-    authorStats: {
-      followerCount: 5_000_000,
-      heartCount: 422_900_000,
-      videoCount: 1655,
-    },
-    stats: { playCount: 250_000, diggCount: 12_000, commentCount: 400, shareCount: 90 },
+    statistics: { play_count: 250_000, digg_count: 12_000, comment_count: 400, share_count: 90 },
   };
 
   const hit = normalizeTikHubItem(sample);
@@ -38,10 +34,13 @@ async function main() {
   if (hit.followers !== 5_000_000) {
     throw new Error(`expected followers 5000000, got ${hit.followers}`);
   }
+  if (!hit.url.includes("douyin.com")) {
+    throw new Error(`expected douyin.com url, got ${hit.url}`);
+  }
 
   const candidates = videosToCandidates([hit], {
-    query: "bangkok food",
-    city: "Bangkok",
+    query: "上海 美食",
+    city: "Shanghai",
     language: "all",
     topic: "food",
     minFollowers: 0,
@@ -50,19 +49,25 @@ async function main() {
   if (candidates[0]?.followers !== 5_000_000) {
     throw new Error(`candidate followers ${candidates[0]?.followers}`);
   }
+  if (candidates[0]?.country !== "CN" || candidates[0]?.languages?.[0] !== "zh") {
+    throw new Error(`expected CN/zh candidate, got ${candidates[0]?.country}/${candidates[0]?.languages}`);
+  }
+  if (!candidates[0]?.id.startsWith("disc-dy-")) {
+    throw new Error(`expected disc-dy- id, got ${candidates[0]?.id}`);
+  }
 
   const zeroAuthorOnly = normalizeTikHubItem({
-    id: "1",
-    author: { uniqueId: "x", nickname: "x" },
-    stats: { playCount: 1 },
+    aweme_id: "1",
+    author: { unique_id: "x", nickname: "x" },
+    statistics: { play_count: 1 },
   });
   if (!zeroAuthorOnly || zeroAuthorOnly.followers !== 0) {
-    throw new Error("missing authorStats should stay 0");
+    throw new Error("missing follower fields should stay 0");
   }
 
   const v2 = normalizeTikHubItem({
-    id: "2",
-    author: { uniqueId: "y", nickname: "y" },
+    aweme_id: "2",
+    author: { unique_id: "y", nickname: "y" },
     authorStatsV2: { followerCount: "10100" },
   });
   if (!v2 || v2.followers !== 10100) {
@@ -72,6 +77,7 @@ async function main() {
   console.log("tikhub.followers.fixture PASS", {
     followers: hit.followers,
     avgViews: candidates[0]?.avgViews,
+    platformHint: "douyin",
   });
 }
 

@@ -48,6 +48,8 @@
 
 ## 3. Dashboard CTA declutter + copy (P0)
 
+> **Historical (2026-07-29):** Recorded against the Thailand F&B / TikTok pilot build. Current product primary is **China / Douyin** (the "Discover TikTok" CTA below now points at Douyin discovery) — see [`DISCOVERY_AND_DOSSIER.md`](./DISCOVERY_AND_DOSSIER.md). Dates/PASS results below are preserved as an audit record.
+
 | ID | Steps | Expected | Result |
 | --- | --- | --- | --- |
 | D1 | Load `/` header | Only **Scan product** + **Discover TikTok** as primary buttons | **PASS** |
