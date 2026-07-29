@@ -2,6 +2,16 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.5.3] — 2026-07-29
+
+### Added — Google SSO for brand login
+
+- `/api/auth/google/start` + `/api/auth/google/callback` (OAuth code flow, CSRF state cookie).
+- Prisma `User.googleId` + optional `passwordHash` (passwordless Google accounts; email/password still works).
+- Login UI: **Continue with Google** when `googleOAuth=true` on health.
+- Secrets live on droplet `/opt/lumen-marketplace/.env.google` (merged into `.env` on Deploy; **not** GitHub Secrets / Vault).
+- Health `0.5.3` + `googleOAuth` flag.
+
 ## [0.5.2] — 2026-07-29
 
 ### Changed — China market everywhere (not Thailand)

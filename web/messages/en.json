@@ -79,5 +79,24 @@
     "resetDemo": "Reset demo data",
     "langEn": "English",
     "langZh": "Chinese"
+  },
+  "login": {
+    "title": "Brand login",
+    "subtitle": "Server-backed account for product persistence. Demo localStorage still works when logged out.",
+    "signedIn": "Signed in",
+    "signedInAs": "Signed in as",
+    "signedOut": "Signed out",
+    "signOut": "Sign out",
+    "signIn": "Sign in",
+    "createAccount": "Create brand account",
+    "emailPasswordHint": "Email + password (min 8)",
+    "continueGoogle": "Continue with Google",
+    "or": "or",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "register": "Register",
+    "needAccount": "Need an account?",
+    "haveAccount": "Have an account?"
   }
 }

@@ -73,6 +73,10 @@ jobs:
           EOF
           # strip leading spaces from heredoc indent
           sed -i 's/^[[:space:]]*//' /tmp/lumen-marketplace.env
+          # Preserve Google OAuth keys from droplet-only file (not GH Secrets)
+          if ssh "${DEPLOY_USER}@${DEPLOY_HOST}" "test -f '${DEPLOY_PATH}/.env.google'"; then
+            ssh "${DEPLOY_USER}@${DEPLOY_HOST}" "cat '${DEPLOY_PATH}/.env.google'" >> /tmp/lumen-marketplace.env
+          fi
           scp /tmp/lumen-marketplace.env "${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/.env"
           ssh "${DEPLOY_USER}@${DEPLOY_HOST}" "chmod 600 '${DEPLOY_PATH}/.env'"
           rm -f /tmp/lumen-marketplace.env

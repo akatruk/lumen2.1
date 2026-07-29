@@ -115,7 +115,11 @@ export async function registerBrand(input: {
 
 export async function loginBrand(email: string, password: string): Promise<SessionUser> {
   const user = await prisma.user.findUnique({ where: { email: email.trim().toLowerCase() } });
-  if (!user || !(await verifyPassword(password, user.passwordHash))) {
+  if (!user) throw new Error("Invalid email or password");
+  if (!user.passwordHash) {
+    throw new Error("This account uses Google sign-in");
+  }
+  if (!(await verifyPassword(password, user.passwordHash))) {
     throw new Error("Invalid email or password");
   }
   return {

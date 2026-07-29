@@ -79,5 +79,24 @@
     "resetDemo": "重置演示数据",
     "langEn": "English",
     "langZh": "中文"
+  },
+  "login": {
+    "title": "品牌登录",
+    "subtitle": "服务端账号用于产品持久化。未登录时仍可使用本地演示数据。",
+    "signedIn": "已登录",
+    "signedInAs": "已登录为",
+    "signedOut": "已退出",
+    "signOut": "退出登录",
+    "signIn": "登录",
+    "createAccount": "创建品牌账号",
+    "emailPasswordHint": "邮箱 + 密码（至少 8 位）",
+    "continueGoogle": "使用 Google 继续",
+    "or": "或",
+    "name": "名称",
+    "email": "邮箱",
+    "password": "密码",
+    "register": "注册",
+    "needAccount": "没有账号？",
+    "haveAccount": "已有账号？"
   }
 }
