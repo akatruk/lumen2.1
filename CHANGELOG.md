@@ -12,11 +12,20 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 - Page sweeps: dashboard CTAs, Discover search, product scan actions, analysis-jobs selects, `CardHeader` stacks on narrow viewports; shell `w-full` + `overflow-x-hidden` (no phantom page sideways scroll).
 - Health `0.5.4`. Manual QA: `docs/MANUAL_QA_MOBILE.md`.
 
+### Fixed — Google SSO client secret (ops)
+
+- Root cause of consent→login loop: OCR/corrupt `GOOGLE_CLIENT_SECRET` → Google `invalid_client` / “provided client secret is invalid”.
+- Rotated GitHub secrets `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` (new Web client) → Deploy writes droplet `.env`.
+- Token probe: junk code → `invalid_grant` (pair valid). Start Location uses new `client_id` (`…o6q0164…`).
+- Login UX (`a01a1c9`): red `?error=` banner; successful SSO lands on `/products/scan` (not `/login?google=1`).
+- Manual QA: `docs/MANUAL_QA_GOOGLE_SSO.md` (0.5.4 / secret rotation).
+
 ### QA
 
 - Target: https://influencers.lumen.universalgravity.org — health `0.5.4` / Deploy [`30453651901`](https://github.com/akatruk/lumen2.1/actions/runs/30453651901) **success** (`ecc8e3b`; initial feature Deploy [`30453204280`](https://github.com/akatruk/lumen2.1/actions/runs/30453204280)).
 - Manual QA: `docs/MANUAL_QA_MOBILE.md` — **P0 ALL PASS**; Chrome headless 375×812 drawer/nav/pages **25/25**; 1280 desktop sidebar unchanged.
 - Smoke `EXPECT_VERSION=0.5.4` **PASSED**.
+- Google SSO secret rotation: Deploy [`30455885662`](https://github.com/akatruk/lumen2.1/actions/runs/30455885662) **success**; `googleOAuth=true`; G1/G3a/O* **PASS**; **G3b/G4 BLOCKED** pending human Google test-user login after rotation.
 
 ## [0.5.3] — 2026-07-29
 
