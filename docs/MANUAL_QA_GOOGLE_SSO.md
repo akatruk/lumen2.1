@@ -55,7 +55,7 @@ Do **not** paste client secrets into git, chat logs, or commits.
 | Tester | Auto (agent) — curl/smoke/API + nginx; G3b/G4 human-gated |
 | Feature / UX commits | `f81c366` · `9b66287` · `a01a1c9` (error banner + land `/products/scan`) |
 | Ops | GH secrets rotated → Deploy [`30455885662`](https://github.com/akatruk/lumen2.1/actions/runs/30455885662) **success** |
-| Docs / QA commit | _(this commit)_ |
+| Docs / QA commit | `72b4776` |
 | Environment | https://influencers.lumen.universalgravity.org |
 | P0 summary | **PASS** automated (G1/G3a/G5/G6/O*); **G3b/G4 BLOCKED** pending interactive Google sign-in after rotation |
 | Smoke | `EXPECT_VERSION=0.5.4` **PASSED** |
