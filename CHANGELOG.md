@@ -2,6 +2,21 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.5.8] — 2026-07-30
+
+### Fixed — Lumen / viral-script products match tech creators
+
+- `enrichProductForMatch` infers **Technology** + viral/script/ai niches from sparse manual copy (e.g. Lumen Script AI pitch); normalizes `Chinese` → `zh`.
+- Catalog rank stays niche-first; `suitableProductIds` is a soft bonus only (no “belongs to another product” feel).
+- Product detail Suggested shows matched topics + per-row **Why** niche hits (en/zh).
+- Demo: `prod-7` Lumen Script AI; Alex / Wei / Nora Li retargeted to content-AI; RE/food controls unchanged.
+- Health `0.5.8`. Manual QA: `docs/MANUAL_QA_MATCH.md`.
+
+### QA
+
+- Target: https://influencers.lumen.universalgravity.org — health `0.5.8` / Deploy [`30538832760`](https://github.com/akatruk/lumen2.1/actions/runs/30538832760) **success** (`cf1edb9`).
+- Manual QA: `docs/MANUAL_QA_MATCH.md` — **P0 ALL PASS**; prod-7 Suggested = Alex/Wei/Nora with `原因：`; prod-1 Zhang/Elena; smoke `EXPECT_VERSION=0.5.8` **PASSED**.
+
 ## [0.5.7] — 2026-07-30
 
 ### Fixed — Suggested influencers use topical / category match
