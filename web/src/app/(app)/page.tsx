@@ -101,7 +101,7 @@ export default function DashboardPage() {
         </Card>
 
         <Card>
-          <CardHeader title="Topics" subtitle="Across catalog" />
+          <CardHeader title={t.dashboard.topicsTitle} subtitle={t.dashboard.topicsSub} />
           <div className="space-y-3 px-5 py-4">
             {stats.topicStats.map((topic) => (
               <div key={topic.topic} className="flex items-center justify-between gap-3 text-sm">
@@ -127,9 +127,9 @@ export default function DashboardPage() {
             <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
               <tr>
                 <th className="px-5 py-3 font-medium">{t.nav.influencers}</th>
-                <th className="px-5 py-3 font-medium">Videos</th>
-                <th className="px-5 py-3 font-medium">Status</th>
-                <th className="px-5 py-3 font-medium">Started</th>
+                <th className="px-5 py-3 font-medium">{t.common.videos}</th>
+                <th className="px-5 py-3 font-medium">{t.common.status}</th>
+                <th className="px-5 py-3 font-medium">{t.common.started}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border/40">

@@ -216,7 +216,7 @@ export function BrandShell({ children }: { children: React.ReactNode }) {
       >
         <div className="min-w-0">
           <div className="font-mono text-xs font-semibold uppercase tracking-wider text-primary">Lumen</div>
-          <div className="truncate text-sm font-semibold text-foreground">Marketplace</div>
+          <div className="truncate text-sm font-semibold text-foreground">{t.app.badge}</div>
         </div>
         <div className="flex shrink-0 items-center gap-2">
           <LanguageToggle />

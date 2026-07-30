@@ -18,12 +18,14 @@ import { Card } from "@/components/ui/Card";
 import { Badge, MatchScore } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Select } from "@/components/ui/Field";
+import { fill, useI18n } from "@/lib/i18n";
 import { formatNumber, formatPercent, LANGUAGE_LABELS } from "@/lib/utils";
 
 const CITIES = ["All", "Shanghai", "Beijing", "Guangzhou", "Shenzhen", "Hangzhou", "Chengdu"];
 const TOPICS = ["All", "food", "nightlife", "travel", "lifestyle", "skincare", "beauty", "fitness"];
 
 export default function DiscoverPage() {
+  const { t } = useI18n();
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
 
@@ -100,12 +102,12 @@ export default function DiscoverPage() {
 
   async function runSearch() {
     if (!productId) {
-      setError("Select a product resume card context first");
+      setError(t.discover.errSelectProduct);
       return;
     }
     const product = marketplace.getProduct(productId);
     if (!product) {
-      setError("Product not found");
+      setError(t.discover.errProductNotFound);
       return;
     }
 
@@ -126,26 +128,34 @@ export default function DiscoverPage() {
       setRanked(matches);
       setSearched(true);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Search failed");
+      setError(e instanceof Error ? e.message : t.discover.errSearchFailed);
     } finally {
       setLoading(false);
     }
   }
 
+  const cityLabel = useMemo(
+    () => (c: string) => (c === "All" ? t.common.all : c),
+    [t],
+  );
+
+  const topicLabel = useMemo(
+    () => (value: string) => (value === "All" ? t.common.allTopics : value),
+    [t],
+  );
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Discover</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Douyin search ranked against a product resume card (score + reasons).
-          </p>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t.discover.title}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{t.discover.subtitle}</p>
         </div>
         <div className="flex items-center gap-2">
           <Badge tone="Queued">{discovery.connectorLabel()}</Badge>
           <Link href="/products/scan">
             <Button size="sm" variant="secondary">
-              Scan product
+              {t.products.scanProduct}
             </Button>
           </Link>
         </div>
@@ -153,13 +163,13 @@ export default function DiscoverPage() {
 
       <Card className="p-5">
         <div className="mb-4">
-          <Field label="Match for product (required)">
+          <Field label={t.discover.matchForProduct}>
             <Select value={productId} onChange={(e) => applyProductDefaults(e.target.value)}>
-              <option value="">Select product…</option>
+              <option value="">{t.discover.selectProduct}</option>
               {products.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name} · {p.brand}
-                  {p.resumeCard ? " · card" : ""}
+                  {p.resumeCard ? t.discover.cardSuffix : ""}
                 </option>
               ))}
             </Select>
@@ -167,14 +177,16 @@ export default function DiscoverPage() {
           {selectedProduct ? (
             <div className="mt-2 flex flex-wrap gap-2 text-xs text-muted-foreground">
               <span>
-                Topics: {(selectedProduct.resumeCard?.desired_topics ?? selectedProduct.desiredTopics).join(", ")}
+                {t.discover.topics}{" "}
+                {(selectedProduct.resumeCard?.desired_topics ?? selectedProduct.desiredTopics).join(", ")}
               </span>
               <span>·</span>
               <span>
-                Geo: {(selectedProduct.resumeCard?.geography ?? selectedProduct.geography).join(", ")}
+                {t.discover.geo}{" "}
+                {(selectedProduct.resumeCard?.geography ?? selectedProduct.geography).join(", ")}
               </span>
               <Link href={`/products/${selectedProduct.id}`} className="text-primary hover:underline">
-                Open card
+                {t.discover.openCard}
               </Link>
             </div>
           ) : null}
@@ -182,32 +194,32 @@ export default function DiscoverPage() {
 
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
           <div className="xl:col-span-2">
-            <Field label="Search Douyin">
+            <Field label={t.discover.searchDouyin}>
               <Input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="e.g. 上海 美食 探店"
+                placeholder={t.discover.searchPlaceholder}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") void runSearch();
                 }}
               />
             </Field>
           </div>
-          <Field label="City">
+          <Field label={t.discover.city}>
             <Select value={city} onChange={(e) => setCity(e.target.value)}>
               {CITIES.map((c) => (
                 <option key={c} value={c}>
-                  {c}
+                  {cityLabel(c)}
                 </option>
               ))}
             </Select>
           </Field>
-          <Field label="Language">
+          <Field label={t.discover.language}>
             <Select
               value={language}
               onChange={(e) => setLanguage(e.target.value as "all" | LanguageCode)}
             >
-              <option value="all">All</option>
+              <option value="all">{t.common.all}</option>
               {Object.entries(LANGUAGE_LABELS).map(([code, label]) => (
                 <option key={code} value={code}>
                   {label}
@@ -215,18 +227,18 @@ export default function DiscoverPage() {
               ))}
             </Select>
           </Field>
-          <Field label="Topic">
+          <Field label={t.discover.topic}>
             <Select value={topic} onChange={(e) => setTopic(e.target.value)}>
-              {TOPICS.map((t) => (
-                <option key={t} value={t}>
-                  {t}
+              {TOPICS.map((topicOption) => (
+                <option key={topicOption} value={topicOption}>
+                  {topicLabel(topicOption)}
                 </option>
               ))}
             </Select>
           </Field>
         </div>
         <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
-          <Field label="Min followers">
+          <Field label={t.discover.minFollowers}>
             <Input
               type="number"
               className="w-full sm:w-40"
@@ -241,7 +253,7 @@ export default function DiscoverPage() {
             disabled={loading || !productId}
           >
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
-            Search & rank
+            {t.discover.searchRank}
           </Button>
         </div>
         {error ? <p className="mt-3 text-sm text-destructive">{error}</p> : null}
@@ -250,22 +262,24 @@ export default function DiscoverPage() {
       {!searched && !loading ? (
         <Card className="px-5 py-10 text-center">
           <Sparkles className="mx-auto h-8 w-8 text-primary/70" />
-          <p className="mt-3 text-sm text-muted-foreground">
-            Select a product card, then search. Results are ranked for that product — not generic Douyin noise.
-          </p>
+          <p className="mt-3 text-sm text-muted-foreground">{t.discover.emptyHint}</p>
         </Card>
       ) : null}
 
       {searched && !loading && ranked.length === 0 ? (
         <Card className="px-5 py-8 text-center text-sm text-muted-foreground">
-          No creators matched. Try a broader query or another product card.
+          {t.discover.emptyResults}
         </Card>
       ) : null}
 
       {ranked.length > 0 ? (
         <div className="space-y-3">
           <div className="font-mono text-xs text-muted-foreground">
-            {ranked.length} ranked / {rawCount} fetched · vs {selectedProduct?.name ?? "product"}
+            {fill(t.discover.rankedHeader, {
+              ranked: ranked.length,
+              raw: rawCount,
+              product: selectedProduct?.name ?? t.discover.productFallback,
+            })}
           </div>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {ranked.map((m) => {
@@ -288,8 +302,8 @@ export default function DiscoverPage() {
                         <MatchScore score={m.score} size="sm" />
                       </div>
                       <div className="mt-1 text-xs text-muted-foreground">
-                        {c.city} · {formatNumber(c.followers)} · {formatPercent(c.engagementRate)} ER · conf{" "}
-                        {Math.round(m.confidence * 100)}%
+                        {c.city} · {formatNumber(c.followers)} · {formatPercent(c.engagementRate)} {t.common.er}{" "}
+                        {fill(t.common.confidence, { n: Math.round(m.confidence * 100) })}
                       </div>
                       <ul className="mt-2 space-y-0.5 text-[11px] text-muted-foreground">
                         {m.reasons.slice(0, 4).map((r) => (
@@ -297,11 +311,13 @@ export default function DiscoverPage() {
                         ))}
                       </ul>
                       {m.risks[0] ? (
-                        <div className="mt-1 text-[11px] text-amber-500">Risk: {m.risks[0]}</div>
+                        <div className="mt-1 text-[11px] text-amber-500">
+                          {fill(t.common.risk, { reason: m.risks[0] })}
+                        </div>
                       ) : null}
                       <div className="mt-2 flex flex-wrap gap-1">
-                        {c.topics.slice(0, 3).map((t) => (
-                          <Badge key={t}>{t}</Badge>
+                        {c.topics.slice(0, 3).map((topicTag) => (
+                          <Badge key={topicTag}>{topicTag}</Badge>
                         ))}
                       </div>
                     </div>
@@ -309,7 +325,7 @@ export default function DiscoverPage() {
                   <div className="mt-4">
                     <Link href={`/discover/${encodeURIComponent(c.id)}`}>
                       <Button size="sm" className="w-full">
-                        Open dossier
+                        {t.discover.openDossier}
                       </Button>
                     </Link>
                   </div>

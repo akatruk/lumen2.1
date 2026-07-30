@@ -9,8 +9,10 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/Toast";
 import { formatDateTime } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n";
 
 export default function ClaimsPage() {
+  const { t } = useI18n();
   const { push } = useToast();
   const [claims, setClaims] = useState<ProfileClaim[]>([]);
 
@@ -23,10 +25,8 @@ export default function ClaimsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-foreground">Profile claims</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Verify creator ownership requests before collaboration expands.
-        </p>
+        <h1 className="text-2xl font-semibold text-foreground">{t.claims.title}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{t.claims.subtitle}</p>
       </div>
       <div className="space-y-3">
         {claims.map((c) => {
@@ -51,23 +51,23 @@ export default function ClaimsPage() {
                   <Button
                     size="sm"
                     onClick={() => {
-                      collaboration.reviewClaim(c.id, "Verified", "Identity accepted for demo.");
-                      push("Claim verified");
+                      collaboration.reviewClaim(c.id, "Verified", t.claims.noteAccepted);
+                      push(t.claims.toastVerified);
                       refresh();
                     }}
                   >
-                    Verify
+                    {t.claims.verify}
                   </Button>
                   <Button
                     size="sm"
                     variant="secondary"
                     onClick={() => {
-                      collaboration.reviewClaim(c.id, "Rejected", "Insufficient proof.");
-                      push("Claim rejected");
+                      collaboration.reviewClaim(c.id, "Rejected", t.claims.noteRejected);
+                      push(t.claims.toastRejected);
                       refresh();
                     }}
                   >
-                    Reject
+                    {t.claims.reject}
                   </Button>
                 </div>
               ) : null}

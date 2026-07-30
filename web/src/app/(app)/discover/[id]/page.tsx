@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { discovery } from "@/services/discovery/discovery.service";
 import { marketplace } from "@/services/marketplace";
@@ -12,9 +12,21 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { AddToShortlistButton } from "@/components/AddToShortlistButton";
 import { useToast } from "@/components/Toast";
+import { fill, useI18n } from "@/lib/i18n";
 import { formatDateTime, formatNumber, formatPercent, LANGUAGE_LABELS } from "@/lib/utils";
 
+function analysisStatusLabel(status: string, t: ReturnType<typeof useI18n>["t"]): string {
+  const map: Record<string, string> = {
+    idle: t.common.statusQueued,
+    running: t.common.statusQueued,
+    ready: t.common.statusCompleted,
+    failed: t.common.statusFailed,
+  };
+  return map[status] ?? status;
+}
+
 export default function DiscoverDossierPage() {
+  const { t } = useI18n();
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const { push } = useToast();
@@ -26,6 +38,21 @@ export default function DiscoverDossierPage() {
   const [analyzing, setAnalyzing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const discoveredAtLine = useMemo(() => {
+    if (!dossier) return "";
+    const discovered = formatDateTime(dossier.discoveredAt);
+    if (dossier.lastAnalyzedAt) {
+      return fill(t.discover.discoveredAnalyzed, {
+        discovered,
+        analyzed: formatDateTime(dossier.lastAnalyzedAt),
+      });
+    }
+    return fill(t.discover.discoveredAnalyzed, { discovered, analyzed: "" }).replace(
+      /\s*[·]\s*(Analyzed|分析于)\s*$/,
+      "",
+    );
+  }, [dossier, t]);
 
   useEffect(() => {
     let cancelled = false;
@@ -59,7 +86,7 @@ export default function DiscoverDossierPage() {
             city: existing.identity.city,
             country: existing.identity.country,
             languages: existing.identity.languages,
-            topics: existing.topics.map((t) => t.name),
+            topics: existing.topics.map((topic) => topic.name),
             followers: existing.reach.followers,
             avgViews: existing.reach.avgViews,
             engagementRate: existing.reach.engagementRate,
@@ -70,7 +97,7 @@ export default function DiscoverDossierPage() {
         }
 
         if (!candidate) {
-          throw new Error("Candidate not found. Run a search from Discover first.");
+          throw new Error(t.discover.errCandidateNotFound);
         }
 
         const d = await discovery.openDossier(candidate);
@@ -78,7 +105,7 @@ export default function DiscoverDossierPage() {
         setDossier(d);
         if (d.influencerId) setCatalogInfluencer(marketplace.getInfluencer(d.influencerId));
       } catch (e) {
-        if (!cancelled) setError(e instanceof Error ? e.message : "Failed to open dossier");
+        if (!cancelled) setError(e instanceof Error ? e.message : t.discover.errOpenDossier);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -87,7 +114,7 @@ export default function DiscoverDossierPage() {
     return () => {
       cancelled = true;
     };
-  }, [candidateId]);
+  }, [candidateId, t]);
 
   async function onAnalyze() {
     if (!dossier) return;
@@ -95,9 +122,9 @@ export default function DiscoverDossierPage() {
     try {
       const next = await discovery.analyze(dossier.id);
       setDossier(next);
-      push("Demo analysis complete — dossier updated");
+      push(t.discover.toastDemoAnalysis);
     } catch (e) {
-      push(e instanceof Error ? e.message : "Analyze failed", "err");
+      push(e instanceof Error ? e.message : t.discover.toastAnalyzeFailed, "err");
     } finally {
       setAnalyzing(false);
     }
@@ -110,9 +137,9 @@ export default function DiscoverDossierPage() {
       const inf = discovery.saveToCatalog(dossier.id);
       setCatalogInfluencer(inf);
       setDossier(discovery.getDossier(dossier.id) ?? dossier);
-      push(`Added ${inf.name} to catalog`);
+      push(fill(t.discover.toastAdded, { name: inf.name }));
     } catch (e) {
-      push(e instanceof Error ? e.message : "Save failed", "err");
+      push(e instanceof Error ? e.message : t.discover.toastSaveFailed, "err");
     } finally {
       setSaving(false);
     }
@@ -121,7 +148,7 @@ export default function DiscoverDossierPage() {
   if (loading) {
     return (
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Loader2 className="h-4 w-4 animate-spin" /> Opening dossier…
+        <Loader2 className="h-4 w-4 animate-spin" /> {t.discover.opening}
       </div>
     );
   }
@@ -130,9 +157,9 @@ export default function DiscoverDossierPage() {
     return (
       <div className="space-y-4">
         <Button variant="ghost" size="sm" onClick={() => router.push("/discover")}>
-          <ArrowLeft className="h-4 w-4" /> Back to Discover
+          <ArrowLeft className="h-4 w-4" /> {t.discover.backToDiscover}
         </Button>
-        <Card className="p-5 text-sm text-destructive">{error ?? "Dossier missing"}</Card>
+        <Card className="p-5 text-sm text-destructive">{error ?? t.discover.dossierMissing}</Card>
       </div>
     );
   }
@@ -163,34 +190,40 @@ export default function DiscoverDossierPage() {
               {d.identity.handle}
             </a>
             <div className="mt-1 text-xs text-muted-foreground">
-              {d.identity.city}, {d.identity.country} · source {d.source}
+              {d.identity.city}, {d.identity.country} · {fill(t.discover.source, { source: d.source })}
             </div>
             <div className="mt-2 flex flex-wrap gap-2">
               <Badge tone={d.analysisStatus === "ready" ? "Completed" : "Queued"}>
-                analysis {d.analysisStatus}
+                {fill(t.discover.analysisStatus, {
+                  status: analysisStatusLabel(d.analysisStatus, t),
+                })}
               </Badge>
-              {d.inCatalog ? <Badge tone="Active">In catalog</Badge> : <Badge>Not in catalog</Badge>}
+              {d.inCatalog ? (
+                <Badge tone="Active">{t.discover.inCatalog}</Badge>
+              ) : (
+                <Badge>{t.discover.notInCatalog}</Badge>
+              )}
             </div>
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
           <Button variant="secondary" size="sm" onClick={() => void onAnalyze()} disabled={analyzing}>
             {analyzing ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-            Analyze recent videos
+            {t.discover.analyzeVideos}
           </Button>
           <Button size="sm" onClick={() => void onSaveCatalog()} disabled={saving || d.inCatalog}>
-            {d.inCatalog ? "Already in catalog" : saving ? "Saving…" : "Add to catalog"}
+            {d.inCatalog ? t.discover.alreadyInCatalog : saving ? t.discover.saving : t.discover.addToCatalog}
           </Button>
         </div>
       </div>
 
       {catalogInfluencer ? (
         <Card className="p-4">
-          <div className="mb-2 text-xs font-mono text-muted-foreground">Shortlist from catalog entry</div>
+          <div className="mb-2 text-xs font-mono text-muted-foreground">{t.discover.shortlistFromCatalog}</div>
           <AddToShortlistButton influencer={catalogInfluencer} />
           <div className="mt-2">
             <Link href={`/influencers/${catalogInfluencer.id}`} className="text-xs text-primary hover:underline">
-              Open full catalog profile →
+              {t.discover.openFullProfile}
             </Link>
           </div>
         </Card>
@@ -198,72 +231,69 @@ export default function DiscoverDossierPage() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
-          <CardHeader title="Identity" monoLabel="01" />
+          <CardHeader title={t.discover.identity} monoLabel="01" />
           <div className="space-y-2 px-5 pb-5 text-sm">
             <p className="text-muted-foreground">{d.identity.bio}</p>
             <div>
-              Languages:{" "}
+              {t.discover.languages}{" "}
               {d.identity.languages.map((l) => LANGUAGE_LABELS[l] ?? l).join(", ")}
             </div>
-            <div className="font-mono text-xs text-muted-foreground">
-              Discovered {formatDateTime(d.discoveredAt)}
-              {d.lastAnalyzedAt ? ` · Analyzed ${formatDateTime(d.lastAnalyzedAt)}` : ""}
-            </div>
+            <div className="font-mono text-xs text-muted-foreground">{discoveredAtLine}</div>
           </div>
         </Card>
 
         <Card>
-          <CardHeader title="Reach" monoLabel="02" />
+          <CardHeader title={t.discover.reach} monoLabel="02" />
           <div className="grid grid-cols-2 gap-3 px-5 pb-5 text-sm">
             <div>
-              <div className="text-xs text-muted-foreground">Followers</div>
+              <div className="text-xs text-muted-foreground">{t.common.followers}</div>
               <div className="text-lg font-semibold tabular-nums">{formatNumber(d.reach.followers)}</div>
             </div>
             <div>
-              <div className="text-xs text-muted-foreground">Avg views</div>
+              <div className="text-xs text-muted-foreground">{t.discover.avgViews}</div>
               <div className="text-lg font-semibold tabular-nums">{formatNumber(d.reach.avgViews)}</div>
             </div>
             <div>
-              <div className="text-xs text-muted-foreground">Engagement</div>
+              <div className="text-xs text-muted-foreground">{t.common.engagement}</div>
               <div className="text-lg font-semibold tabular-nums">{formatPercent(d.reach.engagementRate)}</div>
             </div>
             <div>
-              <div className="text-xs text-muted-foreground">Cadence</div>
+              <div className="text-xs text-muted-foreground">{t.discover.cadence}</div>
               <div className="text-sm font-medium">{d.reach.postingFrequency}</div>
             </div>
           </div>
         </Card>
 
         <Card>
-          <CardHeader title="Brand / topics" monoLabel="03" subtitle="From discovery + analysis" />
+          <CardHeader title={t.discover.brandTopics} monoLabel="03" subtitle={t.discover.fromDiscovery} />
           <div className="flex flex-wrap gap-2 px-5 pb-5">
             {d.topics.length ? (
-              d.topics.map((t) => (
-                <Badge key={t.name} tone="Active">
-                  {t.name} · {Math.round(t.confidence * 100)}%
+              d.topics.map((topic) => (
+                <Badge key={topic.name} tone="Active">
+                  {topic.name} · {Math.round(topic.confidence * 100)}%
                 </Badge>
               ))
             ) : (
-              <span className="text-sm text-muted-foreground">Run analysis to enrich topics.</span>
+              <span className="text-sm text-muted-foreground">{t.discover.runAnalysisTopics}</span>
             )}
           </div>
         </Card>
 
         <Card>
-          <CardHeader title="Style" monoLabel="04" />
+          <CardHeader title={t.discover.style} monoLabel="04" />
           <div className="space-y-2 px-5 pb-5 text-sm">
             <div>
-              Formats:{" "}
-              {d.style.formats.length ? d.style.formats.join(", ") : "—"}
+              {t.discover.formats}{" "}
+              {d.style.formats.length ? d.style.formats.join(", ") : t.common.emDash}
             </div>
             <div>
-              Tone: {d.style.tone.length ? d.style.tone.join(", ") : "—"}
+              {t.discover.tone} {d.style.tone.length ? d.style.tone.join(", ") : t.common.emDash}
             </div>
           </div>
         </Card>
 
         <Card>
-          <CardHeader title="Audience" monoLabel="05" />
+          <CardHeader title={t.discover.audience} monoLabel="05" />
           <div className="space-y-3 px-5 pb-5">
             {d.audience.length ? (
               d.audience.map((a) => (
@@ -278,16 +308,18 @@ export default function DiscoverDossierPage() {
                 </div>
               ))
             ) : (
-              <span className="text-sm text-muted-foreground">Audience signals appear after analysis.</span>
+              <span className="text-sm text-muted-foreground">{t.discover.audienceAfterAnalysis}</span>
             )}
           </div>
         </Card>
 
         <Card>
-          <CardHeader title="Brand safety" monoLabel="06" />
+          <CardHeader title={t.discover.brandSafety} monoLabel="06" />
           <div className="space-y-2 px-5 pb-5 text-sm">
             <Badge tone={d.brandSafety.status}>
-              {d.brandSafety.status === "unknown" ? "PENDING ANALYSIS" : d.brandSafety.status}
+              {d.brandSafety.status === "unknown"
+                ? t.common.statusPendingReview.toUpperCase()
+                : d.brandSafety.status}
             </Badge>
             <p className="text-muted-foreground">{d.brandSafety.notes}</p>
             {d.brandSafety.flags.length ? (
@@ -305,13 +337,9 @@ export default function DiscoverDossierPage() {
 
       <Card>
         <CardHeader
-          title="Evidence"
+          title={t.discover.evidence}
           monoLabel="07"
-          subtitle={
-            d.source === "tikhub"
-              ? "Recent Douyin evidence (TikHub live)"
-              : "Recent Douyin stubs (demo connector)"
-          }
+          subtitle={d.source === "tikhub" ? t.discover.evidenceLive : t.discover.evidenceDemo}
         />
         <div className="divide-y divide-border/40">
           {d.evidence.length ? (
@@ -322,7 +350,7 @@ export default function DiscoverDossierPage() {
                     {e.title}
                   </a>
                   <span className="font-mono text-xs text-muted-foreground">
-                    {formatNumber(e.views)} views
+                    {fill(t.discover.nViews, { n: formatNumber(e.views) })}
                   </span>
                 </div>
                 {e.quote ? (
@@ -333,15 +361,15 @@ export default function DiscoverDossierPage() {
                 ) : null}
                 {e.analysis ? (
                   <div className="mt-1 flex flex-wrap gap-1">
-                    {e.analysis.topics.map((t) => (
-                      <Badge key={t.name}>{t.name}</Badge>
+                    {e.analysis.topics.map((topic) => (
+                      <Badge key={topic.name}>{topic.name}</Badge>
                     ))}
                   </div>
                 ) : null}
               </div>
             ))
           ) : (
-            <div className="px-5 py-4 text-sm text-muted-foreground">No evidence yet.</div>
+            <div className="px-5 py-4 text-sm text-muted-foreground">{t.discover.noEvidence}</div>
           )}
         </div>
       </Card>

@@ -8,8 +8,10 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Field, Select } from "@/components/ui/Field";
 import { formatDateTime } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n";
 
 export default function AnalysisJobsPage() {
+  const { t } = useI18n();
   const [jobs, setJobs] = useState<AnalysisJob[]>([]);
   const [influencers, setInfluencers] = useState<Influencer[]>([]);
   const [influencerId, setInfluencerId] = useState("");
@@ -35,17 +37,15 @@ export default function AnalysisJobsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-foreground">Analysis Jobs</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Demo queue for Lumen video analysis. No real social scraping.
-        </p>
+        <h1 className="text-2xl font-semibold text-foreground">{t.analysisJobs.title}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{t.analysisJobs.subtitle}</p>
       </div>
 
       <Card>
-        <CardHeader title="Start demo analysis" subtitle="Uses mock Lumen Analysis client" />
+        <CardHeader title={t.analysisJobs.startDemo} subtitle={t.analysisJobs.usesMock} />
         <div className="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:flex-wrap sm:items-end">
           <div className="w-full sm:w-auto sm:min-w-56">
-            <Field label="Influencer">
+            <Field label={t.analysisJobs.influencer}>
               <Select className="w-full" value={influencerId} onChange={(e) => setInfluencerId(e.target.value)}>
                 {influencers.map((i) => (
                   <option key={i.id} value={i.id}>{i.name}</option>
@@ -53,7 +53,7 @@ export default function AnalysisJobsPage() {
               </Select>
             </Field>
           </div>
-          <Field label="Videos">
+          <Field label={t.analysisJobs.videos}>
             <Select className="w-full sm:w-28" value={String(videoCount)} onChange={(e) => setVideoCount(Number(e.target.value))}>
               {[3, 5, 8, 10].map((n) => <option key={n} value={n}>{n}</option>)}
             </Select>
@@ -66,7 +66,7 @@ export default function AnalysisJobsPage() {
               refresh();
             }}
           >
-            Start Analysis
+            {t.analysisJobs.start}
           </Button>
         </div>
       </Card>
@@ -75,13 +75,13 @@ export default function AnalysisJobsPage() {
         <table className="min-w-full text-left text-sm">
           <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
             <tr>
-              <th className="px-5 py-3">Influencer</th>
-              <th className="px-5 py-3">Videos</th>
-              <th className="px-5 py-3">Source</th>
-              <th className="px-5 py-3">Status</th>
-              <th className="px-5 py-3">Progress</th>
-              <th className="px-5 py-3">Started</th>
-              <th className="px-5 py-3">Result</th>
+              <th className="px-5 py-3">{t.analysisJobs.colInfluencer}</th>
+              <th className="px-5 py-3">{t.analysisJobs.colVideos}</th>
+              <th className="px-5 py-3">{t.analysisJobs.colSource}</th>
+              <th className="px-5 py-3">{t.analysisJobs.colStatus}</th>
+              <th className="px-5 py-3">{t.analysisJobs.colProgress}</th>
+              <th className="px-5 py-3">{t.analysisJobs.colStarted}</th>
+              <th className="px-5 py-3">{t.analysisJobs.colResult}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/40">
@@ -103,7 +103,7 @@ export default function AnalysisJobsPage() {
                   </td>
                   <td className="px-5 py-3 text-muted-foreground">{formatDateTime(job.startedAt)}</td>
                   <td className="max-w-xs px-5 py-3 text-xs text-muted-foreground">
-                    {job.error ? <span className="text-red-600">{job.error}</span> : job.resultSummary ?? "—"}
+                    {job.error ? <span className="text-red-600">{job.error}</span> : job.resultSummary ?? t.common.emDash}
                   </td>
                 </tr>
               );

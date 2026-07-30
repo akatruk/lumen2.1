@@ -8,6 +8,7 @@ import type { LanguageCode, Product } from "@/types";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Textarea } from "@/components/ui/Field";
+import { useI18n } from "@/lib/i18n";
 
 const emptyForm = {
   name: "",
@@ -25,6 +26,7 @@ const emptyForm = {
 };
 
 export default function ProductsPage() {
+  const { t } = useI18n();
   const search = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [open, setOpen] = useState(false);
@@ -40,7 +42,10 @@ export default function ProductsPage() {
     });
   }, [search]);
 
-  const title = useMemo(() => (editingId ? "Edit product" : "Create product"), [editingId]);
+  const title = useMemo(
+    () => (editingId ? t.products.editProduct : t.products.createProduct),
+    [editingId, t],
+  );
 
   function startEdit(p: Product) {
     setEditingId(p.id);
@@ -90,13 +95,13 @@ export default function ProductsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">Products</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Brand offers used for matching and campaigns.</p>
+          <h1 className="text-2xl font-semibold text-foreground">{t.products.title}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{t.products.subtitle}</p>
         </div>
         <div className="flex gap-2">
           <Link href="/products/scan">
             <Button size="sm" variant="secondary">
-              Scan product
+              {t.products.scanProduct}
             </Button>
           </Link>
           <Button
@@ -107,7 +112,7 @@ export default function ProductsPage() {
               setOpen(true);
             }}
           >
-            Add Product
+            {t.products.addProduct}
           </Button>
         </div>
       </div>
@@ -116,22 +121,22 @@ export default function ProductsPage() {
         <Card>
           <CardHeader title={title} />
           <div className="grid gap-4 px-5 py-4 md:grid-cols-2">
-            <Field label="Name"><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></Field>
-            <Field label="Brand"><Input value={form.brand} onChange={(e) => setForm({ ...form, brand: e.target.value })} /></Field>
-            <Field label="Category"><Input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} /></Field>
-            <Field label="Price / range"><Input value={form.priceLabel} onChange={(e) => setForm({ ...form, priceLabel: e.target.value })} /></Field>
-            <Field label="Image emoji"><Input value={form.imageEmoji} onChange={(e) => setForm({ ...form, imageEmoji: e.target.value })} /></Field>
-            <Field label="Geography (comma-separated)"><Input value={form.geography} onChange={(e) => setForm({ ...form, geography: e.target.value })} /></Field>
-            <Field label="Languages (th,en,ru,zh)"><Input value={form.languages} onChange={(e) => setForm({ ...form, languages: e.target.value })} /></Field>
-            <Field label="Desired topics"><Input value={form.desiredTopics} onChange={(e) => setForm({ ...form, desiredTopics: e.target.value })} /></Field>
-            <div className="md:col-span-2"><Field label="Description"><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></Field></div>
-            <div className="md:col-span-2"><Field label="Target audience"><Textarea value={form.audience} onChange={(e) => setForm({ ...form, audience: e.target.value })} /></Field></div>
-            <Field label="Benefits"><Textarea value={form.benefits} onChange={(e) => setForm({ ...form, benefits: e.target.value })} /></Field>
-            <Field label="Prohibited claims"><Textarea value={form.prohibitedClaims} onChange={(e) => setForm({ ...form, prohibitedClaims: e.target.value })} /></Field>
+            <Field label={t.common.name}><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></Field>
+            <Field label={t.common.brand}><Input value={form.brand} onChange={(e) => setForm({ ...form, brand: e.target.value })} /></Field>
+            <Field label={t.common.category}><Input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} /></Field>
+            <Field label={t.products.priceRange}><Input value={form.priceLabel} onChange={(e) => setForm({ ...form, priceLabel: e.target.value })} /></Field>
+            <Field label={t.products.imageEmoji}><Input value={form.imageEmoji} onChange={(e) => setForm({ ...form, imageEmoji: e.target.value })} /></Field>
+            <Field label={t.products.geographyComma}><Input value={form.geography} onChange={(e) => setForm({ ...form, geography: e.target.value })} /></Field>
+            <Field label={t.products.languagesHint}><Input value={form.languages} onChange={(e) => setForm({ ...form, languages: e.target.value })} /></Field>
+            <Field label={t.products.desiredTopics}><Input value={form.desiredTopics} onChange={(e) => setForm({ ...form, desiredTopics: e.target.value })} /></Field>
+            <div className="md:col-span-2"><Field label={t.common.description}><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></Field></div>
+            <div className="md:col-span-2"><Field label={t.products.targetAudience}><Textarea value={form.audience} onChange={(e) => setForm({ ...form, audience: e.target.value })} /></Field></div>
+            <Field label={t.products.benefits}><Textarea value={form.benefits} onChange={(e) => setForm({ ...form, benefits: e.target.value })} /></Field>
+            <Field label={t.products.prohibitedClaims}><Textarea value={form.prohibitedClaims} onChange={(e) => setForm({ ...form, prohibitedClaims: e.target.value })} /></Field>
           </div>
           <div className="flex gap-2 border-t border-border/40 px-5 py-4">
-            <Button onClick={() => void submit()}>Save</Button>
-            <Button variant="secondary" onClick={() => setOpen(false)}>Cancel</Button>
+            <Button onClick={() => void submit()}>{t.common.save}</Button>
+            <Button variant="secondary" onClick={() => setOpen(false)}>{t.common.cancel}</Button>
           </div>
         </Card>
       ) : null}
@@ -151,8 +156,8 @@ export default function ProductsPage() {
             <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">{p.description}</p>
             <div className="mt-3 text-xs text-muted-foreground">{p.priceLabel} · {p.geography.join(", ")}</div>
             <div className="mt-4 flex gap-2">
-              <Link href={`/products/${p.id}`}><Button size="sm" variant="secondary">Open</Button></Link>
-              <Button size="sm" variant="ghost" onClick={() => startEdit(p)}>Edit</Button>
+              <Link href={`/products/${p.id}`}><Button size="sm" variant="secondary">{t.common.open}</Button></Link>
+              <Button size="sm" variant="ghost" onClick={() => startEdit(p)}>{t.common.edit}</Button>
             </div>
           </Card>
         ))}

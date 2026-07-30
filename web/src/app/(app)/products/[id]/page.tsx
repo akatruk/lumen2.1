@@ -9,8 +9,10 @@ import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge, MatchScore } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { LANGUAGE_LABELS } from "@/lib/utils";
+import { fill, useI18n } from "@/lib/i18n";
 
 export default function ProductDetailPage() {
+  const { t } = useI18n();
   const params = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [matches, setMatches] = useState<Influencer[]>([]);
@@ -23,7 +25,7 @@ export default function ProductDetailPage() {
     }
   }, [params.id]);
 
-  if (!product) return <div className="text-sm text-muted-foreground">Product not found.</div>;
+  if (!product) return <div className="text-sm text-muted-foreground">{t.products.notFound}</div>;
 
   const card: ProductResumeCard | undefined = product.resumeCard;
 
@@ -44,11 +46,11 @@ export default function ProductDetailPage() {
         <div className="flex flex-wrap gap-2">
           <Link href={`/products/scan`}>
             <Button size="sm" variant="secondary">
-              Re-scan materials
+              {t.products.rescan}
             </Button>
           </Link>
           <Link href={`/discover?productId=${product.id}`}>
-            <Button size="sm">Find matches</Button>
+            <Button size="sm">{t.products.findMatches}</Button>
           </Link>
         </div>
       </div>
@@ -56,63 +58,66 @@ export default function ProductDetailPage() {
       <div className="grid gap-6 xl:grid-cols-3">
         <Card className="xl:col-span-2">
           <CardHeader
-            title={card ? "Resume card" : "Product details"}
+            title={card ? t.products.resumeCard : t.products.productDetails}
             monoLabel="01"
             subtitle={
               card
-                ? `confidence ${Math.round(card.confidence * 100)}% · ${card.sourceMode ?? "manual"}`
-                : "No scan yet — fields from product record"
+                ? fill(t.products.confidenceSource, {
+                    n: Math.round(card.confidence * 100),
+                    source: card.sourceMode ?? t.products.manual,
+                  })
+                : t.products.noScanYet
             }
           />
           <div className="space-y-4 px-5 py-4 text-sm text-foreground">
             <p>{card?.pitch ?? product.description}</p>
             <div>
-              <span className="font-medium">Audience:</span> {card?.audience || product.audience}
+              <span className="font-medium">{t.products.audience}</span> {card?.audience || product.audience}
             </div>
             <div>
-              <span className="font-medium">Geography:</span>{" "}
+              <span className="font-medium">{t.products.geography}</span>{" "}
               {(card?.geography ?? product.geography).join(", ")}
             </div>
             <div>
-              <span className="font-medium">Languages:</span>{" "}
+              <span className="font-medium">{t.products.languages}</span>{" "}
               {(card?.languages ?? product.languages).map((l) => LANGUAGE_LABELS[l] ?? l).join(", ")}
             </div>
             <div>
-              <span className="font-medium">Benefits:</span>{" "}
+              <span className="font-medium">{t.products.benefitsLabel}</span>{" "}
               {(card?.benefits ?? product.benefits).join(" · ")}
             </div>
             <div>
-              <span className="font-medium">Prohibited claims:</span>{" "}
-              {(card?.prohibited_claims ?? product.prohibitedClaims).join(" · ") || "—"}
+              <span className="font-medium">{t.products.prohibitedLabel}</span>{" "}
+              {(card?.prohibited_claims ?? product.prohibitedClaims).join(" · ") || t.common.emDash}
             </div>
             {card ? (
               <>
                 <div>
-                  <span className="font-medium">Tone:</span> {card.tone.join(", ") || "—"}
+                  <span className="font-medium">{t.products.tone}</span> {card.tone.join(", ") || t.common.emDash}
                 </div>
                 <div>
-                  <span className="font-medium">Platforms:</span> {card.platforms.join(", ")}
+                  <span className="font-medium">{t.products.platforms}</span> {card.platforms.join(", ")}
                 </div>
                 <div>
-                  <span className="font-medium">Budget:</span> {card.budget.type}
+                  <span className="font-medium">{t.products.budget}</span> {card.budget.type}
                   {card.budget.notes ? ` · ${card.budget.notes}` : ""}
                 </div>
                 <div>
-                  <span className="font-medium">Success metrics:</span>{" "}
-                  {card.success_metrics.join(", ") || "—"}
+                  <span className="font-medium">{t.products.successMetrics}</span>{" "}
+                  {card.success_metrics.join(", ") || t.common.emDash}
                 </div>
               </>
             ) : null}
             <div className="flex flex-wrap gap-2">
-              {(card?.desired_topics ?? product.desiredTopics).map((t) => (
-                <Badge key={t}>{t}</Badge>
+              {(card?.desired_topics ?? product.desiredTopics).map((topic) => (
+                <Badge key={topic}>{topic}</Badge>
               ))}
             </div>
           </div>
         </Card>
 
         <Card>
-          <CardHeader title="Suggested influencers" subtitle="Catalog rank for this product" />
+          <CardHeader title={t.products.suggested} subtitle={t.products.catalogRank} />
           <div className="divide-y divide-border/40">
             {matches.map((inf) => (
               <Link
@@ -130,7 +135,7 @@ export default function ProductDetailPage() {
           </div>
           <div className="border-t border-border/40 px-5 py-3">
             <Link href={`/discover?productId=${product.id}`} className="text-xs text-primary hover:underline">
-              Run Douyin Discover for this card →
+              {t.products.runDiscover}
             </Link>
           </div>
         </Card>

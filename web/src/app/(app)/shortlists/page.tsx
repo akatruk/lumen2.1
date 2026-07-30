@@ -9,8 +9,10 @@ import { MatchScore } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Textarea } from "@/components/ui/Field";
 import { formatNumber, formatPercent } from "@/lib/utils";
+import { fill, useI18n } from "@/lib/i18n";
 
 export default function ShortlistsPage() {
+  const { t } = useI18n();
   const [lists, setLists] = useState<Shortlist[]>([]);
   const [selectedId, setSelectedId] = useState("");
   const [compareIds, setCompareIds] = useState<string[]>([]);
@@ -41,18 +43,29 @@ export default function ShortlistsPage() {
     if (selected) setNotes(selected.notes);
   }, [selected]);
 
+  const compareRows = [
+    { label: t.shortlists.matchScore, fn: (i: Influencer) => String(i.matchScore) },
+    { label: t.shortlists.city, fn: (i: Influencer) => i.city },
+    { label: t.shortlists.followers, fn: (i: Influencer) => formatNumber(i.followers) },
+    { label: t.shortlists.engagement, fn: (i: Influencer) => formatPercent(i.engagementRate) },
+    { label: t.shortlists.languages, fn: (i: Influencer) => i.languages.join(", ").toUpperCase() },
+    { label: t.shortlists.topics, fn: (i: Influencer) => i.topics.slice(0, 3).join(", ") },
+    { label: t.shortlists.safety, fn: (i: Influencer) => i.brandSafety.status },
+    { label: t.shortlists.style, fn: (i: Influencer) => i.contentStyle.join(", ") },
+  ];
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">Shortlists</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Save, compare, and annotate campaign candidates.</p>
+          <h1 className="text-2xl font-semibold text-foreground">{t.shortlists.title}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{t.shortlists.subtitle}</p>
         </div>
       </div>
 
       <Card className="p-5">
         <div className="flex flex-wrap gap-3">
-          <Input className="w-full max-w-xs" placeholder="New shortlist name" value={name} onChange={(e) => setName(e.target.value)} />
+          <Input className="w-full max-w-xs" placeholder={t.shortlists.newNamePlaceholder} value={name} onChange={(e) => setName(e.target.value)} />
           <Button
             size="sm"
             onClick={() => {
@@ -64,14 +77,14 @@ export default function ShortlistsPage() {
               });
             }}
           >
-            Create shortlist
+            {t.shortlists.create}
           </Button>
         </div>
       </Card>
 
       <div className="grid gap-6 xl:grid-cols-3">
         <Card>
-          <CardHeader title="Your shortlists" />
+          <CardHeader title={t.shortlists.yourLists} />
           <div className="divide-y divide-border/40">
             {lists.map((l) => (
               <button
@@ -84,7 +97,9 @@ export default function ShortlistsPage() {
                 className={`block w-full px-5 py-3 text-left hover:bg-muted ${selectedId === l.id ? "bg-primary/10" : ""}`}
               >
                 <div className="text-sm font-medium text-foreground">{l.name}</div>
-                <div className="text-xs text-muted-foreground">{l.items.length} creators</div>
+                <div className="text-xs text-muted-foreground">
+                  {fill(t.shortlists.nCreators, { n: l.items.length })}
+                </div>
               </button>
             ))}
           </div>
@@ -92,11 +107,18 @@ export default function ShortlistsPage() {
 
         <Card className="xl:col-span-2">
           <CardHeader
-            title={selected?.name ?? "Select a shortlist"}
-            subtitle={selected ? `Linked product: ${selected.productId ?? "—"} · campaign: ${selected.campaignId ?? "—"}` : undefined}
+            title={selected?.name ?? t.shortlists.select}
+            subtitle={
+              selected
+                ? fill(t.shortlists.linkedMeta, {
+                    product: selected.productId ?? t.common.emDash,
+                    campaign: selected.campaignId ?? t.common.emDash,
+                  })
+                : undefined
+            }
           />
           {!selected ? (
-            <div className="px-5 py-4 text-sm text-muted-foreground">No shortlist selected.</div>
+            <div className="px-5 py-4 text-sm text-muted-foreground">{t.shortlists.noneSelected}</div>
           ) : (
             <div className="space-y-4 px-5 py-4">
               <div className="space-y-2">
@@ -117,7 +139,7 @@ export default function ShortlistsPage() {
                                 return prev.filter((id) => id !== inf.id);
                               });
                             }}
-                            aria-label={`Compare ${inf.name}`}
+                            aria-label={fill(t.shortlists.compareAria, { name: inf.name })}
                           />
                           <Link href={`/influencers/${inf.id}`} className="text-sm font-medium text-primary hover:underline">
                             {inf.name}
@@ -131,13 +153,13 @@ export default function ShortlistsPage() {
                             void marketplace.removeFromShortlistAsync(selected.id, inf.id).then(() => refresh());
                           }}
                         >
-                          Remove
+                          {t.common.remove}
                         </Button>
                       </div>
                       <Input
                         className="mt-2"
                         value={item.note}
-                        placeholder="Internal note"
+                        placeholder={t.shortlists.internalNote}
                         onChange={(e) => {
                           marketplace.updateShortlistItemNote(selected.id, inf.id, e.target.value);
                           refresh();
@@ -148,7 +170,7 @@ export default function ShortlistsPage() {
                 })}
               </div>
 
-              <Field label="Shortlist notes">
+              <Field label={t.shortlists.notes}>
                 <Textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
@@ -164,33 +186,27 @@ export default function ShortlistsPage() {
 
       {compareSet.length >= 2 ? (
         <Card>
-          <CardHeader title="Compare candidates" subtitle={`${compareSet.length} selected (max 4)`} />
+          <CardHeader
+            title={t.shortlists.compare}
+            subtitle={fill(t.shortlists.nSelected, { n: compareSet.length })}
+          />
           <div className="overflow-x-auto">
             <table className="min-w-full text-left text-sm">
               <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
                 <tr>
-                  <th className="px-4 py-3">Signal</th>
+                  <th className="px-4 py-3">{t.shortlists.signal}</th>
                   {compareSet.map((inf) => (
                     <th key={inf.id} className="px-4 py-3">{inf.name}</th>
                   ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/40">
-                {[
-                  ["Match score", (i: Influencer) => String(i.matchScore)],
-                  ["City", (i: Influencer) => i.city],
-                  ["Followers", (i: Influencer) => formatNumber(i.followers)],
-                  ["Engagement", (i: Influencer) => formatPercent(i.engagementRate)],
-                  ["Languages", (i: Influencer) => i.languages.join(", ").toUpperCase()],
-                  ["Topics", (i: Influencer) => i.topics.slice(0, 3).join(", ")],
-                  ["Safety", (i: Influencer) => i.brandSafety.status],
-                  ["Style", (i: Influencer) => i.contentStyle.join(", ")],
-                ].map(([label, fn]) => (
-                  <tr key={label as string}>
-                    <td className="px-4 py-3 font-medium text-foreground">{label as string}</td>
+                {compareRows.map(({ label, fn }) => (
+                  <tr key={label}>
+                    <td className="px-4 py-3 font-medium text-foreground">{label}</td>
                     {compareSet.map((inf) => (
                       <td key={inf.id} className="px-4 py-3 text-muted-foreground">
-                        {(fn as (i: Influencer) => string)(inf)}
+                        {fn(inf)}
                       </td>
                     ))}
                   </tr>
@@ -200,7 +216,7 @@ export default function ShortlistsPage() {
           </div>
         </Card>
       ) : (
-        <p className="text-sm text-muted-foreground">Select 2–4 creators in a shortlist to compare.</p>
+        <p className="text-sm text-muted-foreground">{t.shortlists.compareHint}</p>
       )}
     </div>
   );

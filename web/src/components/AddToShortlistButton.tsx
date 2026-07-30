@@ -6,8 +6,10 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Field";
 import { useToast } from "@/components/Toast";
+import { fill, useI18n } from "@/lib/i18n";
 
 export function AddToShortlistButton({ influencer }: { influencer: Influencer }) {
+  const { t } = useI18n();
   const [lists, setLists] = useState<Shortlist[]>([]);
   const [selected, setSelected] = useState("");
   const { push } = useToast();
@@ -26,7 +28,7 @@ export function AddToShortlistButton({ influencer }: { influencer: Influencer })
         className="w-48"
         value={selected}
         onChange={(e) => setSelected(e.target.value)}
-        aria-label="Select shortlist"
+        aria-label={t.shortlistBtn.selectAria}
       >
         {lists.map((l) => (
           <option key={l.id} value={l.id}>
@@ -40,12 +42,17 @@ export function AddToShortlistButton({ influencer }: { influencer: Influencer })
         onClick={() => {
           if (!selected) return;
           void marketplace.addToShortlistAsync(selected, influencer.id).then((list) => {
-            push(`Added ${influencer.name} to ${list?.name ?? "shortlist"}`);
+            push(
+              fill(t.shortlistBtn.added, {
+                name: influencer.name,
+                list: list?.name ?? t.common.shortlist,
+              }),
+            );
             setLists(marketplace.listShortlists());
           });
         }}
       >
-        Add to shortlist
+        {t.shortlistBtn.add}
       </Button>
     </div>
   );

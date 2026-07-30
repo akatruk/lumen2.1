@@ -2,35 +2,43 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { marketplace } from "@/services/marketplace";
-import type { Influencer, Product, VideoSnapshot } from "@/types";
+import type { Influencer, Platform, Product, VerificationStatus, VideoSnapshot } from "@/types";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge, MatchScore } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Textarea, Select } from "@/components/ui/Field";
 import { AddToShortlistButton } from "@/components/AddToShortlistButton";
 import { useToast } from "@/components/Toast";
+import { fill, useI18n } from "@/lib/i18n";
 import {
   LANGUAGE_LABELS,
-  PLATFORM_LABELS,
   formatDate,
   formatNumber,
   formatPercent,
 } from "@/lib/utils";
 
-const MATCH_LABELS: Record<string, string> = {
-  topicRelevance: "Topic relevance",
-  audienceGeography: "Audience and geography",
-  language: "Language",
-  contentStyle: "Content style",
-  engagementQuality: "Engagement quality",
-  postingConsistency: "Posting consistency",
-  brandSafety: "Brand safety",
-  commercialFit: "Commercial fit",
-};
+function verificationLabel(status: VerificationStatus, t: ReturnType<typeof useI18n>["t"]): string {
+  const map: Partial<Record<VerificationStatus, string>> = {
+    verified: t.common.statusVerified,
+    pending: t.common.statusPendingReview,
+  };
+  return map[status] ?? status;
+}
+
+function platformLabel(platform: Platform, t: ReturnType<typeof useI18n>["t"]): string {
+  const map: Record<Platform, string> = {
+    douyin: t.common.douyin,
+    tiktok: t.common.tiktok,
+    instagram: t.common.instagram,
+    youtube: t.common.youtube,
+  };
+  return map[platform] ?? platform;
+}
 
 export default function InfluencerDetailPage() {
+  const { t } = useI18n();
   const params = useParams<{ id: string }>();
   const { push } = useToast();
   const [inf, setInf] = useState<Influencer | null>(null);
@@ -38,6 +46,20 @@ export default function InfluencerDetailPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [notes, setNotes] = useState("");
   const [campaignId, setCampaignId] = useState("");
+
+  const matchLabels = useMemo(
+    () => ({
+      topicRelevance: t.influencers.topicRelevance,
+      audienceGeography: t.influencers.audienceGeography,
+      language: t.influencers.language,
+      contentStyle: t.influencers.contentStyle,
+      engagementQuality: t.influencers.engagementQuality,
+      postingConsistency: t.influencers.postingConsistency,
+      brandSafety: t.influencers.brandSafety,
+      commercialFit: t.influencers.commercialFit,
+    }),
+    [t],
+  );
 
   useEffect(() => {
     const found = marketplace.getInfluencer(params.id);
@@ -50,7 +72,7 @@ export default function InfluencerDetailPage() {
   }, [params.id]);
 
   if (!inf) {
-    return <div className="text-sm text-muted-foreground">Influencer not found.</div>;
+    return <div className="text-sm text-muted-foreground">{t.influencers.notFound}</div>;
   }
 
   const suitable = products.filter((p) => inf.suitableProductIds.includes(p.id));
@@ -72,8 +94,12 @@ export default function InfluencerDetailPage() {
               {inf.city}, {inf.country} · {inf.bio}
             </p>
             <div className="mt-2 flex flex-wrap gap-2">
-              <Badge tone={inf.verificationStatus}>{inf.verificationStatus}</Badge>
-              <Badge tone={inf.brandSafety.status}>Safety: {inf.brandSafety.status}</Badge>
+              <Badge tone={inf.verificationStatus}>
+                {verificationLabel(inf.verificationStatus, t)}
+              </Badge>
+              <Badge tone={inf.brandSafety.status}>
+                {fill(t.influencers.safety, { status: inf.brandSafety.status })}
+              </Badge>
             </div>
           </div>
         </div>
@@ -95,13 +121,15 @@ export default function InfluencerDetailPage() {
                   .createInvitationAsync({
                     influencerId: inf.id,
                     campaignId,
-                    message: `Collaboration invite for ${marketplace.getCampaign(campaignId)?.name ?? "campaign"}`,
+                    message: fill(t.influencers.inviteMessage, {
+                      campaign: marketplace.getCampaign(campaignId)?.name ?? "campaign",
+                    }),
                   })
-                  .then(() => push(`Invitation sent to ${inf.name}`))
-                  .catch((e) => push(e instanceof Error ? e.message : "Invite failed", "err"));
+                  .then(() => push(fill(t.influencers.toastInviteSent, { name: inf.name })))
+                  .catch((e) => push(e instanceof Error ? e.message : t.influencers.toastInviteFailed, "err"));
               }}
             >
-              Invite to campaign
+              {t.influencers.invite}
             </Button>
           </div>
         </div>
@@ -109,30 +137,30 @@ export default function InfluencerDetailPage() {
 
       <div className="grid gap-6 xl:grid-cols-3">
         <Card className="xl:col-span-2">
-          <CardHeader title="Profile overview" />
+          <CardHeader title={t.influencers.overview} />
           <div className="grid gap-4 px-5 py-4 sm:grid-cols-2 text-sm">
             <div>
-              <div className="text-xs text-muted-foreground">Languages</div>
+              <div className="text-xs text-muted-foreground">{t.influencers.languagesLabel}</div>
               <div className="mt-1">{inf.languages.map((l) => LANGUAGE_LABELS[l]).join(", ")}</div>
             </div>
             <div>
-              <div className="text-xs text-muted-foreground">Topics</div>
+              <div className="text-xs text-muted-foreground">{t.influencers.topicsLabel}</div>
               <div className="mt-1 capitalize">{inf.topics.join(", ")}</div>
             </div>
             <div>
-              <div className="text-xs text-muted-foreground">Content style</div>
+              <div className="text-xs text-muted-foreground">{t.influencers.contentStyle}</div>
               <div className="mt-1">{inf.contentStyle.join(", ")}</div>
             </div>
             <div>
-              <div className="text-xs text-muted-foreground">Posting frequency</div>
+              <div className="text-xs text-muted-foreground">{t.influencers.postingFrequency}</div>
               <div className="mt-1">{inf.postingFrequency}</div>
             </div>
             <div>
-              <div className="text-xs text-muted-foreground">Followers</div>
+              <div className="text-xs text-muted-foreground">{t.influencers.followersLabel}</div>
               <div className="mt-1 tabular-nums">{formatNumber(inf.followers)}</div>
             </div>
             <div>
-              <div className="text-xs text-muted-foreground">Avg views / engagement</div>
+              <div className="text-xs text-muted-foreground">{t.influencers.avgViewsEngagement}</div>
               <div className="mt-1 tabular-nums">
                 {formatNumber(inf.avgViews)} · {formatPercent(inf.engagementRate)}
               </div>
@@ -141,7 +169,7 @@ export default function InfluencerDetailPage() {
         </Card>
 
         <Card>
-          <CardHeader title="Social accounts" />
+          <CardHeader title={t.influencers.socialAccounts} />
           <div className="space-y-3 px-5 py-4">
             {inf.platforms.map((p) => (
               <a
@@ -152,11 +180,14 @@ export default function InfluencerDetailPage() {
                 className="block rounded-lg border border-border px-3 py-2 hover:bg-muted"
               >
                 <div className="text-sm font-medium text-foreground">
-                  {PLATFORM_LABELS[p.platform]} · {p.handle}
+                  {platformLabel(p.platform, t)} · {p.handle}
                 </div>
                 <div className="mt-1 text-xs text-muted-foreground">
-                  {formatNumber(p.followers)} followers · {formatNumber(p.avgViews)} avg views ·{" "}
-                  {formatPercent(p.engagementRate)} ER
+                  {fill(t.influencers.accountStats, {
+                    followers: formatNumber(p.followers),
+                    views: formatNumber(p.avgViews),
+                    er: formatPercent(p.engagementRate),
+                  })}
                 </div>
               </a>
             ))}
@@ -166,15 +197,20 @@ export default function InfluencerDetailPage() {
 
       <Card>
         <CardHeader
-          title="Match score explanation"
-          subtitle={`Overall ${inf.match?.overall ?? inf.matchScore} · confidence ${Math.round((inf.match?.confidence ?? 0.8) * 100)}%`}
+          title={t.influencers.matchExplanation}
+          subtitle={fill(t.influencers.overallConfidence, {
+            score: inf.match?.overall ?? inf.matchScore,
+            n: Math.round((inf.match?.confidence ?? 0.8) * 100),
+          })}
         />
         <div className="grid gap-4 px-5 py-4 md:grid-cols-2">
           {inf.match
             ? Object.entries(inf.match.breakdown).map(([key, value]) => (
                 <div key={key}>
                   <div className="mb-1 flex justify-between text-sm">
-                    <span className="text-foreground">{MATCH_LABELS[key] ?? key}</span>
+                    <span className="text-foreground">
+                      {matchLabels[key as keyof typeof matchLabels] ?? key}
+                    </span>
                     <span className="font-medium tabular-nums text-foreground">{value}</span>
                   </div>
                   <div className="h-2 overflow-hidden rounded-full bg-muted">
@@ -196,7 +232,7 @@ export default function InfluencerDetailPage() {
 
       <div className="grid gap-6 xl:grid-cols-2">
         <Card>
-          <CardHeader title="Brand-safety signals" />
+          <CardHeader title={t.influencers.brandSafetySignals} />
           <div className="space-y-3 px-5 py-4 text-sm">
             <Badge tone={inf.brandSafety.status}>{inf.brandSafety.status}</Badge>
             <p className="text-foreground">{inf.brandSafety.notes}</p>
@@ -207,13 +243,13 @@ export default function InfluencerDetailPage() {
                 ))}
               </div>
             ) : (
-              <p className="text-muted-foreground">No flags.</p>
+              <p className="text-muted-foreground">{t.influencers.noFlags}</p>
             )}
           </div>
         </Card>
 
         <Card>
-          <CardHeader title="Suitable products" />
+          <CardHeader title={t.influencers.suitableProducts} />
           <div className="divide-y divide-border/40">
             {suitable.map((p) => (
               <Link key={p.id} href={`/products/${p.id}`} className="flex items-center gap-3 px-5 py-3 hover:bg-muted">
@@ -224,13 +260,15 @@ export default function InfluencerDetailPage() {
                 </div>
               </Link>
             ))}
-            {!suitable.length ? <div className="px-5 py-4 text-sm text-muted-foreground">No linked products.</div> : null}
+            {!suitable.length ? (
+              <div className="px-5 py-4 text-sm text-muted-foreground">{t.influencers.noLinkedProducts}</div>
+            ) : null}
           </div>
         </Card>
       </div>
 
       <Card>
-        <CardHeader title="Recent videos & analysis" />
+        <CardHeader title={t.influencers.recentVideos} />
         <div className="divide-y divide-border/40">
           {videos.map((v) => (
             <div key={v.id} className="px-5 py-4">
@@ -238,33 +276,38 @@ export default function InfluencerDetailPage() {
                 <div>
                   <div className="text-sm font-medium text-foreground">{v.title}</div>
                   <div className="mt-1 text-xs text-muted-foreground">
-                    {PLATFORM_LABELS[v.platform]} · {formatDate(v.publishedAt)} · {formatNumber(v.views)} views
+                    {platformLabel(v.platform, t)} · {formatDate(v.publishedAt)} ·{" "}
+                    {fill(t.influencers.nViews, { n: formatNumber(v.views) })}
                   </div>
                 </div>
                 {v.analysis ? <Badge tone={v.analysis.brandSafety.status}>{v.analysis.language.toUpperCase()}</Badge> : null}
               </div>
               {v.analysis ? (
                 <div className="mt-3 space-y-2 text-sm text-foreground">
-                  <p><span className="font-medium">Transcript:</span> {v.analysis.transcript}</p>
+                  <p><span className="font-medium">{t.influencers.transcript}</span> {v.analysis.transcript}</p>
                   <p>
-                    <span className="font-medium">Topics:</span>{" "}
-                    {v.analysis.topics.map((t) => `${t.name} (${Math.round(t.confidence * 100)}%)`).join(", ")}
+                    <span className="font-medium">{t.influencers.topics}</span>{" "}
+                    {v.analysis.topics.map((topic) => `${topic.name} (${Math.round(topic.confidence * 100)}%)`).join(", ")}
                   </p>
                   <p>
-                    <span className="font-medium">Style:</span>{" "}
+                    <span className="font-medium">{t.influencers.style}</span>{" "}
                     {v.analysis.style.formats.join(", ")} · {v.analysis.style.tone.join(", ")}
                   </p>
-                  <p><span className="font-medium">Entities:</span> {v.analysis.entities.join(", ")}</p>
+                  <p>
+                    <span className="font-medium">{t.influencers.entities}</span> {v.analysis.entities.join(", ")}
+                  </p>
                 </div>
               ) : null}
             </div>
           ))}
-          {!videos.length ? <div className="px-5 py-4 text-sm text-muted-foreground">No videos in demo set for this creator.</div> : null}
+          {!videos.length ? (
+            <div className="px-5 py-4 text-sm text-muted-foreground">{t.influencers.noVideos}</div>
+          ) : null}
         </div>
       </Card>
 
       <Card>
-        <CardHeader title="Team notes" />
+        <CardHeader title={t.influencers.teamNotes} />
         <div className="space-y-3 px-5 py-4">
           <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} />
           <Button
@@ -273,7 +316,7 @@ export default function InfluencerDetailPage() {
               marketplace.updateInfluencerNotes(inf.id, notes);
             }}
           >
-            Save notes
+            {t.influencers.saveNotes}
           </Button>
         </div>
       </Card>

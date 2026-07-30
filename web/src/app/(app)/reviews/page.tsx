@@ -10,8 +10,10 @@ import { Button } from "@/components/ui/Button";
 import { Field, Input, Textarea } from "@/components/ui/Field";
 import { useToast } from "@/components/Toast";
 import { formatNumber } from "@/lib/utils";
+import { fill, useI18n } from "@/lib/i18n";
 
 export default function ReviewsPage() {
+  const { t } = useI18n();
   const { push } = useToast();
   const [subs, setSubs] = useState<Submission[]>([]);
   const [perf, setPerf] = useState<PerformanceSnapshot[]>([]);
@@ -30,10 +32,8 @@ export default function ReviewsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-foreground">Reviews</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Approve drafts, request changes, and track publication performance.
-        </p>
+        <h1 className="text-2xl font-semibold text-foreground">{t.reviews.title}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{t.reviews.subtitle}</p>
       </div>
 
       <div className="space-y-3">
@@ -48,7 +48,8 @@ export default function ReviewsPage() {
                     {inf?.name} · {camp?.name}
                   </div>
                   <div className="mt-1 text-xs text-muted-foreground">
-                    Draft: {s.draftUrl || "—"} · Review link: {s.privateReviewLink || "—"}
+                    {t.reviews.draft} {s.draftUrl || t.common.emDash} · {t.reviews.reviewLink}{" "}
+                    {s.privateReviewLink || t.common.emDash}
                   </div>
                 </div>
                 <Badge
@@ -73,11 +74,11 @@ export default function ReviewsPage() {
               </div>
               {(s.status === "Submitted" || s.status === "ChangesRequested") && (
                 <div className="mt-4 space-y-3">
-                  <Field label="Feedback">
+                  <Field label={t.reviews.feedback}>
                     <Textarea
                       value={notes[s.id] ?? ""}
                       onChange={(e) => setNotes({ ...notes, [s.id]: e.target.value })}
-                      placeholder="Optional review note"
+                      placeholder={t.reviews.notePlaceholder}
                     />
                   </Field>
                   <div className="flex gap-2">
@@ -87,13 +88,13 @@ export default function ReviewsPage() {
                         collaboration.brandReview(
                           s.id,
                           "approve",
-                          notes[s.id] || "Approved — ready to publish.",
+                          notes[s.id] || t.reviews.approvedDefault,
                         );
-                        push("Submission approved");
+                        push(t.reviews.toastApproved);
                         refresh();
                       }}
                     >
-                      Approve
+                      {t.reviews.approve}
                     </Button>
                     <Button
                       size="sm"
@@ -102,28 +103,30 @@ export default function ReviewsPage() {
                         collaboration.brandReview(
                           s.id,
                           "request_changes",
-                          notes[s.id] || "Please revise messaging and resubmit.",
+                          notes[s.id] || t.reviews.changesDefault,
                         );
-                        push("Changes requested");
+                        push(t.reviews.toastChanges);
                         refresh();
                       }}
                     >
-                      Request changes
+                      {t.reviews.requestChanges}
                     </Button>
                   </div>
                 </div>
               )}
               {s.publicationUrl ? (
-                <div className="mt-3 text-sm text-emerald-500">Published: {s.publicationUrl}</div>
+                <div className="mt-3 text-sm text-emerald-500">
+                  {fill(t.reviews.published, { url: s.publicationUrl })}
+                </div>
               ) : null}
             </Card>
           );
         })}
-        {!subs.length ? <p className="text-sm text-muted-foreground">No submissions yet.</p> : null}
+        {!subs.length ? <p className="text-sm text-muted-foreground">{t.reviews.noSubmissions}</p> : null}
       </div>
 
       <Card>
-        <CardHeader title="Performance snapshots" />
+        <CardHeader title={t.reviews.performance} />
         <div className="divide-y divide-border/40">
           {perf.map((p) => (
             <div key={p.id} className="space-y-3 px-5 py-4">
@@ -138,13 +141,17 @@ export default function ReviewsPage() {
                   </a>
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  {formatNumber(p.views)} views · {formatNumber(p.likes)} likes · {formatNumber(p.comments)} comments
+                  {fill(t.reviews.metrics, {
+                    views: formatNumber(p.views),
+                    likes: formatNumber(p.likes),
+                    comments: formatNumber(p.comments),
+                  })}
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
                 <Input
                   className="w-40"
-                  placeholder="views,likes,comments"
+                  placeholder={t.reviews.metricsPlaceholder}
                   value={metrics[p.id] ?? ""}
                   onChange={(e) => setMetrics({ ...metrics, [p.id]: e.target.value })}
                 />
@@ -156,16 +163,16 @@ export default function ReviewsPage() {
                       .split(",")
                       .map((n) => Number(n.trim()) || 0);
                     collaboration.updatePerformance(p.id, { views, likes, comments });
-                    push("Performance updated");
+                    push(t.reviews.toastMetrics);
                     refresh();
                   }}
                 >
-                  Update metrics
+                  {t.reviews.updateMetrics}
                 </Button>
               </div>
             </div>
           ))}
-          {!perf.length ? <div className="px-5 py-4 text-sm text-muted-foreground">No publications recorded.</div> : null}
+          {!perf.length ? <div className="px-5 py-4 text-sm text-muted-foreground">{t.reviews.noPublications}</div> : null}
         </div>
       </Card>
     </div>

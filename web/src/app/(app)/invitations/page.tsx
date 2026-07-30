@@ -10,8 +10,10 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/Toast";
 import { formatDateTime } from "@/lib/utils";
+import { fill, useI18n } from "@/lib/i18n";
 
 export default function InvitationsPage() {
+  const { t } = useI18n();
   const { push } = useToast();
   const [invites, setInvites] = useState<Invitation[]>([]);
 
@@ -25,13 +27,11 @@ export default function InvitationsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">Invitations</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Brand outreach records. Creators respond in the creator portal.
-          </p>
+          <h1 className="text-2xl font-semibold text-foreground">{t.invitations.title}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{t.invitations.subtitle}</p>
         </div>
         <Link href="/creator/invitations">
-          <Button size="sm" variant="secondary">Open creator portal</Button>
+          <Button size="sm" variant="secondary">{t.invitations.openPortal}</Button>
         </Link>
       </div>
 
@@ -39,12 +39,12 @@ export default function InvitationsPage() {
         <table className="min-w-full text-left text-sm">
           <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
             <tr>
-              <th className="px-5 py-3">Influencer</th>
-              <th className="px-5 py-3">Campaign</th>
-              <th className="px-5 py-3">Status</th>
-              <th className="px-5 py-3">Message</th>
-              <th className="px-5 py-3">Sent</th>
-              <th className="px-5 py-3">Actions</th>
+              <th className="px-5 py-3">{t.invitations.colInfluencer}</th>
+              <th className="px-5 py-3">{t.invitations.colCampaign}</th>
+              <th className="px-5 py-3">{t.invitations.colStatus}</th>
+              <th className="px-5 py-3">{t.invitations.colMessage}</th>
+              <th className="px-5 py-3">{t.invitations.colSent}</th>
+              <th className="px-5 py-3">{t.invitations.colActions}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/40">
@@ -93,27 +93,29 @@ export default function InvitationsPage() {
                               campaignId: inv.campaignId,
                               invitationId: inv.id,
                               influencerId: inv.influencerId,
-                              title: `${camp?.name ?? "Campaign"} brief`,
+                              title: fill(t.invitations.briefTitle, {
+                                campaign: camp?.name ?? t.nav.campaigns,
+                              }),
                               deliverables: camp?.materials?.length
                                 ? camp.materials
-                                : ["1 short video", "Caption with CTA"],
-                              messaging: camp?.objective ?? "Follow campaign objective",
-                              restrictions: ["Follow brand claim guidelines"],
+                                : [t.invitations.deliverable, t.invitations.captionCta],
+                              messaging: camp?.objective ?? t.invitations.followObjective,
+                              restrictions: [t.invitations.followClaims],
                               deadline: camp?.endDate ?? "2026-08-31",
-                              approvalRules: "Draft must be approved before publishing.",
+                              approvalRules: t.invitations.draftApproval,
                             })
                             .then(() => {
-                              push("Brief issued to creator");
+                              push(t.invitations.toastBriefIssued);
                               refresh();
                             });
                         }}
                       >
-                        Issue brief
+                        {t.invitations.issueBrief}
                       </Button>
                     ) : hasBrief ? (
-                      <span className="text-xs text-emerald-500">Brief issued</span>
+                      <span className="text-xs text-emerald-500">{t.invitations.briefIssued}</span>
                     ) : (
-                      <span className="text-xs text-muted-foreground">—</span>
+                      <span className="text-xs text-muted-foreground">{t.common.emDash}</span>
                     )}
                   </td>
                 </tr>

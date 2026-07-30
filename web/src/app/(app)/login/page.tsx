@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Field, Input } from "@/components/ui/Field";
 import { useToast } from "@/components/Toast";
 import { marketplace } from "@/services/marketplace";
-import { useI18n } from "@/lib/i18n";
+import { fill, useI18n } from "@/lib/i18n";
 
 type User = { id: string; email: string; name: string; role: string };
 
@@ -70,13 +70,13 @@ export default function LoginPage() {
         }),
       });
       const data = (await res.json()) as { error?: string; user?: User };
-      if (!res.ok || !data.user) throw new Error(data.error || "Auth failed");
+      if (!res.ok || !data.user) throw new Error(data.error || t.login.authFailed);
       setUser(data.user);
       await marketplace.hydrateBrandPersistence();
       push(`${t.login.signedInAs} ${data.user.email}`);
       router.push("/products/scan");
     } catch (e) {
-      push(e instanceof Error ? e.message : "Auth failed", "err");
+      push(e instanceof Error ? e.message : t.login.authFailed, "err");
     } finally {
       setLoading(false);
     }
@@ -109,7 +109,7 @@ export default function LoginPage() {
         <Card className="space-y-4 p-5">
           <CardHeader title={t.login.signedIn} monoLabel="01" subtitle={user.email} />
           <p className="text-sm text-muted-foreground">
-            {user.name} · role {user.role}
+            {user.name} · {fill(t.login.role, { role: user.role })}
           </p>
           <div className="flex gap-2">
             <Button onClick={() => router.push("/products/scan")}>{t.dashboard.scanProduct}</Button>
@@ -160,7 +160,7 @@ export default function LoginPage() {
           ) : null}
           {mode === "register" ? (
             <Field label={t.login.name}>
-              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Brand team" />
+              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={t.login.namePlaceholder} />
             </Field>
           ) : null}
           <Field label={t.login.email}>
@@ -168,7 +168,7 @@ export default function LoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="brand@company.com"
+              placeholder={t.login.emailPlaceholder}
             />
           </Field>
           <Field label={t.login.password}>

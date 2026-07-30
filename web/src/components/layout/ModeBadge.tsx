@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 type Mode = "live" | "demo" | "loading";
@@ -14,6 +15,7 @@ function detectPublicLive(): boolean {
 
 /** Sidebar honesty badge — must not say Demo when stack is live-capable. */
 export function ModeBadge({ className }: { className?: string }) {
+  const { t } = useI18n();
   const [mode, setMode] = useState<Mode>(() => (detectPublicLive() ? "live" : "loading"));
 
   useEffect(() => {
@@ -42,13 +44,13 @@ export function ModeBadge({ className }: { className?: string }) {
 
   if (mode === "live") {
     return (
-      <span className={cn("font-mono text-[10px] text-emerald-500", className)} title="TikHub + OpenRouter live">
-        Live · TikHub + LLM
+      <span className={cn("font-mono text-[10px] text-emerald-500", className)} title={t.mode.liveTitle}>
+        {t.mode.live}
       </span>
     );
   }
 
   return (
-    <span className={cn("font-mono text-[10px] text-muted-foreground", className)}>Demo · mock data</span>
+    <span className={cn("font-mono text-[10px] text-muted-foreground", className)}>{t.mode.demo}</span>
   );
 }

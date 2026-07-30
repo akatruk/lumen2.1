@@ -4,15 +4,15 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { LayoutGrid, List } from "lucide-react";
 import { marketplace } from "@/services/marketplace";
-import type { Influencer, LanguageCode, Platform } from "@/types";
+import type { Influencer, LanguageCode, Platform, VerificationStatus } from "@/types";
 import { Card } from "@/components/ui/Card";
 import { Badge, MatchScore } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Input, Select } from "@/components/ui/Field";
 import { AddToShortlistButton } from "@/components/AddToShortlistButton";
+import { fill, useI18n } from "@/lib/i18n";
 import {
   LANGUAGE_LABELS,
-  PLATFORM_LABELS,
   cn,
   formatNumber,
   formatPercent,
@@ -32,7 +32,26 @@ const topics = [
   "wellness",
 ];
 
+function verificationLabel(status: VerificationStatus, t: ReturnType<typeof useI18n>["t"]): string {
+  const map: Partial<Record<VerificationStatus, string>> = {
+    verified: t.common.statusVerified,
+    pending: t.common.statusPendingReview,
+  };
+  return map[status] ?? status;
+}
+
+function platformLabel(platform: Platform, t: ReturnType<typeof useI18n>["t"]): string {
+  const map: Record<Platform, string> = {
+    douyin: t.common.douyin,
+    tiktok: t.common.tiktok,
+    instagram: t.common.instagram,
+    youtube: t.common.youtube,
+  };
+  return map[platform] ?? platform;
+}
+
 export default function InfluencersPage() {
+  const { t } = useI18n();
   const [query, setQuery] = useState("");
   const [platform, setPlatform] = useState<"all" | Platform>("all");
   const [city, setCity] = useState("All");
@@ -86,17 +105,17 @@ export default function InfluencersPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">Influencers</h1>
+          <h1 className="text-2xl font-semibold text-foreground">{t.influencers.title}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {filtered.length} creators · Shanghai, Beijing, Guangzhou, Shenzhen, Hangzhou, Chengdu
+            {fill(t.influencers.subtitle, { n: filtered.length })}
           </p>
         </div>
         <div className="flex gap-2">
-          <Link href="/import"><Button variant="secondary" size="sm">Import</Button></Link>
+          <Link href="/import"><Button variant="secondary" size="sm">{t.common.import}</Button></Link>
           <div className="flex rounded-lg border border-border p-0.5">
             <button
               type="button"
-              aria-label="Cards view"
+              aria-label={t.influencers.cardsView}
               className={cn("rounded-md p-2", view === "cards" ? "bg-muted" : "")}
               onClick={() => setView("cards")}
             >
@@ -104,7 +123,7 @@ export default function InfluencersPage() {
             </button>
             <button
               type="button"
-              aria-label="Table view"
+              aria-label={t.influencers.tableView}
               className={cn("rounded-md p-2", view === "table" ? "bg-muted" : "")}
               onClick={() => setView("table")}
             >
@@ -116,47 +135,57 @@ export default function InfluencersPage() {
 
       <Card className="p-4">
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          <Input placeholder="Search name or handle" value={query} onChange={(e) => setQuery(e.target.value)} />
+          <Input
+            placeholder={t.influencers.searchPlaceholder}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
           <Select value={platform} onChange={(e) => setPlatform(e.target.value as "all" | Platform)}>
-            <option value="all">All platforms</option>
-            <option value="douyin">Douyin</option>
-            <option value="tiktok">TikTok (intl)</option>
-            <option value="instagram">Instagram</option>
-            <option value="youtube">YouTube</option>
+            <option value="all">{t.common.allPlatforms}</option>
+            <option value="douyin">{t.common.douyin}</option>
+            <option value="tiktok">{t.common.tiktok}</option>
+            <option value="instagram">{t.common.instagram}</option>
+            <option value="youtube">{t.common.youtube}</option>
           </Select>
           <Select value={city} onChange={(e) => setCity(e.target.value)}>
-            {cities.map((c) => <option key={c} value={c}>{c === "All" ? "All cities" : c}</option>)}
+            {cities.map((c) => (
+              <option key={c} value={c}>{c === "All" ? t.common.allCities : c}</option>
+            ))}
           </Select>
           <Select value={language} onChange={(e) => setLanguage(e.target.value as "all" | LanguageCode)}>
-            <option value="all">All languages</option>
+            <option value="all">{t.common.allLanguages}</option>
             {Object.entries(LANGUAGE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
           </Select>
           <Select value={topic} onChange={(e) => setTopic(e.target.value)}>
-            {topics.map((t) => <option key={t} value={t}>{t === "All" ? "All topics" : t}</option>)}
+            {topics.map((topicOption) => (
+              <option key={topicOption} value={topicOption}>
+                {topicOption === "All" ? t.common.allTopics : topicOption}
+              </option>
+            ))}
           </Select>
           <Select value={String(minFollowers)} onChange={(e) => setMinFollowers(Number(e.target.value))}>
-            <option value="0">Any followers</option>
+            <option value="0">{t.common.anyFollowers}</option>
             <option value="100000">100K+</option>
             <option value="200000">200K+</option>
             <option value="400000">400K+</option>
           </Select>
           <Select value={String(minScore)} onChange={(e) => setMinScore(Number(e.target.value))}>
-            <option value="0">Any match score</option>
+            <option value="0">{t.common.anyMatchScore}</option>
             <option value="70">70+</option>
             <option value="80">80+</option>
             <option value="90">90+</option>
           </Select>
           <Select value={productId} onChange={(e) => setProductId(e.target.value)}>
-            <option value="all">Match for: all products</option>
+            <option value="all">{t.influencers.matchAll}</option>
             {products.map((p) => (
-              <option key={p.id} value={p.id}>Match for: {p.name}</option>
+              <option key={p.id} value={p.id}>{fill(t.influencers.matchFor, { name: p.name })}</option>
             ))}
           </Select>
           <Select value={sort} onChange={(e) => setSort(e.target.value)}>
-            <option value="match">Sort: match score</option>
-            <option value="followers">Sort: followers</option>
-            <option value="engagement">Sort: engagement</option>
-            <option value="name">Sort: name</option>
+            <option value="match">{t.influencers.sortMatch}</option>
+            <option value="followers">{t.influencers.sortFollowers}</option>
+            <option value="engagement">{t.influencers.sortEngagement}</option>
+            <option value="name">{t.influencers.sortName}</option>
           </Select>
         </div>
       </Card>
@@ -172,13 +201,13 @@ export default function InfluencersPage() {
           <table className="min-w-full text-left text-sm">
             <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
               <tr>
-                <th className="px-4 py-3">Creator</th>
-                <th className="px-4 py-3">Platform</th>
-                <th className="px-4 py-3">City</th>
-                <th className="px-4 py-3">Followers</th>
-                <th className="px-4 py-3">Engagement</th>
-                <th className="px-4 py-3">Match</th>
-                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">{t.influencers.colCreator}</th>
+                <th className="px-4 py-3">{t.influencers.colPlatform}</th>
+                <th className="px-4 py-3">{t.influencers.colCity}</th>
+                <th className="px-4 py-3">{t.influencers.colFollowers}</th>
+                <th className="px-4 py-3">{t.influencers.colEngagement}</th>
+                <th className="px-4 py-3">{t.influencers.colMatch}</th>
+                <th className="px-4 py-3">{t.influencers.colStatus}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border/40">
@@ -190,12 +219,18 @@ export default function InfluencersPage() {
                     </Link>
                     <div className="text-xs text-muted-foreground">{inf.platforms[0]?.handle}</div>
                   </td>
-                  <td className="px-4 py-3">{PLATFORM_LABELS[inf.platforms[0]?.platform]}</td>
+                  <td className="px-4 py-3">
+                    {inf.platforms[0] ? platformLabel(inf.platforms[0].platform, t) : t.common.emDash}
+                  </td>
                   <td className="px-4 py-3">{inf.city}</td>
                   <td className="px-4 py-3 tabular-nums">{formatNumber(inf.followers)}</td>
                   <td className="px-4 py-3 tabular-nums">{formatPercent(inf.engagementRate)}</td>
                   <td className="px-4 py-3"><MatchScore score={inf.matchScore} size="sm" /></td>
-                  <td className="px-4 py-3"><Badge tone={inf.verificationStatus}>{inf.verificationStatus}</Badge></td>
+                  <td className="px-4 py-3">
+                    <Badge tone={inf.verificationStatus}>
+                      {verificationLabel(inf.verificationStatus, t)}
+                    </Badge>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -207,6 +242,7 @@ export default function InfluencersPage() {
 }
 
 function InfluencerCard({ influencer }: { influencer: Influencer }) {
+  const { t } = useI18n();
   const primary = influencer.platforms[0];
   return (
     <Card className="flex flex-col p-5">
@@ -222,7 +258,7 @@ function InfluencerCard({ influencer }: { influencer: Influencer }) {
             {influencer.name}
           </Link>
           <div className="mt-0.5 text-xs text-muted-foreground">
-            {PLATFORM_LABELS[primary.platform]} · {primary.handle}
+            {primary ? platformLabel(primary.platform, t) : t.common.emDash} · {primary?.handle}
           </div>
           <div className="mt-1 text-xs text-muted-foreground">
             {influencer.city}, {influencer.country}
@@ -232,18 +268,33 @@ function InfluencerCard({ influencer }: { influencer: Influencer }) {
       </div>
 
       <div className="mt-4 flex flex-wrap gap-1.5">
-        {influencer.topics.slice(0, 4).map((t) => (
-          <Badge key={t}>{t}</Badge>
+        {influencer.topics.slice(0, 4).map((topicTag) => (
+          <Badge key={topicTag}>{topicTag}</Badge>
         ))}
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-3 text-xs text-muted-foreground">
-        <div>Languages: {influencer.languages.map((l) => LANGUAGE_LABELS[l]).join(", ")}</div>
-        <div>Followers: {formatNumber(influencer.followers)}</div>
-        <div>Avg views: {formatNumber(influencer.avgViews)}</div>
-        <div>Engagement: {formatPercent(influencer.engagementRate)}</div>
-        <div>Videos analyzed: {influencer.analyzedVideos}</div>
-        <div><Badge tone={influencer.verificationStatus}>{influencer.verificationStatus}</Badge></div>
+        <div>
+          {t.influencers.languages}{" "}
+          {influencer.languages.map((l) => LANGUAGE_LABELS[l]).join(", ")}
+        </div>
+        <div>
+          {t.influencers.followers} {formatNumber(influencer.followers)}
+        </div>
+        <div>
+          {t.influencers.avgViews} {formatNumber(influencer.avgViews)}
+        </div>
+        <div>
+          {t.influencers.engagement} {formatPercent(influencer.engagementRate)}
+        </div>
+        <div>
+          {t.influencers.videosAnalyzed} {influencer.analyzedVideos}
+        </div>
+        <div>
+          <Badge tone={influencer.verificationStatus}>
+            {verificationLabel(influencer.verificationStatus, t)}
+          </Badge>
+        </div>
       </div>
 
       <div className="mt-5 border-t border-border/40 pt-4">

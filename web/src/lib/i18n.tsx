@@ -77,3 +77,14 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 export function useI18n() {
   return useContext(I18nContext);
 }
+
+/** Replace `{key}` placeholders in message templates. */
+export function fill(
+  template: string,
+  vars: Record<string, string | number | undefined | null>,
+): string {
+  return template.replace(/\{(\w+)\}/g, (_, key: string) => {
+    const v = vars[key];
+    return v == null ? "" : String(v);
+  });
+}

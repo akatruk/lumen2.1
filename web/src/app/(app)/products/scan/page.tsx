@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Select, Textarea } from "@/components/ui/Field";
 import { useToast } from "@/components/Toast";
+import { fill, useI18n } from "@/lib/i18n";
 
 const SHANGHAI_SAMPLE = {
   url: "https://maps.example.com/shanghai-east-bund-kitchen",
@@ -21,6 +22,7 @@ const SHANGHAI_SAMPLE = {
 };
 
 export default function ProductScanPage() {
+  const { t } = useI18n();
   const router = useRouter();
   const { push } = useToast();
   const [url, setUrl] = useState("");
@@ -49,9 +51,9 @@ export default function ProductScanPage() {
         notes: notes.trim() || undefined,
       });
       setCard(next);
-      push("Resume card ready — review and save");
+      push(t.products.toastReady);
     } catch (e) {
-      push(e instanceof Error ? e.message : "Scan failed", "err");
+      push(e instanceof Error ? e.message : t.products.toastScanFailed, "err");
     } finally {
       setScanning(false);
     }
@@ -72,14 +74,14 @@ export default function ProductScanPage() {
   async function saveNew() {
     if (!card) return;
     const product = await marketplace.createProductFromCardAsync(card);
-    push(`Saved ${product.name}`);
+    push(fill(t.products.toastSaved, { name: product.name }));
     router.push(`/products/${product.id}`);
   }
 
   async function saveAndDiscover() {
     if (!card) return;
     const product = await marketplace.createProductFromCardAsync(card);
-    push(`Saved ${product.name} — opening Discover`);
+    push(fill(t.products.toastSavedDiscover, { name: product.name }));
     router.push(`/discover?productId=${product.id}`);
   }
 
@@ -87,47 +89,47 @@ export default function ProductScanPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">Product scan</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Drop URL / brief / photo names → AI resume card for Discover match.
-          </p>
+          <h1 className="text-2xl font-semibold text-foreground">{t.products.scanTitle}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{t.products.scanSubtitle}</p>
         </div>
         <Badge tone="Queued">
-          {(process.env.NEXT_PUBLIC_PRODUCT_SCAN_MODE ?? "demo") === "live" ? "Live LLM scan" : "Demo scan"}
+          {(process.env.NEXT_PUBLIC_PRODUCT_SCAN_MODE ?? "demo") === "live"
+            ? t.products.liveScan
+            : t.products.demoScan}
         </Badge>
       </div>
 
       <Card>
-        <CardHeader title="Materials" monoLabel="01" subtitle="Extract-only · no live scraping" />
+        <CardHeader title={t.products.materials} monoLabel="01" subtitle={t.products.extractOnly} />
         <div className="grid gap-4 px-5 py-4 md:grid-cols-2">
           <div className="md:col-span-2">
-            <Field label="Product / page URL">
+            <Field label={t.products.productUrl}>
               <Input
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
-                placeholder="https://… or Google Maps link"
+                placeholder={t.products.urlPlaceholder}
               />
             </Field>
           </div>
           <div className="md:col-span-2">
-            <Field label="Brief text">
+            <Field label={t.products.briefText}>
               <Textarea
                 value={briefText}
                 onChange={(e) => setBriefText(e.target.value)}
-                placeholder="Describe the product, audience, geo, tone, prohibitions…"
+                placeholder={t.products.briefPlaceholder}
                 rows={6}
               />
             </Field>
           </div>
-          <Field label="Photo file names (comma-separated)">
+          <Field label={t.products.photoNames}>
             <Input
               value={photoNames}
               onChange={(e) => setPhotoNames(e.target.value)}
-              placeholder="menu.jpg, storefront.png"
+              placeholder={t.products.photoPlaceholder}
             />
           </Field>
-          <Field label="Notes">
-            <Input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Optional" />
+          <Field label={t.products.notes}>
+            <Input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder={t.products.notesPlaceholder} />
           </Field>
         </div>
         <div className="flex flex-col gap-2 border-t border-border/40 px-5 py-4 sm:flex-row sm:flex-wrap">
@@ -137,13 +139,13 @@ export default function ProductScanPage() {
             disabled={scanning || (!url && !briefText && !photoList.length)}
           >
             {scanning ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-            Scan → resume card
+            {t.products.scanResume}
           </Button>
           <Button variant="secondary" className="min-h-11 w-full sm:min-h-0 sm:w-auto" onClick={loadShanghaiSample}>
-            Load Shanghai sample
+            {t.products.loadSample}
           </Button>
           <Link href="/products" className="w-full sm:w-auto">
-            <Button variant="ghost" className="min-h-11 w-full sm:min-h-0">Back to products</Button>
+            <Button variant="ghost" className="min-h-11 w-full sm:min-h-0">{t.products.backToProducts}</Button>
           </Link>
         </div>
       </Card>
@@ -151,16 +153,16 @@ export default function ProductScanPage() {
       {card ? (
         <Card>
           <CardHeader
-            title="Resume card"
+            title={t.products.resumeCard}
             monoLabel="02"
             subtitle={`${card.sourceMode ?? "demo-scan"}`}
             action={
               <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
                 <Button size="sm" variant="secondary" className="min-h-11 w-full sm:min-h-0 sm:w-auto" onClick={() => void saveNew()}>
-                  Save product
+                  {t.products.saveProduct}
                 </Button>
                 <Button size="sm" className="min-h-11 w-full sm:min-h-0 sm:w-auto" onClick={() => void saveAndDiscover()}>
-                  Save & Discover matches
+                  {t.products.saveAndDiscover}
                 </Button>
               </div>
             }
@@ -169,23 +171,25 @@ export default function ProductScanPage() {
           <div className="space-y-5 px-5 py-4">
             <section className="space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <h3 className="font-mono text-[11px] uppercase tracking-widest text-primary">Decision</h3>
+                <h3 className="font-mono text-[11px] uppercase tracking-widest text-primary">{t.products.decision}</h3>
                 <Badge tone={card.confidence >= 0.75 ? "Active" : card.confidence >= 0.5 ? "Reviewing" : "Queued"}>
-                  conf {Math.round(card.confidence * 100)}%
+                  {fill(t.common.confidence, { n: Math.round(card.confidence * 100) })}
                 </Badge>
               </div>
               <div className="md:col-span-2">
-                <Field label="Pitch (≤240)">
+                <Field label={t.products.pitch}>
                   <Textarea
                     value={card.pitch}
                     onChange={(e) => updateCard("pitch", e.target.value.slice(0, 240))}
                     rows={3}
                   />
                 </Field>
-                <div className="mt-1 font-mono text-[10px] text-muted-foreground">{card.pitch.length}/240</div>
+                <div className="mt-1 font-mono text-[10px] text-muted-foreground">
+                  {fill(t.products.chars, { n: card.pitch.length })}
+                </div>
               </div>
               <div className="grid gap-4 md:grid-cols-2">
-                <Field label="Desired topics">
+                <Field label={t.products.desiredTopics}>
                   <Input
                     value={card.desired_topics.join(", ")}
                     onChange={(e) =>
@@ -196,7 +200,7 @@ export default function ProductScanPage() {
                     }
                   />
                 </Field>
-                <Field label="Geography (comma)">
+                <Field label={t.products.geographyCommaShort}>
                   <Input
                     value={card.geography.join(", ")}
                     onChange={(e) =>
@@ -208,7 +212,7 @@ export default function ProductScanPage() {
                   />
                 </Field>
                 <div className="md:col-span-2">
-                  <Field label="Prohibited claims">
+                  <Field label={t.products.prohibitedClaims}>
                     <Textarea
                       value={card.prohibited_claims.join("\n")}
                       onChange={(e) =>
@@ -226,7 +230,7 @@ export default function ProductScanPage() {
                 <div className="space-y-2 text-xs text-muted-foreground">
                   {card.missing_fields.length ? (
                     <div>
-                      Missing:{" "}
+                      {t.products.missing}{" "}
                       {card.missing_fields.map((m) => (
                         <Badge key={m} className="mr-1">
                           {m}
@@ -247,23 +251,23 @@ export default function ProductScanPage() {
               <summary className="cursor-pointer list-none px-4 py-3 font-mono text-[11px] uppercase tracking-widest text-muted-foreground hover:text-foreground [&::-webkit-details-marker]:hidden">
                 <span className="inline-flex items-center gap-2">
                   <span className="text-primary group-open:rotate-90 transition-transform">▸</span>
-                  Details — name, budget, tone, metrics
+                  {t.products.detailsSummary}
                 </span>
               </summary>
               <div className="grid gap-4 border-t border-border/40 px-4 py-4 md:grid-cols-2">
-                <Field label="Name">
+                <Field label={t.common.name}>
                   <Input value={card.name} onChange={(e) => updateCard("name", e.target.value)} />
                 </Field>
-                <Field label="Brand">
+                <Field label={t.common.brand}>
                   <Input value={card.brand} onChange={(e) => updateCard("brand", e.target.value)} />
                 </Field>
-                <Field label="Category">
+                <Field label={t.common.category}>
                   <Input value={card.category} onChange={(e) => updateCard("category", e.target.value)} />
                 </Field>
-                <Field label="Audience">
+                <Field label={t.common.audience}>
                   <Input value={card.audience} onChange={(e) => updateCard("audience", e.target.value)} />
                 </Field>
-                <Field label="Languages (th,en,…)">
+                <Field label={t.products.languagesHint}>
                   <Input
                     value={card.languages.join(",")}
                     onChange={(e) =>
@@ -277,7 +281,7 @@ export default function ProductScanPage() {
                     }
                   />
                 </Field>
-                <Field label="Tone">
+                <Field label={t.common.tone}>
                   <Input
                     value={card.tone.join(", ")}
                     onChange={(e) =>
@@ -288,7 +292,7 @@ export default function ProductScanPage() {
                     }
                   />
                 </Field>
-                <Field label="Benefits">
+                <Field label={t.common.benefits}>
                   <Textarea
                     value={card.benefits.join("\n")}
                     onChange={(e) =>
@@ -300,18 +304,18 @@ export default function ProductScanPage() {
                     rows={4}
                   />
                 </Field>
-                <Field label="Platforms">
+                <Field label={t.common.platforms}>
                   <Select
                     value={card.platforms[0] ?? "douyin"}
                     onChange={(e) => updateCard("platforms", [e.target.value as Platform])}
                   >
-                    <option value="douyin">Douyin</option>
-                    <option value="tiktok">TikTok (intl)</option>
-                    <option value="instagram">Instagram</option>
-                    <option value="youtube">YouTube</option>
+                    <option value="douyin">{t.common.douyin}</option>
+                    <option value="tiktok">{t.common.tiktok}</option>
+                    <option value="instagram">{t.common.instagram}</option>
+                    <option value="youtube">{t.common.youtube}</option>
                   </Select>
                 </Field>
-                <Field label="Budget type">
+                <Field label={t.products.budgetType}>
                   <Select
                     value={card.budget.type}
                     onChange={(e) =>
@@ -321,19 +325,19 @@ export default function ProductScanPage() {
                       })
                     }
                   >
-                    <option value="unknown">unknown</option>
-                    <option value="barter">barter</option>
-                    <option value="fixed">fixed</option>
-                    <option value="range">range</option>
+                    <option value="unknown">{t.products.budgetUnknown}</option>
+                    <option value="barter">{t.products.budgetBarter}</option>
+                    <option value="fixed">{t.products.budgetFixed}</option>
+                    <option value="range">{t.products.budgetRange}</option>
                   </Select>
                 </Field>
-                <Field label="Budget notes">
+                <Field label={t.products.budgetNotes}>
                   <Input
                     value={card.budget.notes}
                     onChange={(e) => updateCard("budget", { ...card.budget, notes: e.target.value })}
                   />
                 </Field>
-                <Field label="Success metrics">
+                <Field label={t.products.successMetricsField}>
                   <Input
                     value={card.success_metrics.join(", ")}
                     onChange={(e) =>
