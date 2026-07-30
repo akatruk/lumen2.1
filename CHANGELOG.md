@@ -2,6 +2,22 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.5.7] — 2026-07-30
+
+### Fixed — Suggested influencers use topical / category match
+
+- Catalog `rankForProduct` no longer ranks primarily by global demo `matchScore` + blanket China geo bonus.
+- New `product-match` helper: niche tokens from category + topics; zero overlap → demote and drop from Suggested.
+- Guards against false positives (`ai` inside `Shanghai's`).
+- Demo catalog: Technology product `prod-6` + tech creators Alex Chen / Wei Fang.
+- Product scan detects Technology; Discover rank hard-fails mismatched niches.
+- Health `0.5.7`. Manual QA: `docs/MANUAL_QA_MATCH.md`.
+
+### QA
+
+- Target: https://influencers.lumen.universalgravity.org — health `0.5.7` / Deploy [`30534108991`](https://github.com/akatruk/lumen2.1/actions/runs/30534108991) **success** (`867da58`).
+- Manual QA: `docs/MANUAL_QA_MATCH.md` — **P0 ALL PASS**; tech Suggested = Alex/Wei only; RE Suggested keeps Zhang/Elena; smoke `EXPECT_VERSION=0.5.7` **PASSED**.
+
 ## [0.5.6] — 2026-07-30
 
 ### Added — Invitation message threads (brand account)
