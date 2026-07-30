@@ -83,7 +83,8 @@ const SEED_INVITATIONS: Invitation[] = [
     influencerId: "inf-2",
     campaignId: "camp-1",
     status: "Pending",
-    message: "We'd like you to cover the Kata Beach soft launch with a walkthrough.",
+    message:
+      "Hi Zhou Jie — we'd love to invite you to the Bund Residences Soft Launch Q3 campaign. A walkthrough + soft lifestyle cut for Douyin would be ideal.",
     createdAt: "2026-07-18T10:00:00Z",
   },
   {
@@ -91,8 +92,22 @@ const SEED_INVITATIONS: Invitation[] = [
     influencerId: "inf-1",
     campaignId: "camp-2",
     status: "Accepted",
-    message: "Soft opening dinner feature for 沪上小馆.",
+    message:
+      "Hi Lin Xiaonan — soft opening dinner feature for 沪上小馆. Looking for one short Douyin video + caption with CTA.",
+    responseMessage: "Happy to collaborate. Please send the brief and shoot dates.",
     createdAt: "2026-07-12T09:00:00Z",
+    respondedAt: "2026-07-12T14:30:00Z",
+  },
+  {
+    id: "inv-3",
+    influencerId: "inf-3",
+    campaignId: "camp-3",
+    status: "Declined",
+    message:
+      "Hi Zhang Wei — Rice Water Serum Launch invite. Interested in a skincare routine cut featuring the serum?",
+    responseMessage: "Thanks for reaching out — schedule is full this month. Happy to revisit next quarter.",
+    createdAt: "2026-07-10T08:00:00Z",
+    respondedAt: "2026-07-11T11:00:00Z",
   },
 ];
 
@@ -682,14 +697,23 @@ export const marketplace = {
     return data.invitation;
   },
 
-  respondInvitation(id: string, status: "Accepted" | "Declined"): Invitation | undefined {
+  respondInvitation(
+    id: string,
+    status: "Accepted" | "Declined",
+    responseMessage?: string,
+  ): Invitation | undefined {
     const invites = getInvitations();
     const idx = invites.findIndex((i) => i.id === id);
     if (idx < 0) return undefined;
+    const fallback =
+      status === "Accepted"
+        ? "Happy to collaborate. Please send the brief."
+        : "Thanks for reaching out — I'll pass this time.";
     invites[idx] = {
       ...invites[idx],
       status,
       respondedAt: new Date().toISOString(),
+      responseMessage: responseMessage?.trim() || fallback,
     };
     saveJson(KEYS.invitations, invites);
     const inf = this.getInfluencer(invites[idx].influencerId);
@@ -708,14 +732,15 @@ export const marketplace = {
       deadline: string;
       approvalRules: string;
     },
+    responseMessage?: string,
   ): Promise<Invitation | undefined> {
     const session = await fetchSession();
-    if (!session) return this.respondInvitation(id, status);
+    if (!session) return this.respondInvitation(id, status, responseMessage);
     const res = await fetch("/api/invitations", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "same-origin",
-      body: JSON.stringify({ id, status, autoBrief }),
+      body: JSON.stringify({ id, status, autoBrief, responseMessage }),
     });
     const data = (await res.json()) as {
       invitation?: Invitation;

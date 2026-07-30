@@ -46,6 +46,7 @@ export default function InfluencerDetailPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [notes, setNotes] = useState("");
   const [campaignId, setCampaignId] = useState("");
+  const [inviteMessage, setInviteMessage] = useState("");
 
   const matchLabels = useMemo(
     () => ({
@@ -68,8 +69,26 @@ export default function InfluencerDetailPage() {
     setVideos(marketplace.getVideosForInfluencer(params.id));
     setProducts(marketplace.listProducts());
     const camps = marketplace.listCampaigns();
-    setCampaignId(camps[0]?.id ?? "");
-  }, [params.id]);
+    const firstId = camps[0]?.id ?? "";
+    setCampaignId(firstId);
+    if (firstId) {
+      setInviteMessage(
+        fill(t.influencers.inviteMessage, {
+          campaign: camps[0]?.name ?? "campaign",
+        }),
+      );
+    }
+  }, [params.id, t]);
+
+  useEffect(() => {
+    if (!campaignId) return;
+    const camp = marketplace.getCampaign(campaignId);
+    setInviteMessage(
+      fill(t.influencers.inviteMessage, {
+        campaign: camp?.name ?? "campaign",
+      }),
+    );
+  }, [campaignId, t]);
 
   if (!inf) {
     return <div className="text-sm text-muted-foreground">{t.influencers.notFound}</div>;
@@ -106,30 +125,51 @@ export default function InfluencerDetailPage() {
         <div className="flex flex-col items-end gap-3">
           <MatchScore score={inf.matchScore} size="lg" />
           <AddToShortlistButton influencer={inf} />
-          <div className="flex flex-wrap items-center gap-2">
-            <Select className="w-48" value={campaignId} onChange={(e) => setCampaignId(e.target.value)}>
+          <div className="flex w-full max-w-md flex-col gap-2 sm:items-end">
+            <Select
+              className="w-full sm:w-64"
+              value={campaignId}
+              onChange={(e) => setCampaignId(e.target.value)}
+            >
               {campaigns.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
               ))}
             </Select>
+            <div className="w-full text-left">
+              <div className="mb-1 text-xs text-muted-foreground">{t.influencers.inviteMessageLabel}</div>
+              <Textarea
+                value={inviteMessage}
+                onChange={(e) => setInviteMessage(e.target.value)}
+                rows={3}
+                className="w-full"
+              />
+              <p className="mt-1 text-[11px] text-muted-foreground">{t.influencers.inviteMessageHint}</p>
+            </div>
             <Button
               size="sm"
               variant="secondary"
               onClick={() => {
                 if (!campaignId) return;
+                const message =
+                  inviteMessage.trim() ||
+                  fill(t.influencers.inviteMessage, {
+                    campaign: marketplace.getCampaign(campaignId)?.name ?? "campaign",
+                  });
                 void marketplace
                   .createInvitationAsync({
                     influencerId: inf.id,
                     campaignId,
-                    message: fill(t.influencers.inviteMessage, {
-                      campaign: marketplace.getCampaign(campaignId)?.name ?? "campaign",
-                    }),
+                    message,
                   })
                   .then(() => push(fill(t.influencers.toastInviteSent, { name: inf.name })))
-                  .catch((e) => push(e instanceof Error ? e.message : t.influencers.toastInviteFailed, "err"));
+                  .catch((e) =>
+                    push(e instanceof Error ? e.message : t.influencers.toastInviteFailed, "err"),
+                  );
               }}
             >
-              {t.influencers.invite}
+              {t.influencers.sendInvite}
             </Button>
           </div>
         </div>

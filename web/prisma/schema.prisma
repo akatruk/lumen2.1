@@ -77,17 +77,18 @@ model Shortlist {
 }
 
 model Invitation {
-  id           String          @id @default(cuid())
-  userId       String
-  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  influencerId String
-  campaignId   String
-  status       String          @default("Pending")
-  message      String
-  respondedAt  DateTime?
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
-  briefs       CampaignBrief[]
+  id              String          @id @default(cuid())
+  userId          String
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  influencerId    String
+  campaignId      String
+  status          String          @default("Pending")
+  message         String
+  responseMessage String?
+  respondedAt     DateTime?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  briefs          CampaignBrief[]
 }
 
 model CampaignBrief {

@@ -258,7 +258,10 @@
     "toastScanFailed": "扫描失败",
     "toastSaved": "已保存 {name}",
     "toastSavedDiscover": "已保存 {name} — 正在打开发现",
-    "backToProducts": "返回产品"
+    "backToProducts": "返回产品",
+    "errNameBrand": "名称和品牌为必填",
+    "errSaveFailed": "无法保存产品",
+    "defaultCategory": "通用"
   },
   "discover": {
     "title": "发现",
@@ -383,6 +386,10 @@
     "notFound": "未找到达人。",
     "safety": "安全：{status}",
     "invite": "邀请加入活动",
+    "inviteMessage": "你好 — 合作邀请：{campaign}。是否有兴趣拍一条带 CTA 的抖音短视频？",
+    "inviteMessageLabel": "邀请文案（预览）",
+    "inviteMessageHint": "此文案保存在品牌账号，并显示在「邀请」页。",
+    "sendInvite": "发送邀请",
     "overview": "档案概览",
     "languagesLabel": "语言",
     "topicsLabel": "话题",
@@ -415,8 +422,7 @@
     "teamNotes": "团队备注",
     "saveNotes": "保存备注",
     "toastInviteSent": "已向 {name} 发送邀请",
-    "toastInviteFailed": "邀请失败",
-    "inviteMessage": "合作邀请：{campaign}"
+    "toastInviteFailed": "邀请失败"
   },
   "shortlists": {
     "title": "候选名单",
@@ -446,7 +452,7 @@
   },
   "invitations": {
     "title": "邀请",
-    "subtitle": "品牌外联记录。创作者在创作者门户中回应。",
+    "subtitle": "品牌账号外联会话 — 已发邀请与达人回复。",
     "openPortal": "打开创作者门户",
     "colInfluencer": "达人",
     "colCampaign": "活动",
@@ -462,7 +468,18 @@
     "captionCta": "带 CTA 的文案",
     "followObjective": "遵循活动目标",
     "followClaims": "遵循品牌宣称规范",
-    "draftApproval": "发布前草稿须获批准。"
+    "draftApproval": "发布前草稿须获批准。",
+    "thread": "会话",
+    "youBrand": "你（品牌）",
+    "creator": "创作者",
+    "sent": "已发送",
+    "received": "已收到",
+    "awaiting": "等待创作者回复…",
+    "empty": "暂无邀请。可从达人档案发起邀请。",
+    "statusPending": "待处理",
+    "statusAccepted": "已接受",
+    "statusDeclined": "已拒绝",
+    "statusExpired": "已过期"
   },
   "reviews": {
     "title": "审核",

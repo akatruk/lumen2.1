@@ -12,7 +12,7 @@ const ProductBody = z.object({
   name: z.string().min(1),
   brand: z.string().min(1),
   category: z.string().min(1),
-  description: z.string(),
+  description: z.string().optional().default(""),
   imageEmoji: z.string().optional(),
   priceLabel: z.string().optional(),
   geography: z.array(z.string()).default([]),
@@ -24,6 +24,17 @@ const ProductBody = z.object({
   platforms: z.array(z.enum(["douyin", "tiktok", "instagram", "youtube"])).optional(),
   resumeCard: z.record(z.string(), z.unknown()).optional(),
 });
+
+function coerceProductBody(raw: unknown) {
+  const obj = raw && typeof raw === "object" ? { ...(raw as Record<string, unknown>) } : {};
+  if (typeof obj.category !== "string" || !obj.category.trim()) {
+    obj.category = "General";
+  }
+  if (typeof obj.description !== "string") {
+    obj.description = "";
+  }
+  return obj;
+}
 
 export async function GET() {
   const user = await readSession();
@@ -39,7 +50,7 @@ export async function POST(req: Request) {
   const user = await readSession();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
-    const body = ProductBody.parse(await req.json());
+    const body = ProductBody.parse(coerceProductBody(await req.json()));
     const data = serializeProductFields({
       ...body,
       languages: body.languages as LanguageCode[],
@@ -65,7 +76,11 @@ export async function PUT(req: Request) {
     if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
     const existing = await prisma.product.findFirst({ where: { id, userId: user.id } });
     if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
-    const body = ProductBody.partial().parse(json);
+    const body = ProductBody.partial().parse(
+      typeof json.category === "string" && !json.category.trim()
+        ? { ...json, category: "General" }
+        : json,
+    );
     const merged = {
       name: body.name ?? existing.name,
       brand: body.brand ?? existing.brand,

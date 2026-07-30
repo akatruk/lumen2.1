@@ -247,7 +247,10 @@ export interface Invitation {
   influencerId: string;
   campaignId: string;
   status: InvitationStatus;
+  /** Outbound brand outreach text (sent from app account). */
   message: string;
+  /** Influencer reply text (accept/decline note), visible on brand account. */
+  responseMessage?: string;
   createdAt: string;
   respondedAt?: string;
 }

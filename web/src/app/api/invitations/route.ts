@@ -17,6 +17,7 @@ const CreateBody = z.object({
 const PatchBody = z.object({
   id: z.string().min(1),
   status: z.enum(["Accepted", "Declined"]),
+  responseMessage: z.string().optional(),
   autoBrief: z
     .object({
       title: z.string(),
@@ -101,6 +102,11 @@ export async function PATCH(req: Request) {
       data: {
         status: body.status,
         respondedAt: new Date(),
+        responseMessage:
+          body.responseMessage?.trim() ||
+          (body.status === "Accepted"
+            ? "Happy to collaborate. Please send the brief."
+            : "Thanks for reaching out — I'll pass this time."),
       },
     });
 

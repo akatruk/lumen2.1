@@ -258,7 +258,10 @@
     "toastScanFailed": "Scan failed",
     "toastSaved": "Saved {name}",
     "toastSavedDiscover": "Saved {name} — opening Discover",
-    "backToProducts": "Back to products"
+    "backToProducts": "Back to products",
+    "errNameBrand": "Name and brand are required",
+    "errSaveFailed": "Could not save product",
+    "defaultCategory": "General"
   },
   "discover": {
     "title": "Discover",
@@ -383,6 +386,10 @@
     "notFound": "Influencer not found.",
     "safety": "Safety: {status}",
     "invite": "Invite to campaign",
+    "inviteMessage": "Hi — collaboration invite for {campaign}. Interested in a Douyin short with CTA?",
+    "inviteMessageLabel": "Invite message (preview)",
+    "inviteMessageHint": "This text is saved on your brand account and shown in Invitations.",
+    "sendInvite": "Send invite",
     "overview": "Profile overview",
     "languagesLabel": "Languages",
     "topicsLabel": "Topics",
@@ -415,8 +422,7 @@
     "teamNotes": "Team notes",
     "saveNotes": "Save notes",
     "toastInviteSent": "Invitation sent to {name}",
-    "toastInviteFailed": "Invite failed",
-    "inviteMessage": "Collaboration invite for {campaign}"
+    "toastInviteFailed": "Invite failed"
   },
   "shortlists": {
     "title": "Shortlists",
@@ -446,7 +452,7 @@
   },
   "invitations": {
     "title": "Invitations",
-    "subtitle": "Brand outreach records. Creators respond in the creator portal.",
+    "subtitle": "Outreach thread for your brand account — sent invites and creator replies.",
     "openPortal": "Open creator portal",
     "colInfluencer": "Influencer",
     "colCampaign": "Campaign",
@@ -462,7 +468,18 @@
     "captionCta": "Caption with CTA",
     "followObjective": "Follow campaign objective",
     "followClaims": "Follow brand claim guidelines",
-    "draftApproval": "Draft must be approved before publishing."
+    "draftApproval": "Draft must be approved before publishing.",
+    "thread": "Conversation",
+    "youBrand": "You (brand)",
+    "creator": "Creator",
+    "sent": "Sent",
+    "received": "Received",
+    "awaiting": "Awaiting creator reply…",
+    "empty": "No invitations yet. Invite a creator from their profile.",
+    "statusPending": "Pending",
+    "statusAccepted": "Accepted",
+    "statusDeclined": "Declined",
+    "statusExpired": "Expired"
   },
   "reviews": {
     "title": "Reviews",

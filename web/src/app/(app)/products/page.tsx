@@ -8,6 +8,7 @@ import type { LanguageCode, Product } from "@/types";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Textarea } from "@/components/ui/Field";
+import { useToast } from "@/components/Toast";
 import { useI18n } from "@/lib/i18n";
 
 const emptyForm = {
@@ -19,7 +20,7 @@ const emptyForm = {
   priceLabel: "",
   geography: "China",
   audience: "",
-  languages: "en,th" as string,
+  languages: "zh" as string,
   benefits: "",
   prohibitedClaims: "",
   desiredTopics: "",
@@ -27,10 +28,12 @@ const emptyForm = {
 
 export default function ProductsPage() {
   const { t } = useI18n();
+  const { push } = useToast();
   const search = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
   const [form, setForm] = useState(emptyForm);
 
   const refresh = () => setProducts(marketplace.listProducts());
@@ -70,7 +73,7 @@ export default function ProductsPage() {
     const payload = {
       name: form.name.trim(),
       brand: form.brand.trim(),
-      category: form.category.trim(),
+      category: form.category.trim() || t.products.defaultCategory,
       description: form.description.trim(),
       imageEmoji: form.imageEmoji || "📦",
       priceLabel: form.priceLabel.trim(),
@@ -82,13 +85,25 @@ export default function ProductsPage() {
       desiredTopics: form.desiredTopics.split(",").map((s) => s.trim()).filter(Boolean),
       platforms: ["douyin" as const],
     };
-    if (!payload.name || !payload.brand) return;
-    if (editingId) await marketplace.updateProductAsync(editingId, payload);
-    else await marketplace.createProductAsync(payload);
-    setOpen(false);
-    setEditingId(null);
-    setForm(emptyForm);
-    refresh();
+    if (!payload.name || !payload.brand) {
+      push(t.products.errNameBrand, "err");
+      return;
+    }
+    if (!payload.languages.length) payload.languages = ["zh"];
+    setSaving(true);
+    try {
+      if (editingId) await marketplace.updateProductAsync(editingId, payload);
+      else await marketplace.createProductAsync(payload);
+      push(t.common.saved);
+      setOpen(false);
+      setEditingId(null);
+      setForm(emptyForm);
+      refresh();
+    } catch (e) {
+      push(e instanceof Error ? e.message : t.products.errSaveFailed, "err");
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -135,8 +150,12 @@ export default function ProductsPage() {
             <Field label={t.products.prohibitedClaims}><Textarea value={form.prohibitedClaims} onChange={(e) => setForm({ ...form, prohibitedClaims: e.target.value })} /></Field>
           </div>
           <div className="flex gap-2 border-t border-border/40 px-5 py-4">
-            <Button onClick={() => void submit()}>{t.common.save}</Button>
-            <Button variant="secondary" onClick={() => setOpen(false)}>{t.common.cancel}</Button>
+            <Button onClick={() => void submit()} disabled={saving}>
+              {saving ? t.common.loading : t.common.save}
+            </Button>
+            <Button variant="secondary" onClick={() => setOpen(false)} disabled={saving}>
+              {t.common.cancel}
+            </Button>
           </div>
         </Card>
       ) : null}

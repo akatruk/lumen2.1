@@ -6,6 +6,7 @@ export function dbInvitationToInvitation(row: {
   campaignId: string;
   status: string;
   message: string;
+  responseMessage?: string | null;
   respondedAt: Date | null;
   createdAt: Date;
 }): Invitation {
@@ -15,6 +16,7 @@ export function dbInvitationToInvitation(row: {
     campaignId: row.campaignId,
     status: row.status as InvitationStatus,
     message: row.message,
+    responseMessage: row.responseMessage ?? undefined,
     createdAt: row.createdAt.toISOString(),
     respondedAt: row.respondedAt?.toISOString(),
   };
