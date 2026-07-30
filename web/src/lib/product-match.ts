@@ -1,4 +1,4 @@
-import type { Influencer, Product, ProductResumeCard } from "@/types";
+import type { Influencer, LanguageCode, Product, ProductResumeCard } from "@/types";
 
 /** Soft tokens that must not alone justify a catalog match. */
 export const GENERIC_MATCH_TOKENS = new Set([
@@ -16,21 +16,51 @@ export const GENERIC_MATCH_TOKENS = new Set([
   "bangkok",
   "phuket",
   "travel",
+  "business",
+  "platform",
+  "social",
+  "media",
+  "video", // alone too broad; paired niches handled below
+  "general",
+  "product",
+  "other",
 ]);
 
-/** Category / phrase → niche topic tokens used for ranking. */
+/**
+ * Category / phrase → niche topic tokens.
+ * Includes creator-tech / viral-script / MarTech language used by Lumen-like products.
+ */
 const CATEGORY_TOPIC_MAP: [RegExp, string[]][] = [
+  // Content / viral-script AI first — so Lumen-like copy doesn't inherit gadget/SaaS bags.
   [
-    // Avoid false positives like "ai" inside Shanghai's / "app" inside appreciation
-    /technolog|software|saas|artificial\s*intelligence|(?<![a-z])tech(?![a-z])|(?<![a-z])ai(?![a-z])|(?<![a-z])gadget(?![a-z])|electronics?|(?<![a-z])startup(?![a-z])|(?<![a-z])cloud(?![a-z])|devops|(?<![a-z])iot(?![a-z])|digital\s*product|b2b\s*saas/i,
-    ["tech", "technology", "saas", "software", "ai", "gadget"],
+    /viral|script\s*analy|analyze\s*the\s*script|short[\s-]?video|douyin\s*tool|content\s*creat|creator\s*tool|video\s*edit|auto[\s-]?edit|ugc\s*tool|caption\s*ai|hook\s*analy|content\s*ai|script\s*ai|viral\s*video|ai\s*social|social\s*media\s*video/i,
+    ["tech", "ai", "content", "viral", "script", "creator tools", "short video"],
   ],
+  [
+    /technolog|software|saas|artificial\s*intelligence|(?<![a-z])tech(?![a-z])|b2b\s*saas|martech|growth\s*ops|(?<![a-z])cloud(?![a-z])|devops|digital\s*product|(?<![a-z])startup(?![a-z])/i,
+    ["tech", "technology", "saas", "software", "ai"],
+  ],
+  // Bare "AI" without viral/script context — still tech, not gadget.
+  [/(?<![a-z])ai(?![a-z])/i, ["tech", "ai"]],
+  [/(?<![a-z])gadget(?![a-z])|electronics?|(?<![a-z])iot(?![a-z])|数码|hardware/i, ["tech", "gadget"]],
   [/real\s*estate|property|condo(?:minium)?|apartment|住宅|房产|investors?/i, ["real estate", "investment", "property"]],
   [/restaurant|food|dining|cafe|厨房|美食|探店/i, ["food", "nightlife"]],
   [/skincare|beauty|serum|护肤|美妆/i, ["skincare", "beauty", "wellness"]],
   [/fitness|gym|yoga|健身/i, ["fitness", "wellness"]],
-  [/tourism|(?<![a-z])travel(?![a-z])|tour|旅行/i, ["travel"]],
+  [/tourism|(?<![a-z])tour(?![a-z])|旅行/i, ["travel"]],
 ];
+
+const LANG_ALIASES: Record<string, LanguageCode> = {
+  zh: "zh",
+  chinese: "zh",
+  "中文": "zh",
+  en: "en",
+  english: "en",
+  th: "th",
+  thai: "th",
+  ru: "ru",
+  russian: "ru",
+};
 
 function norm(s: string): string {
   return s.toLowerCase().trim().replace(/\s+/g, " ");
@@ -50,6 +80,16 @@ export function uniqNorm(values: string[]): string[] {
 
 export function isGenericToken(token: string): boolean {
   return GENERIC_MATCH_TOKENS.has(norm(token));
+}
+
+export function normalizeLanguageCodes(raw: string[]): LanguageCode[] {
+  const out: LanguageCode[] = [];
+  for (const r of raw) {
+    const key = norm(r);
+    const mapped = LANG_ALIASES[key] ?? LANG_ALIASES[key.split(/\s+/)[0] ?? ""];
+    if (mapped && !out.includes(mapped)) out.push(mapped);
+  }
+  return out.length ? out : ["zh"];
 }
 
 export function topicsFromCategory(category: string): string[] {
@@ -79,20 +119,70 @@ function extractTopicsFromBlob(blob: string): string[] {
   return uniqNorm(out);
 }
 
-/** Product niche tokens for matching (structured topics + category; pitch only via regex). */
+function inferTechnologyCategory(niche: string[], category: string): string {
+  const c = category.trim();
+  const weak = !c || /^(general|product|other|未知|通用)$/i.test(c);
+  const techish = niche.some((t) =>
+    ["tech", "technology", "saas", "software", "ai", "gadget", "content", "viral", "script", "creator tools", "short video"].includes(
+      t,
+    ),
+  );
+  if (techish && weak) return "Technology";
+  return c || (techish ? "Technology" : "General");
+}
+
+/** Product niche tokens for matching (structured topics + category; pitch via regex). */
 export function productNicheTokens(product: Product): string[] {
   const card: ProductResumeCard | undefined = product.resumeCard;
   const structured = [
     ...(card?.desired_topics?.length ? card.desired_topics : product.desiredTopics ?? []),
     product.category,
     card?.category ?? "",
+    ...(product.benefits ?? []),
   ];
-  const blob = [product.name, product.brand, card?.pitch || product.description || ""].join(" ");
+  const blob = [
+    product.name,
+    product.brand,
+    card?.pitch || product.description || "",
+    product.audience || "",
+    ...(product.benefits ?? []),
+  ].join(" ");
   return uniqNorm([
     ...expandMatchTokens(structured),
     ...topicsFromCategory(product.category || card?.category || ""),
     ...extractTopicsFromBlob(blob),
   ]).filter((t) => !isGenericToken(t));
+}
+
+/**
+ * Ensure manual / sparse product records still rank as Technology when copy is clearly tech/AI/viral-script.
+ * Pure function — does not mutate storage.
+ */
+export function enrichProductForMatch(product: Product): Product {
+  const niche = productNicheTokens(product);
+  const category = inferTechnologyCategory(niche, product.category || product.resumeCard?.category || "");
+  const desiredTopics = uniqNorm([...(product.desiredTopics ?? []), ...niche]).slice(0, 10);
+  const languages = normalizeLanguageCodes(
+    (product.resumeCard?.languages?.length ? product.resumeCard.languages : product.languages)?.map(String) ??
+      [],
+  );
+  return {
+    ...product,
+    category,
+    desiredTopics,
+    languages,
+    resumeCard: product.resumeCard
+      ? {
+          ...product.resumeCard,
+          category: product.resumeCard.category || category,
+          desired_topics: uniqNorm([
+            ...(product.resumeCard.desired_topics ?? []),
+            ...desiredTopics,
+          ]).slice(0, 10),
+          languages,
+        }
+      : product.resumeCard,
+  };
 }
 
 export function productGenericTokens(product: Product): string[] {
@@ -137,11 +227,12 @@ export function rankInfluencersForProduct(
   influencers: Influencer[],
   product: Product,
 ): CatalogRankResult[] {
-  const niche = productNicheTokens(product);
-  const generic = productGenericTokens(product);
-  const langs = new Set(product.languages ?? []);
+  const enriched = enrichProductForMatch(product);
+  const niche = productNicheTokens(enriched);
+  const generic = productGenericTokens(enriched);
+  const langs = new Set(enriched.languages ?? []);
   const geos = (
-    product.resumeCard?.geography?.length ? product.resumeCard.geography : product.geography ?? []
+    enriched.resumeCard?.geography?.length ? enriched.resumeCard.geography : enriched.geography ?? []
   ).map(norm);
 
   return influencers
@@ -152,7 +243,8 @@ export function rankInfluencersForProduct(
       const langHits = (inf.languages ?? []).filter((l) => langs.has(l)).length;
       const cityHit = geos.some((g) => g === norm(inf.city) || g === norm(inf.country));
       const countryOnly = !cityHit && geos.some((g) => g === "china" || g === "thailand");
-      const linked = inf.suitableProductIds?.includes(product.id) ? 1 : 0;
+      // Soft link only — never imply influencer "belongs" to another product id.
+      const linked = inf.suitableProductIds?.includes(enriched.id) ? 1 : 0;
       const base = Number(inf.matchScore);
       const prior = Number.isFinite(base) ? base : 50;
 
@@ -176,12 +268,12 @@ export function rankInfluencersForProduct(
           99,
           Math.round(
             prior * 0.2 +
-              nicheHits.length * 18 +
+              nicheHits.length * 16 +
               genericHits.length * 2 +
               langHits * 4 +
               (cityHit ? 10 : 0) +
               (countryOnly ? 2 : 0) +
-              linked * 14,
+              linked * 6,
           ),
         );
       }

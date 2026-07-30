@@ -1,54 +1,48 @@
-# Manual QA — Product↔influencer topical match (0.5.7)
+# Manual QA — Lumen / tech topical match (0.5.8)
 
 **Target:** https://influencers.lumen.universalgravity.org  
-**Health:** `/api/health` · expect `version=0.5.7`  
-**Scope:** Suggested influencers / catalog rank must follow product **category + niche topics** (not global demo score + China geo)  
+**Health:** `/api/health` · expect `version=0.5.8`  
+**Scope:** Manual Lumen-like products (sparse category / “Chinese” language / viral-script pitch) must suggest **content-AI / tech** creators with visible niche reasons — not RE KOLs and not “locked” to another product id.  
 **Out of scope:** Live TikHub Discover ranking quality beyond hard-fail demote
 
 ## How to run
 
-1. Hard refresh or private window after deploy (clear `lumen.products` / reset demo if stale).
+1. Hard refresh or private window after deploy (clear stale `lumen.products` if an old General card lacks topics — Save again or rely on enrich-at-rank).
 2. Mark `PASS` / `FAIL` / `BLOCKED`. Any **P0** FAIL = no ship.
-3. Smoke: `EXPECT_VERSION=0.5.7 ./scripts/qa-smoke.sh https://influencers.lumen.universalgravity.org`
-4. Optional unit check (local): `npx tsx` rank script against `prod-6` / Technology scan card.
+3. Smoke: `EXPECT_VERSION=0.5.8 ./scripts/qa-smoke.sh https://influencers.lumen.universalgravity.org`
+4. Local unit: tsx rank against Lumen-like sparse product + `prod-7` + `prod-1`.
 
 ## Environment smoke (P0)
 
 | ID | Steps | Expected | Result |
 | --- | --- | --- | --- |
-| S1 | `GET /api/health` | `version=0.5.7` | **PASS** |
-| S2 | `EXPECT_VERSION=0.5.7 ./scripts/qa-smoke.sh …` | SMOKE PASSED | **PASS** |
+| S1 | `GET /api/health` | `version=0.5.8` | |
+| S2 | `EXPECT_VERSION=0.5.8 ./scripts/qa-smoke.sh …` | SMOKE PASSED | |
 
-## Tech product → tech creators (P0)
-
-| ID | Steps | Expected | Result |
-| --- | --- | --- | --- |
-| T1 | Open catalog product **Lumen Cloud Ops Suite** (`prod-6`) or Technology scan card | Category Technology / tech topics | **PASS** |
-| T2 | Suggested influencers (top 6) | **Alex Chen** and/or **Wei Fang** present | **PASS** — both |
-| T3 | Same list | **Zhang Wei / Elena Petrova** (real estate) **absent** from Suggested | **PASS** |
-| T4 | Product with `category=Technology`, empty `desiredTopics` | Still niche=tech from category; RE KOLs not in Suggested | **PASS** — unit + scan path |
-
-## Real-estate control (P0)
+## Lumen-like manual product (P0)
 
 | ID | Steps | Expected | Result |
 | --- | --- | --- | --- |
-| R1 | Open **Riverside Bund Residences** (`prod-1`) Suggested | **Zhang Wei** (and/or Elena) near top | **PASS** |
-| R2 | Same list | Pure tech-only creators not dominating over RE fits | **PASS** — Alex absent |
+| L1 | Create/open product: description *Platform that uses AI to analyze the script of viral social media videos*; audience *Business that wants to make viral videos*; geo China; languages Chinese; benefits *AI social media*; category empty/General | After enrich: category **Technology**; topics include viral/script/ai/content | |
+| L2 | Suggested influencers | **Alex Chen**, **Wei Fang**, and/or **Nora Li** at top with scores; each row shows **Why:** niche hits | |
+| L3 | Same list | **Zhang Wei / Elena Petrova** absent | |
+| L4 | Subtitle under Suggested | Shows matched topics (viral / script / tech…), not only “Catalog rank for this product” | |
 
-## Scan / discover regression (P1)
-
-| ID | Steps | Expected | Result |
-| --- | --- | --- | --- |
-| D1 | Demo scan brief containing “SaaS / AI / tech” | Category **Technology**; topics include tech/saas | **PASS** |
-| D2 | Discover rank vs Technology card | Real-estate candidates get weak-fit / low score risk | **PASS** — code path `hardFail` / risk |
-| D3 | Food product (`prod-2`) Suggested | Food KOLs (e.g. Lin Xiaonan), not tech-only | **PASS** — ranking keeps niche gate |
-
-## Library invariants (P1)
+## Catalog seeds (P0)
 
 | ID | Steps | Expected | Result |
 | --- | --- | --- | --- |
-| L1 | `productNicheTokens` on RE description with “Shanghai's” | Must **not** inject `ai`/`tech` from false substring | **PASS** |
-| L2 | `rankInfluencersForProduct` tech → `weakFit` for Zhang Wei | `true`; filtered out of `rankForProduct` strong list | **PASS** — score 24 weakFit |
+| C1 | Open **Lumen Script AI** (`prod-7`) Suggested | Nora / Wei / Alex; Why: viral/script/ai… | |
+| C2 | Open **Lumen Cloud Ops Suite** (`prod-6`) Suggested | Tech creators; RE absent | |
+| C3 | Open **Riverside Bund Residences** (`prod-1`) Suggested | Zhang / Elena; Alex not dominating | |
+
+## Regression (P1)
+
+| ID | Steps | Expected | Result |
+| --- | --- | --- | --- |
+| R1 | Food product Suggested | Food KOLs, not tech-only | |
+| R2 | Languages field “Chinese” on product | Treated as `zh` for lang overlap | |
+| R3 | `ai` must not match inside `Shanghai's` | No false tech niche from geo copy | |
 
 ---
 
@@ -56,12 +50,11 @@
 
 | Field | Value |
 | --- | --- |
-| Date | 2026-07-30 |
-| Tester | Auto (agent) — curl/smoke + Chrome headless + tsx invariants |
-| Build / commit | `867da58` |
-| Deploy run | [30534108991](https://github.com/akatruk/lumen2.1/actions/runs/30534108991) **success** |
+| Date | |
+| Tester | |
+| Build / commit | |
+| Deploy run | |
 | Environment | https://influencers.lumen.universalgravity.org |
-| P0 summary | **ALL PASS** |
-| P1 summary | **PASS** |
-| Blockers | none |
-| Sign-off | **READY TO SHIP** topical match `0.5.7` |
+| P0 summary | |
+| Blockers | |
+| Sign-off | |

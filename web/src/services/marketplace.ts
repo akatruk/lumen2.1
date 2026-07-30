@@ -21,7 +21,11 @@ import {
   MOCK_VIDEOS,
 } from "@/data/mock";
 import { loadJson, saveJson } from "@/lib/storage";
-import { rankInfluencersForProduct } from "@/lib/product-match";
+import {
+  enrichProductForMatch,
+  rankInfluencersForProduct,
+  type CatalogRankResult,
+} from "@/lib/product-match";
 import { lumenAnalysis } from "@/services/lumen-analysis";
 import { productScan } from "@/services/product-scan.service";
 import type { ProductResumeCard } from "@/types";
@@ -312,12 +316,25 @@ export const marketplace = {
   },
 
   rankForProduct(productId: string): Influencer[] {
+    return this.rankForProductDetailed(productId)
+      .filter((r) => !r.weakFit)
+      .map((r) => r.influencer);
+  },
+
+  /** Full rank rows (niche hits / weakFit) for product Suggested UI. */
+  rankForProductDetailed(productId: string): CatalogRankResult[] {
     const product = this.getProduct(productId);
-    if (!product) return this.listInfluencers();
-    const ranked = rankInfluencersForProduct(this.listInfluencers(), product);
+    if (!product) {
+      return this.listInfluencers().map((inf) => ({
+        influencer: inf,
+        score: inf.matchScore,
+        nicheHits: [] as string[],
+        weakFit: false,
+      }));
+    }
+    const ranked = rankInfluencersForProduct(this.listInfluencers(), enrichProductForMatch(product));
     const strong = ranked.filter((r) => !r.weakFit);
-    // Prefer topical fits; only fall back to demoted list if catalog has no niche overlap at all.
-    return (strong.length ? strong : ranked).map((r) => r.influencer);
+    return strong.length ? strong : ranked;
   },
 
   getVideosForInfluencer(id: string): VideoSnapshot[] {
@@ -339,8 +356,16 @@ export const marketplace = {
   },
 
   createProduct(input: Omit<Product, "id" | "createdAt">): Product {
+    const enriched = enrichProductForMatch({
+      ...input,
+      id: "tmp",
+      createdAt: new Date().toISOString(),
+    });
     const product: Product = {
       ...input,
+      category: enriched.category,
+      desiredTopics: enriched.desiredTopics,
+      languages: enriched.languages,
       id: uid("prod"),
       createdAt: new Date().toISOString(),
     };
@@ -351,13 +376,24 @@ export const marketplace = {
 
   /** Logged-in: server SoT. Logged-out: localStorage demo. */
   async createProductAsync(input: Omit<Product, "id" | "createdAt">): Promise<Product> {
+    const enriched = enrichProductForMatch({
+      ...input,
+      id: "tmp",
+      createdAt: new Date().toISOString(),
+    });
+    const payload = {
+      ...input,
+      category: enriched.category,
+      desiredTopics: enriched.desiredTopics,
+      languages: enriched.languages,
+    };
     const session = await fetchSession();
-    if (!session) return this.createProduct(input);
+    if (!session) return this.createProduct(payload);
     const res = await fetch("/api/products", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "same-origin",
-      body: JSON.stringify(input),
+      body: JSON.stringify(payload),
     });
     const data = (await res.json()) as { product?: Product; error?: string };
     if (!res.ok || !data.product) throw new Error(data.error || "Failed to create product");
@@ -370,7 +406,14 @@ export const marketplace = {
     const products = getProducts();
     const idx = products.findIndex((p) => p.id === id);
     if (idx < 0) return undefined;
-    products[idx] = { ...products[idx], ...patch, id };
+    const merged = { ...products[idx], ...patch, id };
+    const enriched = enrichProductForMatch(merged);
+    products[idx] = {
+      ...merged,
+      category: enriched.category,
+      desiredTopics: enriched.desiredTopics,
+      languages: enriched.languages,
+    };
     saveJson(KEYS.products, products);
     return products[idx];
   },

@@ -68,9 +68,10 @@ function detectTopics(text: string, photos: string[]): string[] {
     [/beauty|makeup|grwm|美妆/, "beauty"],
     [/fitness|gym|yoga|hiit/, "fitness"],
     [/real\s*estate|condo|property|invest/, "real estate"],
-    [/technolog|software|saas|artificial\s*intelligence|(?<![a-z])tech(?![a-z])|(?<![a-z])ai(?![a-z])|gadget|startup|cloud|devops|数码/, "tech"],
-    [/saas|b2b|software|cloud/, "saas"],
+    [/technolog|software|saas|artificial\s*intelligence|(?<![a-z])tech(?![a-z])|(?<![a-z])ai(?![a-z])|gadget|startup|cloud|devops|数码|viral|script\s*analy|short[\s-]?video|creator\s*tool|content\s*ai/, "tech"],
+    [/saas|b2b|software|cloud|martech/, "saas"],
     [/gadget|hardware|device|手机|数码/, "gadget"],
+    [/viral|script|short[\s-]?video|creator\s*tool|content\s*creat/, "content"],
     [/lifestyle|生活方式/, "lifestyle"],
     [/wellness/, "wellness"],
   ];
