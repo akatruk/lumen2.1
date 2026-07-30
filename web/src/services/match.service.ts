@@ -4,6 +4,7 @@ import type {
   ProductResumeCard,
   RankedDiscoveryMatch,
 } from "@/types";
+import { expandMatchTokens, isGenericToken, productNicheTokens, topicsFromCategory } from "@/lib/product-match";
 
 const WEIGHTS = {
   topic: 25,
@@ -93,7 +94,14 @@ export function rankCandidatesForCard(
   // Primary candidates are Douyin. Accept legacy "tiktok" on card as alias for CN short-video.
   if (!allowed.has("douyin") && !allowed.has("tiktok")) return [];
 
-  const topicSet = new Set(card.desired_topics.map((t) => t.toLowerCase()));
+  const topicSet = new Set(
+    expandMatchTokens([
+      ...card.desired_topics,
+      ...topicsFromCategory(card.category),
+      ...productNicheTokens(product),
+    ]).map((t) => t.toLowerCase()),
+  );
+  const nicheTopicSet = new Set([...topicSet].filter((t) => !isGenericToken(t)));
   const geoSet = new Set(card.geography.map((g) => g.toLowerCase()));
   const langSet = new Set(card.languages);
 
@@ -106,15 +114,23 @@ export function rankCandidatesForCard(
     const topicHits = cTopics.filter(
       (t) => topicSet.has(t) || [...topicSet].some((x) => t.includes(x) || x.includes(t)),
     );
-    const topicScore = clamp((topicHits.length / Math.max(1, Math.min(3, Math.max(topicSet.size, 1)))) * 100);
+    const nicheHits = cTopics.filter(
+      (t) =>
+        !isGenericToken(t) &&
+        (nicheTopicSet.size === 0
+          ? topicHits.includes(t)
+          : [...nicheTopicSet].some((x) => t === x || t.includes(x) || x.includes(t))),
+    );
+    const topicScore = clamp((nicheHits.length / Math.max(1, Math.min(3, Math.max(nicheTopicSet.size || topicSet.size, 1)))) * 100);
 
     const city = String(c.city ?? "").toLowerCase();
-    const cityHit = (city && geoSet.has(city)) || geoSet.has("china") || geoSet.has("thailand");
+    const cityHit = Boolean(city && geoSet.has(city));
+    const countryHit = geoSet.has("china") || geoSet.has("thailand");
     const followers = Number(c.followers);
     const engagementRate = Number(c.engagementRate);
     const avgViews = Number(c.avgViews);
 
-    const audienceGeo = clamp((cityHit ? 75 : 35) + (followers > 50_000 ? 10 : 0));
+    const audienceGeo = clamp((cityHit ? 80 : countryHit ? 45 : 30) + (followers > 50_000 ? 10 : 0));
     const engagement = clamp(engagementRate * 12);
     const langs = Array.isArray(c.languages) ? c.languages : [];
     const langHits = langs.filter((l) => langSet.has(l)).length;
@@ -123,29 +139,35 @@ export function rankCandidatesForCard(
     const style =
       card.category === "Restaurant" && (cTopics.includes("food") || cTopics.includes("nightlife"))
         ? 80
-        : cTopics.some((t) => topicSet.has(t))
-          ? 65
-          : 40;
+        : /technolog|tech/i.test(card.category) &&
+            cTopics.some((t) => /tech|saas|software|ai|gadget/.test(t))
+          ? 85
+          : nicheHits.length
+            ? 70
+            : 35;
 
     const risks: string[] = [];
     let safety = 90;
     if (card.prohibited_claims.some((p) => /whitening|medical|roi/i.test(p)) && cTopics.includes("skincare")) {
       safety = 75;
     }
-    if (card.category === "Restaurant" && cTopics.includes("real estate") && !topicHits.length) {
+    if (nicheTopicSet.size > 0 && nicheHits.length === 0) {
+      risks.push("Low topical overlap with product category");
+      safety = Math.min(safety, 65);
+    }
+    if (/restaurant/i.test(card.category) && cTopics.includes("real estate") && !nicheHits.length) {
       risks.push("Low topical overlap with restaurant brief");
       safety = Math.min(safety, 70);
     }
+    if (/technolog|tech/i.test(card.category) && cTopics.includes("real estate") && !nicheHits.length) {
+      risks.push("Real-estate creator — weak fit for tech product");
+      safety = Math.min(safety, 55);
+    }
 
     const posting = clamp(55 + (avgViews > 20_000 ? 20 : 0));
-    const commercial = clamp(50 + topicHits.length * 15 + (cityHit ? 10 : 0));
+    const commercial = clamp(45 + nicheHits.length * 18 + (cityHit ? 10 : 0));
 
-    const hardFail =
-      topicHits.length === 0 &&
-      card.geography.length === 1 &&
-      !cityHit &&
-      !cTopics.some((t) => t === "lifestyle");
-
+    const hardFail = nicheTopicSet.size > 0 && nicheHits.length === 0;
     const breakdown = {
       topic: topicScore,
       audienceGeo,

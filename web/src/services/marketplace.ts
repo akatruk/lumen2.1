@@ -21,6 +21,7 @@ import {
   MOCK_VIDEOS,
 } from "@/data/mock";
 import { loadJson, saveJson } from "@/lib/storage";
+import { rankInfluencersForProduct } from "@/lib/product-match";
 import { lumenAnalysis } from "@/services/lumen-analysis";
 import { productScan } from "@/services/product-scan.service";
 import type { ProductResumeCard } from "@/types";
@@ -313,23 +314,10 @@ export const marketplace = {
   rankForProduct(productId: string): Influencer[] {
     const product = this.getProduct(productId);
     if (!product) return this.listInfluencers();
-    return this.listInfluencers()
-      .map((inf) => {
-        const topicHits = inf.topics.filter((t) => product.desiredTopics.includes(t)).length;
-        const langHits = inf.languages.filter((l) => product.languages.includes(l)).length;
-        const geoHit = product.geography.some(
-          (g) => inf.city === g || inf.country === g || g === "China",
-        )
-          ? 8
-          : 0;
-        const linked = inf.suitableProductIds.includes(productId) ? 12 : 0;
-        const adjusted = Math.min(
-          99,
-          Math.round(inf.matchScore * 0.7 + topicHits * 6 + langHits * 4 + geoHit + linked),
-        );
-        return { ...inf, matchScore: adjusted };
-      })
-      .sort((a, b) => b.matchScore - a.matchScore);
+    const ranked = rankInfluencersForProduct(this.listInfluencers(), product);
+    const strong = ranked.filter((r) => !r.weakFit);
+    // Prefer topical fits; only fall back to demoted list if catalog has no niche overlap at all.
+    return (strong.length ? strong : ranked).map((r) => r.influencer);
   },
 
   getVideosForInfluencer(id: string): VideoSnapshot[] {

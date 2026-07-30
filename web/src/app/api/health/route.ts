@@ -7,7 +7,7 @@ export function GET() {
   return NextResponse.json({
     status: "ok",
     service: "lumen-marketplace-web",
-    version: "0.5.6",
+    version: "0.5.7",
     mode:
       process.env.DISCOVERY_MODE === "live" || process.env.PRODUCT_SCAN_MODE === "live"
         ? "live-capable"

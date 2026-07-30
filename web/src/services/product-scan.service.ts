@@ -68,6 +68,9 @@ function detectTopics(text: string, photos: string[]): string[] {
     [/beauty|makeup|grwm|美妆/, "beauty"],
     [/fitness|gym|yoga|hiit/, "fitness"],
     [/real\s*estate|condo|property|invest/, "real estate"],
+    [/technolog|software|saas|artificial\s*intelligence|(?<![a-z])tech(?![a-z])|(?<![a-z])ai(?![a-z])|gadget|startup|cloud|devops|数码/, "tech"],
+    [/saas|b2b|software|cloud/, "saas"],
+    [/gadget|hardware|device|手机|数码/, "gadget"],
     [/lifestyle|生活方式/, "lifestyle"],
     [/wellness/, "wellness"],
   ];
@@ -193,6 +196,8 @@ export const productScan = {
     }
 
     if (/restaurant|kitchen|cafe|food|menu/i.test(blob)) category = "Restaurant";
+    else if (/technolog|(?<![a-z])tech(?![a-z])|saas|software|(?<![a-z])ai(?![a-z])|gadget|electronic|startup|cloud|devops|数码/i.test(blob))
+      category = "Technology";
     else if (/serum|skincare|beauty/i.test(blob)) category = "Skincare";
     else if (/condo|property|real estate/i.test(blob)) category = "Real Estate";
     else if (/tour|island|day tour/i.test(blob)) category = "Tourism";
@@ -288,7 +293,9 @@ export const productScan = {
             ? "✨"
             : card.category === "Real Estate"
               ? "🏢"
-              : "📦",
+              : card.category === "Technology"
+                ? "💻"
+                : "📦",
       priceLabel: card.budget.type === "unknown" ? "TBD" : card.budget.notes || card.budget.type,
       geography: card.geography,
       audience: card.audience || "TBD",
