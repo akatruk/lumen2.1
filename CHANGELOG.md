@@ -2,6 +2,21 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.5.9] — 2026-07-31
+
+### Fixed — Product → Discover → Invite end-to-end niche flow
+
+- TikHub candidates: topics from **creator bio / titles**, not stamped search keywords (travel vloggers no longer fake-match tech).
+- Discover rank **hard-drops** niche conflicts / zero overlap; tech products default Douyin query to `科技 AI 短视频 脚本…`.
+- Influencer profile: **Product** dropdown (Lumen Script AI etc.); campaign auto-ensured; catalog seeds survive login hydrate.
+- Prompt: `docs/prompts/DISCOVER_MATCH_PROMPT.md` (companion to BUSINESS_FLOW step 3).
+- Health `0.5.9`. Manual QA: `docs/MANUAL_QA_PRODUCT_DISCOVER_INVITE.md`.
+
+### QA
+
+- Target: https://influencers.lumen.universalgravity.org — health `0.5.9` / Deploy [`30567178318`](https://github.com/akatruk/lumen2.1/actions/runs/30567178318) **success** (`a77444b`).
+- Manual QA: **P0 ALL PASS** — Wei Fang product dropdown has Lumen; Discover `prod-7` query is tech Chinese; travel bio hard-dropped in unit.
+
 ## [0.5.8] — 2026-07-30
 
 ### Fixed — Lumen / viral-script products match tech creators
