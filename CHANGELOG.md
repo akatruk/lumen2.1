@@ -2,6 +2,21 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.5.5] — 2026-07-30
+
+### Fixed — Full brand-console UI i18n (zh / en)
+
+- Language toggle previously updated **nav only**; page chrome (Products, Discover, Campaigns, Influencers, etc.) stayed English.
+- Expanded `web/messages/en.json` + `zh.json` (~526 keys) and wired all `(app)` pages + `ModeBadge` / `AddToShortlistButton` through `useI18n()` + `fill()`.
+- Mobile top-bar badge uses `t.app.badge` (市集 / Marketplace). Health `0.5.5`.
+- Manual QA: `docs/MANUAL_QA_I18N.md`.
+
+### QA
+
+- Target: https://influencers.lumen.universalgravity.org — health `0.5.5` / Deploy [`30531584006`](https://github.com/akatruk/lumen2.1/actions/runs/30531584006) **success** (`8ca2c24`).
+- Manual QA: `docs/MANUAL_QA_I18N.md` — **P0 ALL PASS**; Chrome headless zh/en page matrix + persistence + mobile badge.
+- Smoke `EXPECT_VERSION=0.5.5` **PASSED**.
+
 ## [0.5.4] — 2026-07-29
 
 ### Fixed — Mobile shell (brand + creator)
