@@ -2,6 +2,27 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.5.6] — 2026-07-30
+
+### Added — Invitation message threads (brand account)
+
+- Brand `/invitations` shows a conversation card per invite: **You (brand)** outbound + **Creator** reply (or awaiting).
+- `Invitation.responseMessage` (Prisma + local seed); creator Accept/Decline stores a reply visible on the brand account.
+- Influencer profile: editable invite message preview before Send.
+- Manual QA: `docs/MANUAL_QA_INVITE_THREAD.md`.
+
+### Fixed — Add Product Save silent failure
+
+- Logged-in Save with empty category hit Zod `min(1)` → thrown error swallowed by `void submit()`.
+- API coerces empty category → `General`; UI validates name/brand with toast + try/catch.
+- Health `0.5.6`.
+
+### QA
+
+- Target: https://influencers.lumen.universalgravity.org — health `0.5.6` / Deploy [`30532855665`](https://github.com/akatruk/lumen2.1/actions/runs/30532855665) **success** (`57faf0e`).
+- Manual QA: `docs/MANUAL_QA_INVITE_THREAD.md` — **P0 ALL PASS**; product empty-category POST → `General`; invite thread UI + PATCH `responseMessage`.
+- Smoke `EXPECT_VERSION=0.5.6` **PASSED**.
+
 ## [0.5.5] — 2026-07-30
 
 ### Fixed — Full brand-console UI i18n (zh / en)
