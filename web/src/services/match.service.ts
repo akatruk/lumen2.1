@@ -4,7 +4,17 @@ import type {
   ProductResumeCard,
   RankedDiscoveryMatch,
 } from "@/types";
-import { expandMatchTokens, isGenericToken, productNicheTokens, topicsFromCategory } from "@/lib/product-match";
+import {
+  hasNicheConflict,
+  inferCreatorTopicsFromText,
+} from "@/lib/creator-topics";
+import {
+  enrichProductForMatch,
+  expandMatchTokens,
+  isGenericToken,
+  productNicheTokens,
+  topicsFromCategory,
+} from "@/lib/product-match";
 
 const WEIGHTS = {
   topic: 25,
@@ -85,7 +95,8 @@ export function rankCandidatesForCard(
   candidates: DiscoveryCandidate[],
   product: Product,
 ): RankedDiscoveryMatch[] {
-  const card = cardOf(product);
+  const enriched = enrichProductForMatch(product);
+  const card = cardOf(enriched);
   if (!card) return [];
 
   const allowed = new Set(
@@ -98,19 +109,22 @@ export function rankCandidatesForCard(
     expandMatchTokens([
       ...card.desired_topics,
       ...topicsFromCategory(card.category),
-      ...productNicheTokens(product),
+      ...productNicheTokens(enriched),
     ]).map((t) => t.toLowerCase()),
   );
   const nicheTopicSet = new Set([...topicSet].filter((t) => !isGenericToken(t)));
   const geoSet = new Set(card.geography.map((g) => g.toLowerCase()));
   const langSet = new Set(card.languages);
+  const nicheList = [...nicheTopicSet];
 
   const ranked: RankedDiscoveryMatch[] = [];
 
   for (const c of candidates) {
     if (!c || typeof c !== "object") continue;
 
-    const cTopics = asStringArray(c.topics).map((t) => t.toLowerCase());
+    // Topics from creator evidence only (name + bio). Ignore stamped search topics on candidate.
+    const fromBio = inferCreatorTopicsFromText(c.name, c.bio);
+    const cTopics = (fromBio.length ? fromBio : asStringArray(c.topics)).map((t) => t.toLowerCase());
     const topicHits = cTopics.filter(
       (t) => topicSet.has(t) || [...topicSet].some((x) => t.includes(x) || x.includes(t)),
     );
@@ -121,7 +135,10 @@ export function rankCandidatesForCard(
           ? topicHits.includes(t)
           : [...nicheTopicSet].some((x) => t === x || t.includes(x) || x.includes(t))),
     );
-    const topicScore = clamp((nicheHits.length / Math.max(1, Math.min(3, Math.max(nicheTopicSet.size || topicSet.size, 1)))) * 100);
+    const topicScore = clamp(
+      (nicheHits.length / Math.max(1, Math.min(3, Math.max(nicheTopicSet.size || topicSet.size, 1)))) *
+        100,
+    );
 
     const city = String(c.city ?? "").toLowerCase();
     const cityHit = Boolean(city && geoSet.has(city));
@@ -131,7 +148,7 @@ export function rankCandidatesForCard(
     const avgViews = Number(c.avgViews);
 
     const audienceGeo = clamp((cityHit ? 80 : countryHit ? 45 : 30) + (followers > 50_000 ? 10 : 0));
-    const engagement = clamp(engagementRate * 12);
+    const engagement = clamp(Math.min(engagementRate, 25) * 12);
     const langs = Array.isArray(c.languages) ? c.languages : [];
     const langHits = langs.filter((l) => langSet.has(l)).length;
     const language = clamp((langHits / Math.max(1, langSet.size)) * 100);
@@ -140,7 +157,7 @@ export function rankCandidatesForCard(
       card.category === "Restaurant" && (cTopics.includes("food") || cTopics.includes("nightlife"))
         ? 80
         : /technolog|tech/i.test(card.category) &&
-            cTopics.some((t) => /tech|saas|software|ai|gadget/.test(t))
+            cTopics.some((t) => /tech|saas|software|ai|gadget|script|viral|content/.test(t))
           ? 85
           : nicheHits.length
             ? 70
@@ -151,9 +168,14 @@ export function rankCandidatesForCard(
     if (card.prohibited_claims.some((p) => /whitening|medical|roi/i.test(p)) && cTopics.includes("skincare")) {
       safety = 75;
     }
+    const conflict = hasNicheConflict(nicheList, cTopics);
     if (nicheTopicSet.size > 0 && nicheHits.length === 0) {
       risks.push("Low topical overlap with product category");
       safety = Math.min(safety, 65);
+    }
+    if (conflict) {
+      risks.push("Conflicting niche vs product (e.g. travel vs tech)");
+      safety = Math.min(safety, 40);
     }
     if (/restaurant/i.test(card.category) && cTopics.includes("real estate") && !nicheHits.length) {
       risks.push("Low topical overlap with restaurant brief");
@@ -167,7 +189,11 @@ export function rankCandidatesForCard(
     const posting = clamp(55 + (avgViews > 20_000 ? 20 : 0));
     const commercial = clamp(45 + nicheHits.length * 18 + (cityHit ? 10 : 0));
 
-    const hardFail = nicheTopicSet.size > 0 && nicheHits.length === 0;
+    const hardFail =
+      conflict || (nicheTopicSet.size > 0 && nicheHits.length === 0);
+    // Drop hard fails from outreach list (BUSINESS_FLOW / DISCOVER_MATCH prompt).
+    if (hardFail) continue;
+
     const breakdown = {
       topic: topicScore,
       audienceGeo,
@@ -206,9 +232,6 @@ export function rankCandidatesForCard(
       bio: String(c.bio ?? ""),
       nicheTopics: cTopics.filter((t) => !topicHits.includes(t)),
     });
-    if (hardFail) {
-      risks.push("Weak fit — low topic/geo alignment");
-    }
 
     const missingPenalty = (card.missing_fields?.length ?? 0) * 0.03;
     const confidence = Math.max(
@@ -220,8 +243,8 @@ export function rankCandidatesForCard(
     );
 
     ranked.push({
-      candidate: c,
-      score: hardFail ? Math.min(score, 48) : score,
+      candidate: { ...c, topics: cTopics },
+      score,
       confidence: Number(confidence.toFixed(2)),
       reasons,
       risks,
@@ -318,6 +341,15 @@ function buildMatchReasons(input: {
   return out;
 }
 
+const NICHE_QUERY_ZH: [RegExp, string][] = [
+  [/tech|ai|saas|software|script|viral|content|creator|short\s*video|technology/i, "科技 AI 短视频 脚本 工具"],
+  [/food|restaurant|nightlife/i, "美食 探店"],
+  [/real\s*estate|property|investment/i, "房产 楼盘"],
+  [/skincare|beauty/i, "美妆 护肤"],
+  [/travel/i, "旅行 旅游"],
+  [/fitness/i, "健身"],
+];
+
 export function buildSearchQueryFromCard(card: ProductResumeCard): {
   query: string;
   city: string;
@@ -325,11 +357,37 @@ export function buildSearchQueryFromCard(card: ProductResumeCard): {
 } {
   const geography = asStringArray(card?.geography);
   const topics = asStringArray(card?.desired_topics);
-  const city = geography.find((g) => !/^(thailand|china)$/i.test(g)) ?? geography[0] ?? "Shanghai";
-  const topic = topics[0] ?? "lifestyle";
-  const query = [topic, city, ...topics.slice(1, 2), card?.category]
+  const nicheBlob = [card?.category, card?.pitch, ...topics, ...(card?.benefits ?? [])].join(" ");
+  const city =
+    geography.find((g) => !/^(thailand|china)$/i.test(g)) ??
+    (geography[0] && !/^(thailand|china)$/i.test(geography[0]) ? geography[0] : "");
+  let topic = topics.find((t) => !isGenericToken(t)) ?? topics[0] ?? "";
+  let zh = "";
+  for (const [re, q] of NICHE_QUERY_ZH) {
+    if (re.test(nicheBlob) || re.test(topic)) {
+      zh = q;
+      if (!topic || isGenericToken(topic)) {
+        topic = /tech|ai|script|viral/i.test(q + nicheBlob) ? "tech" : topic || "lifestyle";
+      }
+      break;
+    }
+  }
+  if (!topic) topic = "lifestyle";
+  const cityZh =
+    city === "Shanghai"
+      ? "上海"
+      : city === "Beijing"
+        ? "北京"
+        : city === "Shenzhen"
+          ? "深圳"
+          : city === "Guangzhou"
+            ? "广州"
+            : city === "Hangzhou"
+              ? "杭州"
+              : city || "";
+  const query = [zh || topic, cityZh, card?.category]
     .filter(Boolean)
     .join(" ")
-    .toLowerCase();
-  return { query, city, topic };
+    .trim();
+  return { query: query || "生活方式", city: city || "All", topic };
 }

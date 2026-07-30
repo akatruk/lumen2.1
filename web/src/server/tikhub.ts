@@ -1,5 +1,6 @@
 import "server-only";
 import type { DiscoveryCandidate, DiscoverySearchParams, LanguageCode } from "@/types";
+import { inferCreatorTopicsFromText } from "@/lib/creator-topics";
 import { tikhubConfig } from "./env";
 
 type RawAuthor = {
@@ -218,26 +219,6 @@ export async function fetchDouyinSearchVideos(
     .filter((x): x is TikHubVideoHit => Boolean(x));
 }
 
-function inferTopics(params: DiscoverySearchParams): string[] {
-  const blob = `${params.query} ${params.topic ?? ""}`.toLowerCase();
-  const topics: string[] = [];
-  const map: [RegExp, string][] = [
-    [/food|eat|restaurant|美食|吃饭|探店/, "food"],
-    [/nightlife|bar|cocktail|夜店|酒吧/, "nightlife"],
-    [/shanghai|上海|beijing|北京|guangzhou|广州|shenzhen|深圳|hangzhou|杭州/, "city"],
-    [/travel|beach|island|旅行|旅游/, "travel"],
-    [/beauty|makeup|美妆|化妆/, "beauty"],
-    [/skincare|serum|护肤/, "skincare"],
-    [/fitness|gym|健身/, "fitness"],
-    [/condo|property|real.?estate|房产|楼盘/, "real estate"],
-    [/跨境|出海|电商|commerce/, "commerce"],
-    [/lifestyle|生活/, "lifestyle"],
-  ];
-  for (const [re, t] of map) if (re.test(blob)) topics.push(t);
-  if (params.topic && params.topic !== "All") topics.unshift(params.topic.toLowerCase());
-  return [...new Set(topics)].slice(0, 4);
-}
-
 function inferLangs(params: DiscoverySearchParams): LanguageCode[] {
   if (params.language && params.language !== "all") return [params.language];
   return ["zh"];
@@ -267,7 +248,6 @@ export function videosToCandidates(
   params: DiscoverySearchParams,
 ): DiscoveryCandidate[] {
   const collectedAt = new Date().toISOString();
-  const topics = inferTopics(params);
   const languages = inferLangs(params);
   const city = inferCity(params);
 
@@ -277,6 +257,7 @@ export function videosToCandidates(
     likes: number;
     comments: number;
     shares: number;
+    titles: string[];
   };
   const byAuthor = new Map<string, Agg>();
   for (const v of videos) {
@@ -288,12 +269,14 @@ export function videosToCandidates(
         likes: v.likes,
         comments: v.comments,
         shares: v.shares,
+        titles: [v.title].filter(Boolean),
       });
     } else {
       cur.views.push(v.views);
       cur.likes += v.likes;
       cur.comments += v.comments;
       cur.shares += v.shares;
+      if (v.title) cur.titles.push(v.title);
       if (v.followers > cur.hit.followers) cur.hit.followers = v.followers;
       if (v.bio && !cur.hit.bio) cur.hit.bio = v.bio;
     }
@@ -312,6 +295,14 @@ export function videosToCandidates(
     const followers = agg.hit.followers;
     if (minFollowers > 0 && (followers <= 0 || followers < minFollowers)) continue;
 
+    const bio = agg.hit.bio || `${agg.hit.authorNickname} on Douyin`;
+    // Topics from creator evidence only — never stamp search query keywords.
+    const topics = inferCreatorTopicsFromText(
+      agg.hit.authorNickname,
+      bio,
+      ...agg.titles.slice(0, 8),
+    );
+
     const color = COLORS[Math.abs(hash(uniqueId)) % COLORS.length]!;
     candidates.push({
       id: `disc-dy-${uniqueId}`,
@@ -327,7 +318,7 @@ export function videosToCandidates(
       followers,
       avgViews,
       engagementRate: Number.isFinite(engagementRate) ? engagementRate : 0,
-      bio: agg.hit.bio || `${agg.hit.authorNickname} on Douyin`,
+      bio,
       source: "tikhub",
       collectedAt,
     });

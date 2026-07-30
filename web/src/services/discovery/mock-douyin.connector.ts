@@ -48,6 +48,15 @@ function tokensFromQuery(query: string): string[] {
 
 function inferTopics(tokens: string[], fallback: string[]): string[] {
   const topicMap: Record<string, string> = {
+    科技: "tech",
+    AI: "ai",
+    ai: "ai",
+    tech: "tech",
+    saas: "saas",
+    脚本: "script",
+    短视频: "short video",
+    工具: "tech",
+    software: "software",
     food: "food",
     美食: "food",
     探店: "food",

@@ -44,7 +44,9 @@ export default function InfluencerDetailPage() {
   const [inf, setInf] = useState<Influencer | null>(null);
   const [videos, setVideos] = useState<VideoSnapshot[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [suitable, setSuitable] = useState<Product[]>([]);
   const [notes, setNotes] = useState("");
+  const [productId, setProductId] = useState("");
   const [campaignId, setCampaignId] = useState("");
   const [inviteMessage, setInviteMessage] = useState("");
 
@@ -63,38 +65,53 @@ export default function InfluencerDetailPage() {
   );
 
   useEffect(() => {
-    const found = marketplace.getInfluencer(params.id);
-    setInf(found ?? null);
-    setNotes(found?.notes ?? "");
-    setVideos(marketplace.getVideosForInfluencer(params.id));
-    setProducts(marketplace.listProducts());
-    const camps = marketplace.listCampaigns();
-    const firstId = camps[0]?.id ?? "";
-    setCampaignId(firstId);
-    if (firstId) {
-      setInviteMessage(
-        fill(t.influencers.inviteMessage, {
-          campaign: camps[0]?.name ?? "campaign",
-        }),
-      );
-    }
+    let cancelled = false;
+    void marketplace.hydrateBrandPersistence().then(() => {
+      if (cancelled) return;
+      const found = marketplace.getInfluencer(params.id);
+      setInf(found ?? null);
+      setNotes(found?.notes ?? "");
+      setVideos(marketplace.getVideosForInfluencer(params.id));
+      const allProducts = marketplace.listProducts();
+      setProducts(allProducts);
+      setSuitable(marketplace.suitableProductsForInfluencer(params.id));
+
+      const nicheFirst =
+        marketplace.suitableProductsForInfluencer(params.id, 1)[0] ??
+        allProducts.find((p) => p.id === "prod-7" || /lumen/i.test(p.name)) ??
+        allProducts[0];
+      if (nicheFirst) {
+        setProductId(nicheFirst.id);
+        const camp = marketplace.ensureCampaignForProduct(nicheFirst.id);
+        setCampaignId(camp.id);
+        setInviteMessage(
+          fill(t.influencers.inviteMessage, {
+            campaign: nicheFirst.name,
+          }),
+        );
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [params.id, t]);
 
   useEffect(() => {
-    if (!campaignId) return;
-    const camp = marketplace.getCampaign(campaignId);
+    if (!productId) return;
+    const product = marketplace.getProduct(productId);
+    const camp = marketplace.ensureCampaignForProduct(productId);
+    setCampaignId(camp.id);
     setInviteMessage(
       fill(t.influencers.inviteMessage, {
-        campaign: camp?.name ?? "campaign",
+        campaign: product?.name ?? camp.name,
       }),
     );
-  }, [campaignId, t]);
+  }, [productId, t]);
 
   if (!inf) {
     return <div className="text-sm text-muted-foreground">{t.influencers.notFound}</div>;
   }
 
-  const suitable = products.filter((p) => inf.suitableProductIds.includes(p.id));
   const campaigns = marketplace.listCampaigns();
 
   return (
@@ -126,17 +143,40 @@ export default function InfluencerDetailPage() {
           <MatchScore score={inf.matchScore} size="lg" />
           <AddToShortlistButton influencer={inf} />
           <div className="flex w-full max-w-md flex-col gap-2 sm:items-end">
-            <Select
-              className="w-full sm:w-64"
-              value={campaignId}
-              onChange={(e) => setCampaignId(e.target.value)}
-            >
-              {campaigns.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </Select>
+            <div className="w-full text-left">
+              <div className="mb-1 text-xs text-muted-foreground">{t.influencers.inviteProductLabel}</div>
+              <Select
+                className="w-full sm:w-64"
+                value={productId}
+                onChange={(e) => setProductId(e.target.value)}
+              >
+                <option value="">{t.influencers.selectProduct}</option>
+                {products.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name} · {p.brand}
+                  </option>
+                ))}
+              </Select>
+            </div>
+            <div className="w-full text-left">
+              <div className="mb-1 text-xs text-muted-foreground">{t.influencers.inviteCampaignLabel}</div>
+              <Select
+                className="w-full sm:w-64"
+                value={campaignId}
+                onChange={(e) => {
+                  const id = e.target.value;
+                  setCampaignId(id);
+                  const camp = marketplace.getCampaign(id);
+                  if (camp?.productId) setProductId(camp.productId);
+                }}
+              >
+                {campaigns.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </Select>
+            </div>
             <div className="w-full text-left">
               <div className="mb-1 text-xs text-muted-foreground">{t.influencers.inviteMessageLabel}</div>
               <Textarea
@@ -151,11 +191,18 @@ export default function InfluencerDetailPage() {
               size="sm"
               variant="secondary"
               onClick={() => {
-                if (!campaignId) return;
+                if (!campaignId) {
+                  push(t.influencers.toastInviteFailed, "err");
+                  return;
+                }
+                const label =
+                  marketplace.getProduct(productId)?.name ??
+                  marketplace.getCampaign(campaignId)?.name ??
+                  "campaign";
                 const message =
                   inviteMessage.trim() ||
                   fill(t.influencers.inviteMessage, {
-                    campaign: marketplace.getCampaign(campaignId)?.name ?? "campaign",
+                    campaign: label,
                   });
                 void marketplace
                   .createInvitationAsync({

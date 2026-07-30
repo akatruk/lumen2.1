@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Loader2, Search, Sparkles } from "lucide-react";
 import { discovery } from "@/services/discovery/discovery.service";
 import { marketplace } from "@/services/marketplace";
+import { enrichProductForMatch } from "@/lib/product-match";
 import { buildSearchQueryFromCard, rankCandidatesForCard } from "@/services/match.service";
 import type {
   DiscoveryCandidate,
@@ -22,7 +23,19 @@ import { fill, useI18n } from "@/lib/i18n";
 import { formatNumber, formatPercent, LANGUAGE_LABELS } from "@/lib/utils";
 
 const CITIES = ["All", "Shanghai", "Beijing", "Guangzhou", "Shenzhen", "Hangzhou", "Chengdu"];
-const TOPICS = ["All", "food", "nightlife", "travel", "lifestyle", "skincare", "beauty", "fitness"];
+const TOPICS = [
+  "All",
+  "tech",
+  "ai",
+  "food",
+  "nightlife",
+  "travel",
+  "lifestyle",
+  "skincare",
+  "beauty",
+  "fitness",
+  "real estate",
+];
 
 export default function DiscoverPage() {
   const { t } = useI18n();
@@ -30,10 +43,10 @@ export default function DiscoverPage() {
   const [products, setProducts] = useState<Product[]>([]);
 
   const [productId, setProductId] = useState<string>("");
-  const [query, setQuery] = useState("上海 美食");
+  const [query, setQuery] = useState("科技 AI 短视频");
   const [city, setCity] = useState("Shanghai");
   const [language, setLanguage] = useState<"all" | LanguageCode>("all");
-  const [topic, setTopic] = useState("food");
+  const [topic, setTopic] = useState("tech");
   const [minFollowers, setMinFollowers] = useState(0);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
@@ -53,25 +66,19 @@ export default function DiscoverPage() {
     const fromQuery = searchParams.get("productId");
     if (fromQuery && products.some((p) => p.id === fromQuery)) {
       setProductId(fromQuery);
-      const p = marketplace.getProduct(fromQuery);
-      if (p?.resumeCard) {
-        const q = buildSearchQueryFromCard(p.resumeCard);
-        setQuery(q.query);
-        setCity(q.city);
-        setTopic(q.topic);
-      } else if (p) {
-        setQuery(`${p.desiredTopics[0] ?? "lifestyle"} ${p.geography[0] ?? ""}`.trim());
-        setCity(p.geography[0] ?? "Shanghai");
-        setTopic(p.desiredTopics[0] ?? "All");
-      }
+      applyProductDefaults(fromQuery);
       return;
     }
-    if (!productId && products[0]) {
-      // prefer Shanghai F&B demo product if present
-      const demo = products.find((p) => p.id === "prod-2") ?? products[0];
-      setProductId(demo.id);
+    if (!productId && products.length) {
+      const prefer =
+        products.find((p) => p.id === "prod-7") ??
+        products.find((p) => /lumen|technolog|ai|script/i.test(`${p.name} ${p.category}`)) ??
+        products.find((p) => p.id === "prod-2") ??
+        products[0];
+      if (prefer) applyProductDefaults(prefer.id);
     }
-  }, [searchParams, products, productId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- apply once products hydrate
+  }, [searchParams, products]);
 
   useEffect(() => {
     const last = discovery.getLastSearch();
@@ -83,21 +90,33 @@ export default function DiscoverPage() {
 
   function applyProductDefaults(id: string) {
     setProductId(id);
-    const p = marketplace.getProduct(id);
-    if (!p) return;
-    if (p.resumeCard) {
-      const q = buildSearchQueryFromCard(p.resumeCard);
-      setQuery(q.query);
-      setCity(q.city);
-      setTopic(q.topic);
-      if (p.resumeCard.languages[0]) {
-        setLanguage(p.resumeCard.languages[0]);
-      }
-    } else {
-      setQuery(`${p.desiredTopics[0] ?? "lifestyle"} ${p.geography[0] ?? ""}`.trim());
-      setCity(p.geography.find((g) => g !== "China") ?? p.geography[0] ?? "All");
-      setTopic(p.desiredTopics[0] ?? "All");
-    }
+    const raw = marketplace.getProduct(id);
+    if (!raw) return;
+    const p = enrichProductForMatch(raw);
+    const card = p.resumeCard ?? {
+      name: p.name,
+      brand: p.brand,
+      category: p.category,
+      pitch: p.description,
+      geography: p.geography,
+      audience: p.audience,
+      languages: p.languages,
+      benefits: p.benefits,
+      prohibited_claims: p.prohibitedClaims,
+      desired_topics: p.desiredTopics,
+      tone: [],
+      platforms: p.platforms ?? ["douyin"],
+      budget: { type: "unknown" as const, notes: p.priceLabel },
+      success_metrics: [],
+      confidence: 0.7,
+      missing_fields: [],
+      evidence_notes: [],
+    };
+    const q = buildSearchQueryFromCard(card);
+    setQuery(q.query);
+    setCity(q.city);
+    setTopic(q.topic);
+    if (card.languages[0]) setLanguage(card.languages[0]);
   }
 
   async function runSearch() {
@@ -114,19 +133,45 @@ export default function DiscoverPage() {
     setLoading(true);
     setError(null);
     try {
+      const enriched = enrichProductForMatch(product);
+      const defaults = enriched.resumeCard
+        ? buildSearchQueryFromCard(enriched.resumeCard)
+        : buildSearchQueryFromCard({
+            name: enriched.name,
+            brand: enriched.brand,
+            category: enriched.category,
+            pitch: enriched.description,
+            geography: enriched.geography,
+            audience: enriched.audience,
+            languages: enriched.languages,
+            benefits: enriched.benefits,
+            prohibited_claims: enriched.prohibitedClaims,
+            desired_topics: enriched.desiredTopics,
+            tone: [],
+            platforms: enriched.platforms ?? ["douyin"],
+            budget: { type: "unknown", notes: enriched.priceLabel },
+            success_metrics: [],
+            confidence: 0.7,
+            missing_fields: [],
+            evidence_notes: [],
+          });
       const params: DiscoverySearchParams = {
-        query: query.trim() || "上海 美食",
-        city,
+        query: query.trim() || defaults.query || "科技 AI",
+        city: city === "All" ? defaults.city : city,
         language,
-        topic,
+        topic: topic === "All" ? defaults.topic : topic,
         minFollowers,
         limit: 12,
       };
       const list: DiscoveryCandidate[] = await discovery.search(params);
       setRawCount(list.length);
-      const matches = rankCandidatesForCard(list, product);
+      // hard-drops travel/etc. vs tech inside rankCandidatesForCard
+      const matches = rankCandidatesForCard(list, enriched);
       setRanked(matches);
       setSearched(true);
+      if (!matches.length && list.length) {
+        setError(t.discover.errNoNicheMatches);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : t.discover.errSearchFailed);
     } finally {

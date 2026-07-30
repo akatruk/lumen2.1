@@ -6,6 +6,8 @@
 
 ---
 
+> Companion runtime prompt for step 3 Discover/rank: **`docs/prompts/DISCOVER_MATCH_PROMPT.md`** (candidate topics from bio, hard-drop niche conflict, Douyin query from product niche).
+
 ## Системный промпт (копировать)
 
 ```text

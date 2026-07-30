@@ -125,7 +125,12 @@ function getProducts(): Product[] {
 }
 
 function getCampaigns(): Campaign[] {
-  return loadJson(KEYS.campaigns, MOCK_CAMPAIGNS);
+  const stored = loadJson(KEYS.campaigns, MOCK_CAMPAIGNS);
+  const byId = new Map(stored.map((c) => [c.id, c]));
+  for (const seed of MOCK_CAMPAIGNS) {
+    if (!byId.has(seed.id)) byId.set(seed.id, seed);
+  }
+  return [...byId.values()];
 }
 
 function getShortlists(): Shortlist[] {
@@ -192,6 +197,15 @@ async function fetchSession(): Promise<{ id: string; email: string } | null> {
 
 function replaceProducts(products: Product[]) {
   saveJson(KEYS.products, products);
+}
+
+/** Keep demo catalog seeds (Lumen Script AI etc.) visible after login hydrate. */
+function mergeCatalogSeeds(serverProducts: Product[]): Product[] {
+  const byId = new Map(serverProducts.map((p) => [p.id, p]));
+  for (const seed of MOCK_PRODUCTS) {
+    if (!byId.has(seed.id)) byId.set(seed.id, seed);
+  }
+  return [...byId.values()];
 }
 
 function replaceShortlists(shortlists: Shortlist[]) {
@@ -480,7 +494,7 @@ export const marketplace = {
     ]);
     if (prodRes.ok) {
       const data = (await prodRes.json()) as { products: Product[] };
-      replaceProducts(data.products ?? []);
+      replaceProducts(mergeCatalogSeeds(data.products ?? []));
     }
     if (slRes.ok) {
       const data = (await slRes.json()) as { shortlists: Shortlist[] };
@@ -524,6 +538,46 @@ export const marketplace = {
     saveJson(KEYS.campaigns, [campaign, ...getCampaigns()]);
     pushActivity("campaign", `Created campaign ${campaign.name}`);
     return campaign;
+  },
+
+  /** Find or create a Draft campaign linked to a product (invite product picker). */
+  ensureCampaignForProduct(productId: string): Campaign {
+    const existing = getCampaigns().find((c) => c.productId === productId);
+    if (existing) return existing;
+    const product = this.getProduct(productId);
+    const name = product ? `${product.name} Outreach` : `Product ${productId} Outreach`;
+    return this.createCampaign({
+      name,
+      productId,
+      objective: product?.description?.slice(0, 160) || "Creator outreach",
+      audience: product?.audience || "",
+      platforms: product?.platforms?.length ? product.platforms : ["douyin"],
+      geography: product?.geography?.length ? product.geography : ["China"],
+      languages: product?.languages?.length ? product.languages : ["zh"],
+      budgetRange: product?.priceLabel || "TBD",
+      startDate: new Date().toISOString().slice(0, 10),
+      endDate: new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
+      materials: [],
+      status: "Draft",
+    });
+  },
+
+  /** Products that niche-match this influencer (not hardcoded suitableProductIds). */
+  suitableProductsForInfluencer(influencerId: string, limit = 8): Product[] {
+    const inf = this.getInfluencer(influencerId);
+    if (!inf) return [];
+    const scored = this.listProducts()
+      .map((p) => {
+        const row = rankInfluencersForProduct([inf], enrichProductForMatch(p))[0];
+        return { product: p, score: row?.score ?? 0, weakFit: row?.weakFit ?? true };
+      })
+      .filter((x) => !x.weakFit)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, limit)
+      .map((x) => x.product);
+    if (scored.length) return scored;
+    // Fallback: seed links if any still resolve
+    return this.listProducts().filter((p) => inf.suitableProductIds?.includes(p.id)).slice(0, limit);
   },
 
   updateCampaign(id: string, patch: Partial<Campaign>): Campaign | undefined {
