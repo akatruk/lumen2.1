@@ -16,7 +16,7 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 ### QA
 
 - Target: https://influencers.lumen.universalgravity.org — health `0.5.11` / Deploy [`30624810633`](https://github.com/akatruk/lumen2.1/actions/runs/30624810633) **success** (`885ea7f`).
-- Manual QA: **P0 ALL PASS** — fixture merge 0→128k; health/routes OK; restore + shortlist paths shipped.
+- Manual QA: **P0 ALL PASS** (re-verified) — fixtures PASS; live Discover **5/5** followers > 0; routes 200 (`/discover`, `/shortlists`, …); restore + shortlist CTAs shipped.
 
 ## [0.5.10] — 2026-07-31
 
