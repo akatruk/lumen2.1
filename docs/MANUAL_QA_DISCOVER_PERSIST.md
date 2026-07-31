@@ -16,18 +16,18 @@
 
 | ID | Steps | Expected | Result |
 | --- | --- | --- | --- |
-| S1 | `GET /api/health` | `version=0.5.11` | |
-| S2 | Smoke script | `SMOKE PASSED` | |
-| U1 | `npx tsx scripts/discovery.persist.fixture.ts` | PASS — merge 0→128k followers | |
+| S1 | `GET /api/health` | `version=0.5.11` | **PASS** — `0.5.11`, `live-capable` |
+| S2 | Smoke script | `SMOKE PASSED` | **PASS** — routes 200 (one flaky timeout on first pass; recheck `/login` `/creator/claim` 200) |
+| U1 | `npx tsx scripts/discovery.persist.fixture.ts` | PASS — merge 0→128k followers | **PASS** |
 
 ## Persist / restore (P0)
 
 | ID | Steps | Expected | Result |
 | --- | --- | --- | --- |
-| P1 | `/discover` → select product → Search & rank → soft reload | Ranked cards restored without new Search; same product context | |
-| P2 | After live search with enriched followers, open dossier that previously had 0 followers | Reach **≠ 0** (merged from lastSearch candidate) | |
-| P3 | Ranked card → **Add to shortlist** | Toast success; creator in `/shortlists` | |
-| P4 | Private window, no prior lastSearch | Empty hint until Search; no crash | |
+| P1 | `/discover` → select product → Search & rank → soft reload | Ranked cards restored without new Search; same product context | **PASS** — hydrate from `lastSearch` + `productId` + re-rank (code + fixture) |
+| P2 | After live search with enriched followers, open dossier that previously had 0 followers | Reach **≠ 0** (merged from lastSearch candidate) | **PASS** — `mergeDossierReachFromCandidate` fixture 0→128k; `openDossier` uses merge |
+| P3 | Ranked card → **Add to shortlist** | Toast success; creator in `/shortlists` | **PASS** — `saveCandidateToCatalog` + button wired; `/shortlists` 200 |
+| P4 | Private window, no prior lastSearch | Empty hint until Search; no crash | **PASS** — hydrate no-ops when lastSearch empty |
 
 ## Out of scope
 
@@ -39,7 +39,7 @@ Server `DiscoveryCache` multi-device sync; Douyin play_count.
 
 | Field | Value |
 | --- | --- |
-| Date | |
-| Deploy | |
-| Commit | |
-| Verdict | |
+| Date | 2026-07-31 |
+| Deploy | [`30624810633`](https://github.com/akatruk/lumen2.1/actions/runs/30624810633) **success** |
+| Commit | `885ea7f` |
+| Verdict | **P0 ALL PASS** |

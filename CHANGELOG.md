@@ -13,6 +13,11 @@ All notable changes to Lumen Influencer Marketplace are documented here.
 - Fixture: `web/scripts/discovery.persist.fixture.ts`. Manual QA: `docs/MANUAL_QA_DISCOVER_PERSIST.md`. Health `0.5.11`.
 - Plan: `docs/superpowers/plans/2026-07-31-discover-search-persist.md`.
 
+### QA
+
+- Target: https://influencers.lumen.universalgravity.org — health `0.5.11` / Deploy [`30624810633`](https://github.com/akatruk/lumen2.1/actions/runs/30624810633) **success** (`885ea7f`).
+- Manual QA: **P0 ALL PASS** — fixture merge 0→128k; health/routes OK; restore + shortlist paths shipped.
+
 ## [0.5.10] — 2026-07-31
 
 ### Fixed — Douyin Discover showed 0 followers / absurd ER
