@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { discoveryMode, tikhubConfig } from "@/server/env";
-import { fetchDouyinSearchVideos, videosToCandidates, videosToEvidence } from "@/server/tikhub";
+import { fetchDouyinSearchVideos, enrichVideosWithProfileFollowers, videosToCandidates, videosToEvidence } from "@/server/tikhub";
 import type { DiscoverySearchParams, LanguageCode } from "@/types";
 
 export const runtime = "nodejs";
@@ -52,7 +52,9 @@ export async function POST(req: Request) {
       .join(" ")
       .trim();
 
-    const videos = await fetchDouyinSearchVideos(keyword, Math.max(params.limit ?? 12, 20));
+    const videos = await enrichVideosWithProfileFollowers(
+      await fetchDouyinSearchVideos(keyword, Math.max(params.limit ?? 12, 20)),
+    );
     const candidates = videosToCandidates(videos, params);
 
     if (body.candidateId) {
@@ -85,5 +87,6 @@ export async function GET() {
     platform: "douyin",
     endpoint: "/api/discovery/douyin",
     tikhubPath: "/api/v1/douyin/search/fetch_general_search_v1",
+    profileEnrichPath: "/api/v1/douyin/app/v3/handler_user_profile",
   });
 }

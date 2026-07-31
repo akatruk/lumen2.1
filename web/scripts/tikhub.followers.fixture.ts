@@ -1,5 +1,6 @@
 /**
  * Fixture: Douyin/TikHub may put followers on author or author_stats.
+ * Douyin search often zeroes follower_count + play_count — profile enrich + ER guard.
  * Kept outside `src/` so Next.js production typecheck ignores it.
  * Run: cd web && npx --yes tsx scripts/tikhub.followers.fixture.ts
  */
@@ -15,7 +16,12 @@ mod._load = (...args: unknown[]) => {
 };
 
 async function main() {
-  const { normalizeTikHubItem, videosToCandidates } = await import("../src/server/tikhub");
+  const {
+    normalizeTikHubItem,
+    videosToCandidates,
+    applyFollowerMap,
+    computeEngagementRate,
+  } = await import("../src/server/tikhub");
 
   const sample = {
     aweme_id: "712345",
@@ -25,6 +31,7 @@ async function main() {
       nickname: "沪上探店",
       signature: "上海美食",
       follower_count: 5_000_000,
+      sec_uid: "MS4wLjABAAAAtest",
     },
     statistics: { play_count: 250_000, digg_count: 12_000, comment_count: 400, share_count: 90 },
   };
@@ -33,6 +40,9 @@ async function main() {
   if (!hit) throw new Error("normalize returned null");
   if (hit.followers !== 5_000_000) {
     throw new Error(`expected followers 5000000, got ${hit.followers}`);
+  }
+  if (hit.authorSecUid !== "MS4wLjABAAAAtest") {
+    throw new Error(`expected sec_uid, got ${hit.authorSecUid}`);
   }
   if (!hit.url.includes("douyin.com")) {
     throw new Error(`expected douyin.com url, got ${hit.url}`);
@@ -74,9 +84,64 @@ async function main() {
     throw new Error(`authorStatsV2 string parse failed: ${v2?.followers}`);
   }
 
+  // Douyin search shape: follower_count=0, play_count=0, huge diggs → ER must not explode.
+  const searchZeroed = normalizeTikHubItem({
+    aweme_id: "3",
+    author: {
+      unique_id: "82678166699",
+      nickname: "小狮妹玩AI",
+      sec_uid: "MS4wLjABAAAAlion",
+      follower_count: 0,
+      signature: "AI是一个工具",
+    },
+    statistics: { play_count: 0, digg_count: 32_000, comment_count: 400, share_count: 50 },
+  });
+  if (!searchZeroed) throw new Error("searchZeroed null");
+  if (searchZeroed.followers !== 0 || searchZeroed.views !== 0) {
+    throw new Error("expected search-zeroed followers/views");
+  }
+
+  const beforeEnrich = videosToCandidates([searchZeroed], {
+    query: "AI",
+    city: "Shanghai",
+    language: "zh",
+    minFollowers: 0,
+    limit: 5,
+  });
+  if (beforeEnrich[0]?.engagementRate !== 0) {
+    throw new Error(`expected ER 0 when views=0, got ${beforeEnrich[0]?.engagementRate}`);
+  }
+  if (beforeEnrich[0]?.avgViews !== 32_000) {
+    throw new Error(`expected avgViews=avg diggs proxy, got ${beforeEnrich[0]?.avgViews}`);
+  }
+
+  const enriched = applyFollowerMap([searchZeroed], new Map([["MS4wLjABAAAAlion", 128_000]]));
+  if (enriched[0]?.followers !== 128_000) {
+    throw new Error(`applyFollowerMap failed: ${enriched[0]?.followers}`);
+  }
+  const after = videosToCandidates(enriched, {
+    query: "AI",
+    city: "Shanghai",
+    language: "zh",
+    minFollowers: 10_000,
+    limit: 5,
+  });
+  if (after[0]?.followers !== 128_000) {
+    throw new Error(`enriched candidate followers ${after[0]?.followers}`);
+  }
+
+  if (computeEngagementRate(100, 10, 5, 0) !== 0) {
+    throw new Error("computeEngagementRate must return 0 when views=0");
+  }
+  if (computeEngagementRate(100, 0, 0, 1000) !== 10) {
+    throw new Error(`expected 10% ER, got ${computeEngagementRate(100, 0, 0, 1000)}`);
+  }
+
   console.log("tikhub.followers.fixture PASS", {
     followers: hit.followers,
     avgViews: candidates[0]?.avgViews,
+    enrichedFollowers: after[0]?.followers,
+    zeroViewEr: beforeEnrich[0]?.engagementRate,
     platformHint: "douyin",
   });
 }

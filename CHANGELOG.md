@@ -2,6 +2,15 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.5.10] — 2026-07-31
+
+### Fixed — Douyin Discover showed 0 followers / absurd ER
+
+- Root cause: TikHub `fetch_general_search_v1` zeroes `author.follower_count` and `statistics.play_count` (likes stay real). ER used `/ max(1, views)` → millions %.
+- After search, enrich creators via `handler_user_profile` (`sec_user_id`) for real follower counts (concurrency 4, best-effort).
+- When play_count is missing: ER = 0; avgViews falls back to avg diggs as reach proxy.
+- Fixture: `web/scripts/tikhub.followers.fixture.ts`. Health `0.5.10`.
+
 ## [0.5.9] — 2026-07-31
 
 ### Fixed — Product → Discover → Invite end-to-end niche flow

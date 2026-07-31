@@ -10,6 +10,8 @@ type RawAuthor = {
   nickname?: string;
   uid?: string;
   id?: string;
+  sec_uid?: string;
+  secUid?: string;
   signature?: string;
   followerCount?: number;
   follower_count?: number;
@@ -57,6 +59,8 @@ export type TikHubVideoHit = {
   authorUniqueId: string;
   authorNickname: string;
   authorUid: string;
+  /** Douyin sec_uid — required to enrich followers via profile API. */
+  authorSecUid: string;
   followers: number;
   bio: string;
 };
@@ -142,6 +146,10 @@ function authorHandle(author: RawAuthor): string {
     .trim();
 }
 
+function authorSecUid(author: RawAuthor): string {
+  return String(author.sec_uid ?? author.secUid ?? "").trim();
+}
+
 /** Exported for fixture checks — maps one Douyin/TikHub aweme item → hit or null. */
 export function normalizeTikHubItem(v: RawItem): TikHubVideoHit | null {
   const author = v.author ?? {};
@@ -160,9 +168,83 @@ export function normalizeTikHubItem(v: RawItem): TikHubVideoHit | null {
     authorUniqueId: uniqueId,
     authorNickname: String(author.nickname ?? uniqueId),
     authorUid: String(author.uid ?? author.id ?? uniqueId),
+    authorSecUid: authorSecUid(author),
     followers: followersOf(v, author),
     bio: String(author.signature ?? ""),
   };
+}
+
+/**
+ * Douyin search zeroes `author.follower_count`. Profile API returns the real count.
+ * Best-effort: failures leave followers as-is (often 0).
+ */
+export async function fetchDouyinProfileFollowers(secUid: string): Promise<number> {
+  if (!secUid) return 0;
+  const data = (await tikhubRequest("GET", "/api/v1/douyin/app/v3/handler_user_profile", {
+    sec_user_id: secUid,
+  })) as {
+    data?: {
+      user?: {
+        follower_count?: number | string;
+        mplatform_followers_count?: number | string;
+      };
+    };
+  };
+  return num(data?.data?.user?.follower_count, data?.data?.user?.mplatform_followers_count);
+}
+
+const PROFILE_ENRICH_CONCURRENCY = 4;
+
+/** Apply a sec_uid → followers map onto hits (exported for fixtures). */
+export function applyFollowerMap(
+  videos: TikHubVideoHit[],
+  bySecUid: Map<string, number>,
+): TikHubVideoHit[] {
+  return videos.map((v) => {
+    const enriched = v.authorSecUid ? bySecUid.get(v.authorSecUid) : undefined;
+    if (enriched === undefined || enriched <= v.followers) return v;
+    return { ...v, followers: enriched };
+  });
+}
+
+/**
+ * Enrich hits whose search payload had followers=0 via Douyin profile API.
+ * Dedupes by sec_uid; runs with limited concurrency.
+ */
+export async function enrichVideosWithProfileFollowers(
+  videos: TikHubVideoHit[],
+): Promise<TikHubVideoHit[]> {
+  const need = new Map<string, true>();
+  for (const v of videos) {
+    if (v.followers <= 0 && v.authorSecUid) need.set(v.authorSecUid, true);
+  }
+  if (!need.size) return videos;
+
+  const bySecUid = new Map<string, number>();
+  const secUids = [...need.keys()];
+  for (let i = 0; i < secUids.length; i += PROFILE_ENRICH_CONCURRENCY) {
+    const batch = secUids.slice(i, i + PROFILE_ENRICH_CONCURRENCY);
+    const results = await Promise.allSettled(batch.map((sec) => fetchDouyinProfileFollowers(sec)));
+    results.forEach((r, idx) => {
+      const sec = batch[idx]!;
+      if (r.status === "fulfilled" && r.value > 0) bySecUid.set(sec, r.value);
+    });
+  }
+  return applyFollowerMap(videos, bySecUid);
+}
+
+/** Reach ER from aggregates. When play_count is missing (Douyin search), return 0 — never /1. */
+export function computeEngagementRate(
+  likes: number,
+  comments: number,
+  shares: number,
+  totalViews: number,
+): number {
+  if (!(totalViews > 0)) return 0;
+  const rate = ((likes + comments + shares) / totalViews) * 100;
+  if (!Number.isFinite(rate) || rate < 0) return 0;
+  // Cap absurd ratios if TikHub returns tiny/non-zero plays with huge diggs.
+  return Number(Math.min(rate, 100).toFixed(2));
 }
 
 function normalizeItem(v: RawItem): TikHubVideoHit | null {
@@ -287,11 +369,12 @@ export function videosToCandidates(
   const candidates: DiscoveryCandidate[] = [];
 
   for (const [uniqueId, agg] of byAuthor) {
-    const avgViews = Math.round(agg.views.reduce((a, b) => a + b, 0) / Math.max(1, agg.views.length));
-    const totalViews = Math.max(1, agg.views.reduce((a, b) => a + b, 0));
-    const engagementRate = Number(
-      (((agg.likes + agg.comments + agg.shares) / totalViews) * 100).toFixed(2),
-    );
+    const viewSum = agg.views.reduce((a, b) => a + b, 0);
+    const avgPlayViews = Math.round(viewSum / Math.max(1, agg.views.length));
+    // Douyin search zeroes play_count; use avg diggs as reach proxy for ranking/UI.
+    const avgLikes = Math.round(agg.likes / Math.max(1, agg.views.length));
+    const avgViews = avgPlayViews > 0 ? avgPlayViews : avgLikes;
+    const engagementRate = computeEngagementRate(agg.likes, agg.comments, agg.shares, viewSum);
     const followers = agg.hit.followers;
     if (minFollowers > 0 && (followers <= 0 || followers < minFollowers)) continue;
 
@@ -317,7 +400,7 @@ export function videosToCandidates(
       topics: topics.length ? topics : ["lifestyle"],
       followers,
       avgViews,
-      engagementRate: Number.isFinite(engagementRate) ? engagementRate : 0,
+      engagementRate,
       bio,
       source: "tikhub",
       collectedAt,
