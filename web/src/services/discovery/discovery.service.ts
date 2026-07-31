@@ -4,6 +4,7 @@ import type {
   Influencer,
   InfluencerDossier,
   LanguageCode,
+  LastDiscoverySearch,
   VideoAnalysis,
 } from "@/types";
 import { loadJson, saveJson } from "@/lib/storage";
@@ -72,6 +73,38 @@ function dossierFromCandidate(
     discoveredAt: c.collectedAt,
     analysisStatus: "idle",
     inCatalog: catalogHasHandle(c.handle),
+  };
+}
+
+/** Prefer newer non-zero reach from search over a stale cached dossier (e.g. followers=0). */
+export function mergeDossierReachFromCandidate(
+  dossier: InfluencerDossier,
+  candidate: DiscoveryCandidate,
+): InfluencerDossier {
+  const incoming = candidate.followers ?? 0;
+  const current = dossier.reach.followers ?? 0;
+  const shouldUpdate =
+    incoming > 0 &&
+    (current <= 0 ||
+      incoming !== current ||
+      candidate.avgViews !== dossier.reach.avgViews ||
+      candidate.engagementRate !== dossier.reach.engagementRate);
+
+  if (!shouldUpdate) return dossier;
+
+  return {
+    ...dossier,
+    reach: {
+      ...dossier.reach,
+      followers: incoming,
+      avgViews: candidate.avgViews,
+      engagementRate: candidate.engagementRate,
+    },
+    identity: {
+      ...dossier.identity,
+      bio: candidate.bio || dossier.identity.bio,
+      name: candidate.name || dossier.identity.name,
+    },
   };
 }
 
@@ -176,13 +209,22 @@ export const discovery = {
     return getConnector().label;
   },
 
-  async search(params: DiscoverySearchParams): Promise<DiscoveryCandidate[]> {
+  async search(
+    params: DiscoverySearchParams,
+    opts?: { productId?: string },
+  ): Promise<DiscoveryCandidate[]> {
     const results = await getConnector().search(params);
-    saveJson(KEYS.lastSearch, { params, results, at: new Date().toISOString() });
+    const payload: LastDiscoverySearch = {
+      params,
+      results,
+      productId: opts?.productId,
+      at: new Date().toISOString(),
+    };
+    saveJson(KEYS.lastSearch, payload);
     return results;
   },
 
-  getLastSearch(): { params: DiscoverySearchParams; results: DiscoveryCandidate[]; at: string } | null {
+  getLastSearch(): LastDiscoverySearch | null {
     return loadJson(KEYS.lastSearch, null);
   },
 
@@ -190,10 +232,11 @@ export const discovery = {
     const map = loadDossiers();
     const existing = Object.values(map).find((d) => d.candidateId === candidate.id);
     if (existing) {
-      existing.inCatalog = catalogHasHandle(candidate.handle);
-      map[existing.id] = existing;
+      const merged = mergeDossierReachFromCandidate(existing, candidate);
+      merged.inCatalog = catalogHasHandle(candidate.handle);
+      map[merged.id] = merged;
       saveDossiers(map);
-      return existing;
+      return merged;
     }
 
     const fetchVideos = getConnector().fetchRecentVideos;
@@ -269,6 +312,22 @@ export const discovery = {
     map[dossierId] = d;
     saveDossiers(map);
     return influencer;
+  },
+
+  /** Persist dossier (if needed) + catalog entry so shortlist can reference an influencer id. */
+  saveCandidateToCatalog(candidate: DiscoveryCandidate): Influencer {
+    const map = loadDossiers();
+    let dossier = Object.values(map).find((d) => d.candidateId === candidate.id);
+    if (!dossier) {
+      dossier = dossierFromCandidate(candidate);
+      map[dossier.id] = dossier;
+      saveDossiers(map);
+    } else {
+      dossier = mergeDossierReachFromCandidate(dossier, candidate);
+      map[dossier.id] = dossier;
+      saveDossiers(map);
+    }
+    return this.saveToCatalog(dossier.id);
   },
 
   clearDemoDiscovery() {

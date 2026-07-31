@@ -330,7 +330,11 @@
     "toastDemoAnalysis": "Demo analysis complete — dossier updated",
     "toastAnalyzeFailed": "Analyze failed",
     "toastAdded": "Added {name} to catalog",
-    "toastSaveFailed": "Save failed"
+    "toastSaveFailed": "Save failed",
+    "addToShortlist": "Add to shortlist",
+    "addedToShortlist": "Added {name} to shortlist",
+    "saveToShortlist": "Save to shortlist",
+    "errSelectShortlist": "Create or select a shortlist first"
   },
   "campaigns": {
     "title": "Campaigns",

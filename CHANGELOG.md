@@ -2,6 +2,17 @@
 
 All notable changes to Lumen Influencer Marketplace are documented here.
 
+## [0.5.11] — 2026-07-31
+
+### Fixed / Added — Discover search persist + shortlist save
+
+- Restore **ranked** results on `/discover` reload from `lastSearch` (was query-only → empty list).
+- Persist `productId` with last search; re-rank on hydrate.
+- Merge fresh reach into stale dossiers when reopening from lastSearch (fixes frozen 0-follower cache after 0.5.10).
+- Ranked cards: **Add to shortlist** (auto catalog + shortlist).
+- Fixture: `web/scripts/discovery.persist.fixture.ts`. Manual QA: `docs/MANUAL_QA_DISCOVER_PERSIST.md`. Health `0.5.11`.
+- Plan: `docs/superpowers/plans/2026-07-31-discover-search-persist.md`.
+
 ## [0.5.10] — 2026-07-31
 
 ### Fixed — Douyin Discover showed 0 followers / absurd ER

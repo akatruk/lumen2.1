@@ -330,7 +330,11 @@
     "toastDemoAnalysis": "演示分析完成 — 档案已更新",
     "toastAnalyzeFailed": "分析失败",
     "toastAdded": "已将 {name} 加入目录",
-    "toastSaveFailed": "保存失败"
+    "toastSaveFailed": "保存失败",
+    "addToShortlist": "加入候选名单",
+    "addedToShortlist": "已将 {name} 加入候选名单",
+    "saveToShortlist": "保存到候选名单",
+    "errSelectShortlist": "请先创建或选择候选名单"
   },
   "campaigns": {
     "title": "活动",

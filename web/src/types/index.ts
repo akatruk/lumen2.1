@@ -376,6 +376,15 @@ export interface DiscoveryCandidate {
   collectedAt: string;
 }
 
+/** Persisted Discover search — restore ranked UI after reload. */
+export interface LastDiscoverySearch {
+  params: DiscoverySearchParams;
+  results: DiscoveryCandidate[];
+  /** Product used for rank — required to restore ranked UI. */
+  productId?: string;
+  at: string;
+}
+
 export interface DossierAudienceSignal {
   label: string;
   confidence: number;

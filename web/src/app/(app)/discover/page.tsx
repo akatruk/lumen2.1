@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Loader2, Search, Sparkles } from "lucide-react";
 import { discovery } from "@/services/discovery/discovery.service";
 import { marketplace } from "@/services/marketplace";
@@ -14,11 +14,13 @@ import type {
   LanguageCode,
   Product,
   RankedDiscoveryMatch,
+  Shortlist,
 } from "@/types";
 import { Card } from "@/components/ui/Card";
 import { Badge, MatchScore } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Select } from "@/components/ui/Field";
+import { useToast } from "@/components/Toast";
 import { fill, useI18n } from "@/lib/i18n";
 import { formatNumber, formatPercent, LANGUAGE_LABELS } from "@/lib/utils";
 
@@ -39,8 +41,12 @@ const TOPICS = [
 
 export default function DiscoverPage() {
   const { t } = useI18n();
+  const { push } = useToast();
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
+  const [shortlists, setShortlists] = useState<Shortlist[]>([]);
+  const [shortlistId, setShortlistId] = useState("");
+  const [savingId, setSavingId] = useState<string | null>(null);
 
   const [productId, setProductId] = useState<string>("");
   const [query, setQuery] = useState("科技 AI 短视频");
@@ -53,40 +59,60 @@ export default function DiscoverPage() {
   const [ranked, setRanked] = useState<RankedDiscoveryMatch[]>([]);
   const [rawCount, setRawCount] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const hydratedRef = useRef(false);
 
   useEffect(() => {
     void marketplace.hydrateBrandPersistence().then(() => {
       setProducts(marketplace.listProducts());
+      const lists = marketplace.listShortlists();
+      setShortlists(lists);
+      setShortlistId((prev) => prev || lists[0]?.id || "");
     });
   }, []);
 
   const selectedProduct: Product | undefined = products.find((p) => p.id === productId);
 
   useEffect(() => {
-    const fromQuery = searchParams.get("productId");
-    if (fromQuery && products.some((p) => p.id === fromQuery)) {
-      setProductId(fromQuery);
-      applyProductDefaults(fromQuery);
-      return;
-    }
-    if (!productId && products.length) {
-      const prefer =
-        products.find((p) => p.id === "prod-7") ??
-        products.find((p) => /lumen|technolog|ai|script/i.test(`${p.name} ${p.category}`)) ??
-        products.find((p) => p.id === "prod-2") ??
-        products[0];
-      if (prefer) applyProductDefaults(prefer.id);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- apply once products hydrate
-  }, [searchParams, products]);
+    if (hydratedRef.current || !products.length) return;
 
-  useEffect(() => {
     const last = discovery.getLastSearch();
-    if (last?.results?.length && !searchParams.get("productId")) {
-      setSearched(true);
+    const fromUrl = searchParams.get("productId");
+
+    const pid =
+      fromUrl && products.some((p) => p.id === fromUrl)
+        ? fromUrl
+        : last?.productId && products.some((p) => p.id === last.productId)
+          ? last.productId
+          : !productId
+            ? (products.find((p) => p.id === "prod-7") ??
+                products.find((p) => /lumen|technolog|ai|script/i.test(`${p.name} ${p.category}`)) ??
+                products.find((p) => p.id === "prod-2") ??
+                products[0])?.id ?? ""
+            : productId;
+
+    if (pid) applyProductDefaults(pid);
+
+    if (last?.results?.length) {
+      const rankProduct = pid ? marketplace.getProduct(pid) : undefined;
       if (last.params.query) setQuery(last.params.query);
+      if (last.params.city) setCity(last.params.city);
+      if (last.params.topic) setTopic(last.params.topic);
+      if (last.params.language) setLanguage(last.params.language);
+      if (typeof last.params.minFollowers === "number") setMinFollowers(last.params.minFollowers);
+
+      if (rankProduct) {
+        const matches = rankCandidatesForCard(last.results, enrichProductForMatch(rankProduct));
+        setRawCount(last.results.length);
+        setRanked(matches);
+        setSearched(true);
+      } else {
+        setSearched(true);
+      }
     }
-  }, [searchParams]);
+
+    hydratedRef.current = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- one-shot hydrate after products load
+  }, [products, searchParams]);
 
   function applyProductDefaults(id: string) {
     setProductId(id);
@@ -163,7 +189,7 @@ export default function DiscoverPage() {
         minFollowers,
         limit: 12,
       };
-      const list: DiscoveryCandidate[] = await discovery.search(params);
+      const list: DiscoveryCandidate[] = await discovery.search(params, { productId });
       setRawCount(list.length);
       // hard-drops travel/etc. vs tech inside rankCandidatesForCard
       const matches = rankCandidatesForCard(list, enriched);
@@ -176,6 +202,24 @@ export default function DiscoverPage() {
       setError(e instanceof Error ? e.message : t.discover.errSearchFailed);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function onAddToShortlist(candidate: DiscoveryCandidate) {
+    if (!shortlistId) {
+      push(t.discover.errSelectShortlist, "err");
+      return;
+    }
+    setSavingId(candidate.id);
+    try {
+      const inf = discovery.saveCandidateToCatalog(candidate);
+      await marketplace.addToShortlistAsync(shortlistId, inf.id);
+      push(fill(t.discover.addedToShortlist, { name: inf.name }));
+      setShortlists(marketplace.listShortlists());
+    } catch (e) {
+      push(e instanceof Error ? e.message : t.discover.toastSaveFailed, "err");
+    } finally {
+      setSavingId(null);
     }
   }
 
@@ -319,12 +363,29 @@ export default function DiscoverPage() {
 
       {ranked.length > 0 ? (
         <div className="space-y-3">
-          <div className="font-mono text-xs text-muted-foreground">
-            {fill(t.discover.rankedHeader, {
-              ranked: ranked.length,
-              raw: rawCount,
-              product: selectedProduct?.name ?? t.discover.productFallback,
-            })}
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="font-mono text-xs text-muted-foreground">
+              {fill(t.discover.rankedHeader, {
+                ranked: ranked.length,
+                raw: rawCount,
+                product: selectedProduct?.name ?? t.discover.productFallback,
+              })}
+            </div>
+            {shortlists.length ? (
+              <Field label={t.discover.saveToShortlist}>
+                <Select
+                  className="w-48"
+                  value={shortlistId}
+                  onChange={(e) => setShortlistId(e.target.value)}
+                >
+                  {shortlists.map((l) => (
+                    <option key={l.id} value={l.id}>
+                      {l.name}
+                    </option>
+                  ))}
+                </Select>
+              </Field>
+            ) : null}
           </div>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {ranked.map((m) => {
@@ -367,12 +428,24 @@ export default function DiscoverPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="mt-4">
+                  <div className="mt-4 flex flex-col gap-2">
                     <Link href={`/discover/${encodeURIComponent(c.id)}`}>
                       <Button size="sm" className="w-full">
                         {t.discover.openDossier}
                       </Button>
                     </Link>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      className="w-full"
+                      disabled={!shortlistId || savingId === c.id}
+                      onClick={() => void onAddToShortlist(c)}
+                    >
+                      {savingId === c.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : null}
+                      {t.discover.addToShortlist}
+                    </Button>
                   </div>
                 </Card>
               );
